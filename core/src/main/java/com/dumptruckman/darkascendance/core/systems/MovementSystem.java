@@ -5,6 +5,8 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
+import com.badlogic.gdx.math.Vector3;
+import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Velocity;
 
@@ -23,6 +25,12 @@ public class MovementSystem extends EntityProcessingSystem {
 
         position.x += velocity.vectorX * world.delta;
         position.y += velocity.vectorY * world.delta;
+
+        Player player = e.getComponent(Player.class);
+        if (player != null) {
+            Vector3 camVec = player.camera.position;
+            camVec.set(position.x, position.y, camVec.z);
+        }
     }
 
 }

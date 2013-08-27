@@ -4,6 +4,7 @@ import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.systems.MovementSystem;
 import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
@@ -16,12 +17,17 @@ public class GameScreen implements Screen {
     private World world;
     private TextureRenderingSystem textureRenderingSystem;
     private EntityFactory entityFactory;
+    private OrthographicCamera camera;
+    //private Rectangle glViewport;
 
     public GameScreen(float screenWidth, float screenHeight) {
+        this.camera = new OrthographicCamera(screenWidth, screenHeight);
+        //this.glViewport = new Rectangle(0, 0, screenWidth, screenHeight);
+
         this.world = new World();
 
         world.setSystem(new SampleMovementSystem());
-        textureRenderingSystem = world.setSystem(new TextureRenderingSystem(), true);
+        textureRenderingSystem = world.setSystem(new TextureRenderingSystem(camera), true);
         world.setSystem(new PlayerInputSystem());
         world.setSystem(new ThrustSystem());
         world.setSystem(new MovementSystem());
@@ -30,13 +36,14 @@ public class GameScreen implements Screen {
 
         entityFactory = new EntityFactory(TextureFactory.getMainTexturePack());
 
-        entityFactory.createBackground(world).addToWorld();
-        entityFactory.createSampleMovingSquare(world).addToWorld();
+        entityFactory.createBasicShip(world, camera).addToWorld();
     }
 
     @Override
     public void render(final float delta) {
         Gdx.gl20.glClear(GL10.GL_COLOR_BUFFER_BIT);
+        //Gdx.gl20.glViewport((int) glViewport.x, (int) glViewport.y, (int) glViewport.width, (int) glViewport.height);
+        camera.update();
 
         world.setDelta(delta);
 

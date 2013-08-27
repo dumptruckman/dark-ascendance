@@ -6,11 +6,15 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Mapper;
 import com.artemis.utils.ImmutableBag;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.SimpleTextureRegion;
+import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
+import com.dumptruckman.darkascendance.core.graphics.Textures;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,10 +59,13 @@ public class TextureRenderingSystem extends EntitySystem {
     private SpriteBatch batch;
     private List<Entity> sortedEntities;
     ShaderProgram program;
+    private OrthographicCamera camera;
 
-    public TextureRenderingSystem() {
+    private TextureRegion backgroundTexture = TextureFactory.getBackground().getTexture(Textures.STAR_FIELD);
+
+    public TextureRenderingSystem(OrthographicCamera camera) {
         super(Aspect.getAspectForAll(Position.class, SimpleTextureRegion.class));
-
+        this.camera = camera;
     }
 
     @Override
@@ -83,8 +90,28 @@ public class TextureRenderingSystem extends EntitySystem {
 
     @Override
     protected void begin() {
+        batch.setProjectionMatrix(camera.combined);
         program.setUniformMatrix("u_projTrans", batch.getTransformMatrix());
         batch.begin();
+
+        drawBackground();
+    }
+
+    private void drawBackground() {
+        float bgWidth = backgroundTexture.getRegionWidth();
+        float bgHeight = backgroundTexture.getRegionHeight();
+        float camWidth = (int) camera.viewportWidth;
+        float camHeight = (int) camera.viewportHeight;
+        float camX = (int) camera.position.x - (camWidth / 2);
+        float camY = (int) camera.position.y - (camHeight / 2);
+
+        float drawX = MathUtils.floor(camX / bgWidth) * bgWidth;
+        float drawY = MathUtils.floor(camY / bgHeight) * bgHeight;
+        for (float x = drawX; x <= camX + camWidth; x += bgWidth) {
+            for (float y = drawY; y <= camY + camHeight; y += bgHeight) {
+                batch.draw(backgroundTexture, x, y);
+            }
+        }
     }
 
     @Override
@@ -100,7 +127,9 @@ public class TextureRenderingSystem extends EntitySystem {
             Position position = pm.getSafe(e);
             TextureRegion region = tm.get(e).region;
 
-            batch.draw(region, position.x, position.y, region.getRegionWidth() / 2, region.getRegionHeight() / 2, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, position.r);
+            int halfWidth = region.getRegionWidth() / 2;
+            int halfHeight = region.getRegionHeight() / 2;
+            batch.draw(region, position.x - halfWidth, position.y - halfHeight, halfWidth, halfHeight, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, position.r);
         }
     }
 
