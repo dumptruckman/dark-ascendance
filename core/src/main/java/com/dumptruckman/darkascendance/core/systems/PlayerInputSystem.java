@@ -13,8 +13,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.components.Position;
-import com.dumptruckman.darkascendance.core.components.Rotation;
 import com.dumptruckman.darkascendance.core.components.Thrust;
+import com.dumptruckman.darkascendance.core.components.Velocity;
 
 public class PlayerInputSystem extends EntityProcessingSystem implements InputProcessor {
     private static final float THRUST_INC = 80f;
@@ -23,6 +23,7 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
 
     @Mapper ComponentMapper<Position> pm;
     @Mapper ComponentMapper<Thrust> tm;
+    @Mapper ComponentMapper<Velocity> vm;
 
     private boolean up = false, down, left, right;
     private boolean shoot;
@@ -32,7 +33,7 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
     private Vector3 mouseVector;
 
     public PlayerInputSystem() {//OrthographicCamera camera) {
-        super(Aspect.getAspectForAll(Position.class, Thrust.class, Player.class));
+        super(Aspect.getAspectForAll(Position.class, Thrust.class, Player.class, Velocity.class));
         this.camera = camera;
         this.mouseVector = new Vector3();
     }
@@ -46,17 +47,9 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
     protected void process(Entity e) {
         Position position = pm.get(e);
         Thrust thrust = tm.get(e);
+        Velocity velocity = vm.get(e);
 
         mouseVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-        //camera.unproject(mouseVector);
-
-        //float angleInRadians = Utils.angleInRadians(position.x, position.y, destinationX, destinationY);
-
-        //position.x += TrigLUT.cos(angleInRadians) * 500f * world.getDeltaFloat();
-        //position.y += TrigLUT.sin(angleInRadians) * 500f * world.getDeltaFloat();
-
-        //position.x = mouseVector.x;
-        //position.y = mouseVector.y;
 
         if(up) {
             thrust.forwardThrust = MathUtils.clamp(thrust.forwardThrust + (world.getDelta() * THRUST_INC), 0, thrust.maxFowardThrust);
@@ -64,16 +57,14 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
             thrust.forwardThrust = 0F;
         }
         if(down) {
-            // TODO rotate ship to direction needed to cancel velocity with thrust
+            position.attainRotation(velocity.getRotationRequiredToReverseVelocity(), (world.getDelta() * ROTATION_SPEED));
         }
 
         if(left) {
             position.setRotation(position.r + (world.getDelta() * ROTATION_SPEED));
-                //velocity.vectorX = MathUtils.clamp(velocity.vectorX-(world.getDelta()*HorizontalThrusters), -HorizontalMaxSpeed, HorizontalMaxSpeed);
         }
         if(right) {
             position.setRotation(position.r - (world.getDelta() * ROTATION_SPEED));
-                //velocity.vectorX = MathUtils.clamp(velocity.vectorX+(world.getDelta()*HorizontalThrusters), -HorizontalMaxSpeed, HorizontalMaxSpeed);
         }
 
         if(shoot) {
