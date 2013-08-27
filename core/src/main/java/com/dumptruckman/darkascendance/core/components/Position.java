@@ -28,7 +28,6 @@ public class Position extends Component {
         if (r == desiredRotation) {
             return;
         }
-        System.out.println("Want to get " + desiredRotation + " from " + r + " with " + maxChangeAmount);
         float direction = desiredRotation - r;
         if (direction < -180)  {
             direction += 360;
@@ -43,7 +42,6 @@ public class Position extends Component {
             if (newRotation >= 360) {
                 newRotation = wrapCounterClockwise(newRotation);
             }
-            System.out.println("adding " + maxChangeAmount + " to make " + newRotation);
             if (r < desiredRotation && newRotation > desiredRotation) {
                 newRotation = desiredRotation;
             }
@@ -52,7 +50,6 @@ public class Position extends Component {
             if (newRotation < 0) {
                 newRotation = wrapClockwise(newRotation);
             }
-            System.out.println("subtracting " + maxChangeAmount + " to make " + newRotation);
             if (r > desiredRotation && newRotation < desiredRotation) {
                 newRotation = desiredRotation;
             }
