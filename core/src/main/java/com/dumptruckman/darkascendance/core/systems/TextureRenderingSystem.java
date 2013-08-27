@@ -23,6 +23,9 @@ import java.util.List;
 
 public class TextureRenderingSystem extends EntitySystem {
 
+    /**
+     * Default SpriteBatch vertex shader.  Minimum required to work.
+     */
     final String VERT = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
             + "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
             + "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
@@ -37,6 +40,9 @@ public class TextureRenderingSystem extends EntitySystem {
             + "  gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
             + "}\n";
 
+    /**
+     * Default SpriteBatch fragment shader.  Minimum required to work.
+     */
     final String FRAG = "#ifdef GL_ES\n" //
             + "#define LOWP lowp\n" //
             + "precision mediump float;\n" //

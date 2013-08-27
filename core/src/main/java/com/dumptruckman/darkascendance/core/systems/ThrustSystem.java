@@ -29,6 +29,10 @@ public class ThrustSystem extends EntityProcessingSystem {
         Velocity velocity = vm.get(e);
         Position position = pm.get(e);
 
+        processThrustForEntity(e, thrust, velocity, position, world.getDelta());
+    }
+
+    void processThrustForEntity(Entity e, Thrust thrust, Velocity velocity, Position position, float delta) {
         if (thrust.forwardThrust == 0F) {
             return;
         }
