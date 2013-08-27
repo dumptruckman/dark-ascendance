@@ -16,7 +16,7 @@ public class TextureFactory {
 
         packer.pack(Textures.BASIC_SHIP, pixmap);
 
-        TextureAtlas atlas = packer.generateTextureAtlas(TextureFilter.MipMapNearestNearest, TextureFilter.MipMapNearestNearest, true);
+        TextureAtlas atlas = packer.generateTextureAtlas(TextureFilter.Linear, TextureFilter.Linear, true);
         return new TexturePack(atlas);
     }
 
