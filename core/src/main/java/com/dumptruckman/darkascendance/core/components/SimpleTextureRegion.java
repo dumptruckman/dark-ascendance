@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class SimpleTextureRegion extends Component {
 
     public static enum RenderLayer {
+        BACKGROUND,
         BOTTOM_SHAPES
     }
 

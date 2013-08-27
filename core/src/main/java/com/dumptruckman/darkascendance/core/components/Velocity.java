@@ -5,6 +5,6 @@ import com.artemis.Component;
 public class Velocity extends Component {
     public float vectorX = 0f;
     public float vectorY = 0f;
-    public float maxX = 200f;
-    public float maxY = 0f;
+    public float maxX = 60f;
+    public float maxY = 60f;
 }

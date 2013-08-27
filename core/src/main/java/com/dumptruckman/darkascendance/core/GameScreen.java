@@ -9,6 +9,7 @@ import com.dumptruckman.darkascendance.core.systems.MovementSystem;
 import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.core.systems.SampleMovementSystem;
 import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
+import com.dumptruckman.darkascendance.core.systems.ThrustSystem;
 
 public class GameScreen implements Screen {
 
@@ -22,12 +23,14 @@ public class GameScreen implements Screen {
         world.setSystem(new SampleMovementSystem());
         textureRenderingSystem = world.setSystem(new TextureRenderingSystem(), true);
         world.setSystem(new PlayerInputSystem());
+        world.setSystem(new ThrustSystem());
         world.setSystem(new MovementSystem());
 
         world.initialize();
 
         entityFactory = new EntityFactory(TextureFactory.getMainTexturePack());
 
+        entityFactory.createBackground(world).addToWorld();
         entityFactory.createSampleMovingSquare(world).addToWorld();
     }
 
