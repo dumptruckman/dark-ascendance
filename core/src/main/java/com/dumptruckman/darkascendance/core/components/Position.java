@@ -12,29 +12,33 @@ public class Position extends Component {
         return x;
     }
 
-    public void setX(float x) {
+    public Position setX(float x) {
         this.x = x;
+        return this;
     }
 
     public float getY() {
         return y;
     }
 
-    public void setY(float y) {
+    public Position setY(float y) {
         this.y = y;
+        return this;
     }
 
     public float getRotation() {
         return rotation;
     }
 
-    public void setRotation(float r) {
+    public Position setRotation(float r) {
         if (r >= 360F) {
             r = wrapCounterClockwise(r);
         } else if (r < 0F) {
             r = wrapClockwise(r);
         }
         this.rotation = r;
+
+        return this;
     }
 
     private float wrapCounterClockwise(float r) {
@@ -45,9 +49,9 @@ public class Position extends Component {
         return 360 - (-r % 360F);
     }
 
-    public void attainRotation(float desiredRotation, float maxChangeAmount) {
+    public Position attainRotation(float desiredRotation, float maxChangeAmount) {
         if (rotation == desiredRotation) {
-            return;
+            return this;
         }
         float direction = desiredRotation - rotation;
         if (direction < -180)  {
@@ -76,5 +80,7 @@ public class Position extends Component {
             }
         }
         setRotation(newRotation);
+
+        return this;
     }
 }
