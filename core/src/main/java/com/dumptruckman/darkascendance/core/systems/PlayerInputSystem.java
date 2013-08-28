@@ -8,11 +8,10 @@ import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.components.Position;
-import com.dumptruckman.darkascendance.core.components.Thrust;
+import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
 
 public class PlayerInputSystem extends EntityProcessingSystem implements InputProcessor {
@@ -24,7 +23,7 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
     @Mapper
     ComponentMapper<Position> positionMap;
     @Mapper
-    ComponentMapper<Thrust> thrustMap;
+    ComponentMapper<Thrusters> thrustMap;
     @Mapper
     ComponentMapper<Velocity> velocityMap;
 
@@ -38,7 +37,7 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
     private Vector3 mouseVector;
 
     public PlayerInputSystem() {
-        super(Aspect.getAspectForAll(Position.class, Thrust.class, Player.class, Velocity.class));
+        super(Aspect.getAspectForAll(Position.class, Player.class, Velocity.class));
         this.mouseVector = new Vector3();
     }
 
@@ -50,15 +49,17 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
     @Override
     protected void process(Entity entity) {
         Position position = positionMap.get(entity);
-        Thrust thrust = thrustMap.get(entity);
         Velocity velocity = velocityMap.get(entity);
+        Thrusters thrusters = thrustMap.getSafe(entity);
 
         mouseVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 
-        if(up) {
-            thrust.setThrustPercent(1F);
-        } else {
-            thrust.setThrustPercent(0F);
+        if (thrusters != null) {
+            if(up) {
+                thrusters.setThrustLevel(1F);
+            } else {
+                thrusters.setThrustLevel(0F);
+            }
         }
         if(down) {
             position.attainRotation(velocity.getRotationRequiredToReverseVelocity(), (world.getDelta() * ROTATION_SPEED));

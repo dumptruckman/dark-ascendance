@@ -24,7 +24,7 @@ public class EntityFactory {
         e.addComponent(new Graphics(mainTexturePack.getTexture(Textures.BASIC_SHIP)));
         e.addComponent(new Player(camera));
         e.addComponent(new Velocity());
-        e.addComponent(new Thrust());
+        e.addComponent(new Thrusters());
 
         return e;
     }

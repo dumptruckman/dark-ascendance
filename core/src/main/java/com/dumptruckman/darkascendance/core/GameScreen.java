@@ -6,10 +6,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
+import com.dumptruckman.darkascendance.core.systems.AccelerationSystem;
 import com.dumptruckman.darkascendance.core.systems.MovementSystem;
 import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
-import com.dumptruckman.darkascendance.core.systems.ThrustSystem;
 
 public class GameScreen implements Screen {
 
@@ -27,7 +27,7 @@ public class GameScreen implements Screen {
 
         textureRenderingSystem = world.setSystem(new TextureRenderingSystem(camera), true);
         world.setSystem(new PlayerInputSystem());
-        world.setSystem(new ThrustSystem());
+        world.setSystem(new AccelerationSystem());
         world.setSystem(new MovementSystem());
 
         world.initialize();
