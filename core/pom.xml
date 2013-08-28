@@ -62,6 +62,9 @@
             <plugin>
                 <groupId>com.google.protobuf.tools</groupId>
                 <artifactId>maven-protoc-plugin</artifactId>
+                <configuration>
+                    <checkStaleness>true</checkStaleness>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
