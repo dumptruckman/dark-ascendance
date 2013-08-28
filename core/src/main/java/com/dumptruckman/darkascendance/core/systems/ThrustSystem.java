@@ -40,7 +40,7 @@ public class ThrustSystem extends EntityProcessingSystem {
         float deltaThrust = world.getDelta() * thrust.getThrust();
         float r = MathUtils.degreesToRadians * position.getRotation();
 
-        velocity.vectorX += MathUtils.clamp(deltaThrust * -(float)MathUtils.sin(r), -velocity.maxX, velocity.maxX);
-        velocity.vectorY += MathUtils.clamp(deltaThrust * (float)MathUtils.cos(r), -velocity.maxY, velocity.maxY);
+        velocity.addToX(deltaThrust * -(float)MathUtils.sin(r));
+        velocity.addToY(deltaThrust * (float)MathUtils.cos(r));
     }
 }

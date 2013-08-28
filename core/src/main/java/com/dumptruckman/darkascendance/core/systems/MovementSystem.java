@@ -15,7 +15,7 @@ public class MovementSystem extends EntityProcessingSystem {
     @Mapper ComponentMapper<Velocity> vm;
 
     public MovementSystem() {
-            super(Aspect.getAspectForAll(Position.class, Velocity.class));
+        super(Aspect.getAspectForAll(Position.class, Velocity.class));
     }
 
     @Override
@@ -23,8 +23,8 @@ public class MovementSystem extends EntityProcessingSystem {
         Position position = pm.get(e);
         Velocity velocity = vm.get(e);
 
-        position.setX(position.getX() + velocity.vectorX * world.delta);
-        position.setY(position.getY() + velocity.vectorY * world.delta);
+        position.setX(position.getX() + velocity.getX() * world.getDelta());
+        position.setY(position.getY() + velocity.getY() * world.getDelta());
 
         Player player = e.getComponent(Player.class);
         if (player != null) {
