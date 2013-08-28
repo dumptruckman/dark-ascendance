@@ -34,13 +34,41 @@ public class Velocity extends Component {
         return vector.y;
     }
 
+    public Velocity setX(float x) {
+        vector.x = x;
+        return this;
+    }
+
+    public Velocity setY(float y) {
+        vector.y = y;
+        return this;
+    }
+
     public Velocity addToX(float amount) {
-        vector.set(MathUtils.clamp(vector.x + amount, -max.x, max.x), vector.y);
+        vector.x = MathUtils.clamp(vector.x + amount, -max.x, max.x);
         return this;
     }
 
     public Velocity addToY(float amount) {
-        vector.set(vector.x, MathUtils.clamp(vector.y + amount, -max.y, max.y));
+        vector.y = MathUtils.clamp(vector.y + amount, -max.y, max.y);
+        return this;
+    }
+
+    public float getMaxX() {
+        return max.x;
+    }
+
+    public float getMaxY() {
+        return max.y;
+    }
+
+    public Velocity setMaxX(float x) {
+        max.x = x;
+        return this;
+    }
+
+    public Velocity setMaxY(float y) {
+        max.y = y;
         return this;
     }
 }
