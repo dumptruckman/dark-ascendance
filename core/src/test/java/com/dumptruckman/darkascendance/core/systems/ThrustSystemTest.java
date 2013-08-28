@@ -121,4 +121,14 @@ public class ThrustSystemTest {
         assertEquals(10F, velocity.getY(), 0.0001F);
         assertEquals(0F, velocity.getX(), 0.0001F);
     }
+
+    @Test
+    public void testZeroThrust() {
+        position.setRotation(0F);
+        velocity.setX(0).setY(0);
+        thrust.setThrustPercent(0F);
+        ThrustSystem.processThrust(thrust, velocity, position, 1F);
+        assertEquals(0F, velocity.getY(), 0.0001F);
+        assertEquals(0F, velocity.getX(), 0.0001F);
+    }
 }
