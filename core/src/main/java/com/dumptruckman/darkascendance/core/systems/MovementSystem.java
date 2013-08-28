@@ -28,7 +28,7 @@ public class MovementSystem extends EntityProcessingSystem {
 
         Player player = e.getComponent(Player.class);
         if (player != null) {
-            Vector3 camVec = player.camera.position;
+            Vector3 camVec = player.getCamera().position;
             camVec.set(position.getX(), position.getY(), camVec.z);
         }
     }
