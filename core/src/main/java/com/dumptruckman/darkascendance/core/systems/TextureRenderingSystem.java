@@ -135,7 +135,7 @@ public class TextureRenderingSystem extends EntitySystem {
 
             int halfWidth = region.getRegionWidth() / 2;
             int halfHeight = region.getRegionHeight() / 2;
-            batch.draw(region, position.x - halfWidth, position.y - halfHeight, halfWidth, halfHeight, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, position.r);
+            batch.draw(region, position.getX() - halfWidth, position.getY() - halfHeight, halfWidth, halfHeight, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, position.getRotation());
         }
     }
 

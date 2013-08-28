@@ -23,13 +23,13 @@ public class MovementSystem extends EntityProcessingSystem {
         Position position = pm.get(e);
         Velocity velocity = vm.get(e);
 
-        position.x += velocity.vectorX * world.delta;
-        position.y += velocity.vectorY * world.delta;
+        position.setX(position.getX() + velocity.vectorX * world.delta);
+        position.setY(position.getY() + velocity.vectorY * world.delta);
 
         Player player = e.getComponent(Player.class);
         if (player != null) {
             Vector3 camVec = player.camera.position;
-            camVec.set(position.x, position.y, camVec.z);
+            camVec.set(position.getX(), position.getY(), camVec.z);
         }
     }
 

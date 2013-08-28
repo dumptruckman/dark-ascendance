@@ -61,10 +61,10 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
         }
 
         if(left) {
-            position.setRotation(position.r + (world.getDelta() * ROTATION_SPEED));
+            position.setRotation(position.getRotation() + (world.getDelta() * ROTATION_SPEED));
         }
         if(right) {
-            position.setRotation(position.r - (world.getDelta() * ROTATION_SPEED));
+            position.setRotation(position.getRotation() - (world.getDelta() * ROTATION_SPEED));
         }
 
         if(shoot) {

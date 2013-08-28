@@ -3,9 +3,30 @@ package com.dumptruckman.darkascendance.core.components;
 import com.artemis.Component;
 
 public class Position extends Component {
-    public float x = 0F;
-    public float y = 0F;
-    public float r = 0F;
+
+    private float x = 0F;
+    private float y = 0F;
+    private float rotation = 0F;
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
 
     public void setRotation(float r) {
         if (r >= 360F) {
@@ -13,7 +34,7 @@ public class Position extends Component {
         } else if (r < 0F) {
             r = wrapClockwise(r);
         }
-        this.r = r;
+        this.rotation = r;
     }
 
     private float wrapCounterClockwise(float r) {
@@ -25,10 +46,10 @@ public class Position extends Component {
     }
 
     public void attainRotation(float desiredRotation, float maxChangeAmount) {
-        if (r == desiredRotation) {
+        if (rotation == desiredRotation) {
             return;
         }
-        float direction = desiredRotation - r;
+        float direction = desiredRotation - rotation;
         if (direction < -180)  {
             direction += 360;
         }
@@ -38,19 +59,19 @@ public class Position extends Component {
 
         float newRotation;
         if (direction > 0) {
-            newRotation = r + maxChangeAmount;
+            newRotation = rotation + maxChangeAmount;
             if (newRotation >= 360) {
                 newRotation = wrapCounterClockwise(newRotation);
             }
-            if (r < desiredRotation && newRotation > desiredRotation) {
+            if (rotation < desiredRotation && newRotation > desiredRotation) {
                 newRotation = desiredRotation;
             }
         } else {
-            newRotation = r - maxChangeAmount;
+            newRotation = rotation - maxChangeAmount;
             if (newRotation < 0) {
                 newRotation = wrapClockwise(newRotation);
             }
-            if (r > desiredRotation && newRotation < desiredRotation) {
+            if (rotation > desiredRotation && newRotation < desiredRotation) {
                 newRotation = desiredRotation;
             }
         }
