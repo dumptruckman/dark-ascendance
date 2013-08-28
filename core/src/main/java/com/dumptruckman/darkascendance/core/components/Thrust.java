@@ -19,13 +19,6 @@ public class Thrust extends Component {
 
     private Thrust setThrust(float newThrust) {
         thrust = MathUtils.clamp(newThrust, reverseAcceleration, acceleration);
-        if (newThrust > acceleration) {
-            thrust = acceleration;
-        } else if (newThrust < reverseAcceleration) {
-            thrust = reverseAcceleration;
-        } else {
-            thrust = newThrust;
-        }
         return this;
     }
 
