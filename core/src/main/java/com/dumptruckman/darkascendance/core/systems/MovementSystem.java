@@ -24,15 +24,18 @@ public class MovementSystem extends EntityProcessingSystem {
     protected void process(Entity entity) {
         Position position = positionMap.get(entity);
         Velocity velocity = velocityMap.get(entity);
-
-        position.setX(position.getX() + velocity.getX() * world.getDelta());
-        position.setY(position.getY() + velocity.getY() * world.getDelta());
-
         Player player = entity.getComponent(Player.class);
+
+        processMovement(position, velocity, player, world.getDelta());
+    }
+
+    static void processMovement(Position position, Velocity velocity, Player player, float delta) {
+        position.setX(position.getX() + velocity.getX() * delta);
+        position.setY(position.getY() + velocity.getY() * delta);
+
         if (player != null) {
             Vector3 cameraVector = player.getCamera().position;
             cameraVector.set(position.getX(), position.getY(), cameraVector.z);
         }
     }
-
 }
