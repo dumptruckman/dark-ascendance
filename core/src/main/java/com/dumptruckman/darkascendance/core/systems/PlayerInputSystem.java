@@ -52,14 +52,13 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
         mouseVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 
         if(up) {
-            thrust.forwardThrust = MathUtils.clamp(thrust.forwardThrust + (world.getDelta() * THRUST_INC), 0, thrust.maxFowardThrust);
+            thrust.setThrust(thrust.getThrust() + (world.getDelta() * THRUST_INC));
         } else {
-            thrust.forwardThrust = 0F;
+            thrust.setThrust(0F);
         }
         if(down) {
             position.attainRotation(velocity.getRotationRequiredToReverseVelocity(), (world.getDelta() * ROTATION_SPEED));
         }
-
         if(left) {
             position.setRotation(position.getRotation() + (world.getDelta() * ROTATION_SPEED));
         }
