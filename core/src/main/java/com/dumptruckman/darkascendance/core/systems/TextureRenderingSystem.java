@@ -78,15 +78,16 @@ public class TextureRenderingSystem extends EntitySystem {
     protected void initialize() {
         //load our shader program and sprite batch
         try {
-            program = new ShaderProgram(VERT, FRAG);
+            //program = new ShaderProgram(VERT, FRAG);
 
 
             //Good idea to log any warnings if they exist
-            if (program.getLog().length()!=0)
-                System.out.println(program.getLog());
+            //if (program.getLog().length()!=0)
+            //    System.out.println(program.getLog());
 
             //create our sprite batch
-            batch = new SpriteBatch(20, program);
+            //batch = new SpriteBatch(20, program);
+            batch = new SpriteBatch();
         } catch (Exception e) {
             e.printStackTrace();
             batch = new SpriteBatch();
@@ -97,7 +98,7 @@ public class TextureRenderingSystem extends EntitySystem {
     @Override
     protected void begin() {
         batch.setProjectionMatrix(camera.combined);
-        program.setUniformMatrix("u_projTrans", batch.getTransformMatrix());
+        //program.setUniformMatrix("u_projTrans", batch.getTransformMatrix());
         batch.begin();
 
         drawBackground();

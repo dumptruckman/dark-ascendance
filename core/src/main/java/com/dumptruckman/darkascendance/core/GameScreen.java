@@ -39,7 +39,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(final float delta) {
-        Gdx.gl20.glClear(GL10.GL_COLOR_BUFFER_BIT);
+        Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
         //Gdx.gl20.glViewport((int) glViewport.x, (int) glViewport.y, (int) glViewport.width, (int) glViewport.height);
         camera.update();
 
