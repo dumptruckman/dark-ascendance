@@ -29,15 +29,15 @@ public class ThrustSystem extends EntityProcessingSystem {
         Velocity velocity = vm.get(e);
         Position position = pm.get(e);
 
-        processThrustForEntity(e, thrust, velocity, position, world.getDelta());
+        processThrust(thrust, velocity, position, world.getDelta());
     }
 
-    void processThrustForEntity(Entity e, Thrust thrust, Velocity velocity, Position position, float delta) {
+    static void processThrust(Thrust thrust, Velocity velocity, Position position, float delta) {
         if (thrust.getThrust() == 0F) {
             return;
         }
 
-        float deltaThrust = world.getDelta() * thrust.getThrust();
+        float deltaThrust = delta * thrust.getThrust();
         float r = MathUtils.degreesToRadians * position.getRotation();
 
         velocity.addToX(deltaThrust * -(float)MathUtils.sin(r));
