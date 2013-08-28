@@ -13,21 +13,21 @@ import com.dumptruckman.darkascendance.core.components.Velocity;
 public class ThrustSystem extends EntityProcessingSystem {
 
     @Mapper
-    ComponentMapper<Thrust> tm;
+    ComponentMapper<Thrust> thrustMap;
     @Mapper
-    ComponentMapper<Velocity> vm;
+    ComponentMapper<Velocity> velocityMap;
     @Mapper
-    ComponentMapper<Position> pm;
+    ComponentMapper<Position> positionMap;
 
     public ThrustSystem() {
         super(Aspect.getAspectForAll(Thrust.class, Velocity.class, Position.class));
     }
 
     @Override
-    protected void process(Entity e) {
-        Thrust thrust = tm.get(e);
-        Velocity velocity = vm.get(e);
-        Position position = pm.get(e);
+    protected void process(Entity entity) {
+        Thrust thrust = thrustMap.get(entity);
+        Velocity velocity = velocityMap.get(entity);
+        Position position = positionMap.get(entity);
 
         processThrust(thrust, velocity, position, world.getDelta());
     }

@@ -58,9 +58,9 @@ public class TextureRenderingSystem extends EntitySystem {
             + "}";
 
     @Mapper
-    ComponentMapper<Position> pm;
+    ComponentMapper<Position> positionMap;
     @Mapper
-    ComponentMapper<SimpleTextureRegion> tm;
+    ComponentMapper<SimpleTextureRegion> textureMap;
 
     private SpriteBatch batch;
     private List<Entity> sortedEntities;
@@ -129,10 +129,10 @@ public class TextureRenderingSystem extends EntitySystem {
         }
     }
 
-    protected void process(Entity e) {
-        if(pm.has(e)) {
-            Position position = pm.getSafe(e);
-            TextureRegion region = tm.get(e).region;
+    protected void process(Entity entity) {
+        if(positionMap.has(entity)) {
+            Position position = positionMap.getSafe(entity);
+            TextureRegion region = textureMap.get(entity).region;
 
             int halfWidth = region.getRegionWidth() / 2;
             int halfHeight = region.getRegionHeight() / 2;
@@ -156,8 +156,8 @@ public class TextureRenderingSystem extends EntitySystem {
         Collections.sort(sortedEntities, new Comparator<Entity>() {
             @Override
             public int compare(Entity e1, Entity e2) {
-                SimpleTextureRegion s1 = tm.get(e1);
-                SimpleTextureRegion s2 = tm.get(e2);
+                SimpleTextureRegion s1 = textureMap.get(e1);
+                SimpleTextureRegion s2 = textureMap.get(e2);
                 return s1.renderLayer.compareTo(s2.renderLayer);
             }
         });

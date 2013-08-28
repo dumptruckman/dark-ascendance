@@ -11,25 +11,27 @@ import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Velocity;
 
 public class MovementSystem extends EntityProcessingSystem {
-    @Mapper ComponentMapper<Position> pm;
-    @Mapper ComponentMapper<Velocity> vm;
+    @Mapper
+    ComponentMapper<Position> positionMap;
+    @Mapper
+    ComponentMapper<Velocity> velocityMap;
 
     public MovementSystem() {
         super(Aspect.getAspectForAll(Position.class, Velocity.class));
     }
 
     @Override
-    protected void process(Entity e) {
-        Position position = pm.get(e);
-        Velocity velocity = vm.get(e);
+    protected void process(Entity entity) {
+        Position position = positionMap.get(entity);
+        Velocity velocity = velocityMap.get(entity);
 
         position.setX(position.getX() + velocity.getX() * world.getDelta());
         position.setY(position.getY() + velocity.getY() * world.getDelta());
 
-        Player player = e.getComponent(Player.class);
+        Player player = entity.getComponent(Player.class);
         if (player != null) {
-            Vector3 camVec = player.getCamera().position;
-            camVec.set(position.getX(), position.getY(), camVec.z);
+            Vector3 cameraVector = player.getCamera().position;
+            cameraVector.set(position.getX(), position.getY(), cameraVector.z);
         }
     }
 

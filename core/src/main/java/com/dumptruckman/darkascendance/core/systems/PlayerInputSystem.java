@@ -9,7 +9,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.components.Position;
@@ -17,37 +16,42 @@ import com.dumptruckman.darkascendance.core.components.Thrust;
 import com.dumptruckman.darkascendance.core.components.Velocity;
 
 public class PlayerInputSystem extends EntityProcessingSystem implements InputProcessor {
+
     private static final float THRUST_INC = 80f;
     private static final float ROTATION_SPEED = 80F;
     private static final float FireRate = 0.1f;
 
-    @Mapper ComponentMapper<Position> pm;
-    @Mapper ComponentMapper<Thrust> tm;
-    @Mapper ComponentMapper<Velocity> vm;
+    @Mapper
+    ComponentMapper<Position> positionMap;
+    @Mapper
+    ComponentMapper<Thrust> thrustMap;
+    @Mapper
+    ComponentMapper<Velocity> velocityMap;
 
-    private boolean up = false, down, left, right;
+    private boolean up = false;
+    private boolean down;
+    private boolean left;
+    private boolean right;
     private boolean shoot;
     private float timeToFire;
 
-    private OrthographicCamera camera;
     private Vector3 mouseVector;
 
-    public PlayerInputSystem() {//OrthographicCamera camera) {
+    public PlayerInputSystem() {
         super(Aspect.getAspectForAll(Position.class, Thrust.class, Player.class, Velocity.class));
-        this.camera = camera;
         this.mouseVector = new Vector3();
     }
 
     @Override
     protected void initialize() {
-            Gdx.input.setInputProcessor(this);
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
-    protected void process(Entity e) {
-        Position position = pm.get(e);
-        Thrust thrust = tm.get(e);
-        Velocity velocity = vm.get(e);
+    protected void process(Entity entity) {
+        Position position = positionMap.get(entity);
+        Thrust thrust = thrustMap.get(entity);
+        Velocity velocity = velocityMap.get(entity);
 
         mouseVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 
@@ -83,64 +87,58 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
 
     @Override
     public boolean keyDown(int keycode) {
-            if(keycode == Input.Keys.A) {
-                    left = true;
-            }
-            else if(keycode == Input.Keys.D) {
-                    right = true;
-            }
-            else if(keycode == Input.Keys.W) {
-                    up = true;
-            }
-            else if(keycode == Input.Keys.S) {
-                    down = true;
-            }
+        if(keycode == Input.Keys.A) {
+            left = true;
+        } else if(keycode == Input.Keys.D) {
+            right = true;
+        } else if(keycode == Input.Keys.W) {
+            up = true;
+        } else if(keycode == Input.Keys.S) {
+            down = true;
+        }
 
-            return true;
+        return true;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-            if(keycode == Input.Keys.A) {
-                    left = false;
-            }
-            else if(keycode == Input.Keys.D) {
-                    right = false;
-            }
-            else if(keycode == Input.Keys.W) {
-                    up = false;
-            }
-            else if(keycode == Input.Keys.S) {
-                    down = false;
-            }
+        if(keycode == Input.Keys.A) {
+            left = false;
+        } else if(keycode == Input.Keys.D) {
+            right = false;
+        } else if(keycode == Input.Keys.W) {
+            up = false;
+        } else if(keycode == Input.Keys.S) {
+            down = false;
+        }
 
-            return true;
+        return true;
     }
 
     @Override
     public boolean keyTyped(char character) {
-            return false;
+        return false;
     }
 
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
-            if(button == Input.Buttons.LEFT) {
-                    shoot = true;
-            }
-            return false;
+        if(button == Input.Buttons.LEFT) {
+            shoot = true;
+        }
+        return false;
     }
 
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
-            if(button == Input.Buttons.LEFT) {
-                    shoot = false;
-            }
-            return true;
+        if(button == Input.Buttons.LEFT) {
+            shoot = false;
+        }
+        return true;
     }
 
     @Override
     public boolean touchDragged(int x, int y, int pointer) {
-            return false;
+        return false;
     }
 
     @Override
@@ -150,7 +148,7 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
 
     @Override
     public boolean scrolled(int amount) {
-            return false;
+        return false;
     }
 
 }
