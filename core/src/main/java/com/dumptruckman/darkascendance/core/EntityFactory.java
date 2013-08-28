@@ -5,7 +5,6 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.components.Position;
-import com.dumptruckman.darkascendance.core.components.Rotation;
 import com.dumptruckman.darkascendance.core.components.SimpleTextureRegion;
 import com.dumptruckman.darkascendance.core.components.Thrust;
 import com.dumptruckman.darkascendance.core.components.Velocity;
@@ -29,7 +28,6 @@ public class EntityFactory {
         e.addComponent(new Player(camera));
         e.addComponent(new Velocity());
         e.addComponent(new Thrust());
-        e.addComponent(new Rotation());
 
         return e;
     }
