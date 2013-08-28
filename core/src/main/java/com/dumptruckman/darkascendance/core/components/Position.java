@@ -35,6 +35,9 @@ public class Position extends Component {
             r = wrapCounterClockwise(r);
         } else if (r < 0F) {
             r = wrapClockwise(r);
+            if (r == 360) {
+                r = 0;
+            }
         }
         this.rotation = r;
 
@@ -42,7 +45,7 @@ public class Position extends Component {
     }
 
     private float wrapCounterClockwise(float r) {
-        return (r % 360F) / 360F;
+        return r % 360F;
     }
 
     private float wrapClockwise(float r) {

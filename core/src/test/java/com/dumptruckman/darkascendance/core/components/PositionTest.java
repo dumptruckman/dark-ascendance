@@ -35,4 +35,34 @@ public class PositionTest {
         pos.attainRotation(97, changeAmount);
         assertEquals(97f, pos.getRotation() , 0.001);
     }
+
+    @Test
+    public void testRotation360ChangesTo0() {
+        Position position = new Position().setRotation(0);
+
+        position.setRotation(360);
+        assertEquals(0, position.getRotation(), 0.0001F);
+    }
+
+    @Test
+    public void testRotationWrapCCW() {
+        Position position = new Position().setRotation(0);
+
+        position.setRotation(720);
+        assertEquals(0, position.getRotation(), 0.0001F);
+
+        position.setRotation(765);
+        assertEquals(45, position.getRotation(), 0.0001F);
+    }
+
+    @Test
+    public void testRotationWrapCW() {
+        Position position = new Position().setRotation(0);
+
+        position.setRotation(-360);
+        assertEquals(0, position.getRotation(), 0.0001F);
+
+        position.setRotation(-405);
+        assertEquals(315, position.getRotation(), 0.0001F);
+    }
 }
