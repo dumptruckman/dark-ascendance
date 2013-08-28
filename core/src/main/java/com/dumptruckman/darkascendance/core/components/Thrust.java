@@ -17,11 +17,6 @@ public class Thrust extends Component {
         return this;
     }
 
-    private Thrust setThrust(float newThrust) {
-        thrust = MathUtils.clamp(newThrust, reverseAcceleration, acceleration);
-        return this;
-    }
-
     // TODO These acceleration methods need better names.
     public Thrust setAccelerationAmount(float accelerationAmount) {
         this.acceleration = accelerationAmount;
