@@ -11,8 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.dumptruckman.darkascendance.core.components.Graphics;
 import com.dumptruckman.darkascendance.core.components.Position;
-import com.dumptruckman.darkascendance.core.components.SimpleTextureRegion;
 import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.graphics.Textures;
 
@@ -60,7 +60,7 @@ public class TextureRenderingSystem extends EntitySystem {
     @Mapper
     ComponentMapper<Position> positionMap;
     @Mapper
-    ComponentMapper<SimpleTextureRegion> textureMap;
+    ComponentMapper<Graphics> textureMap;
 
     private SpriteBatch batch;
     private List<Entity> sortedEntities;
@@ -70,7 +70,7 @@ public class TextureRenderingSystem extends EntitySystem {
     private TextureRegion backgroundTexture = TextureFactory.getBackground().getTexture(Textures.STAR_FIELD);
 
     public TextureRenderingSystem(OrthographicCamera camera) {
-        super(Aspect.getAspectForAll(Position.class, SimpleTextureRegion.class));
+        super(Aspect.getAspectForAll(Position.class, Graphics.class));
         this.camera = camera;
     }
 
@@ -156,8 +156,8 @@ public class TextureRenderingSystem extends EntitySystem {
         Collections.sort(sortedEntities, new Comparator<Entity>() {
             @Override
             public int compare(Entity e1, Entity e2) {
-                SimpleTextureRegion s1 = textureMap.get(e1);
-                SimpleTextureRegion s2 = textureMap.get(e2);
+                Graphics s1 = textureMap.get(e1);
+                Graphics s2 = textureMap.get(e2);
                 return s1.renderLayer.compareTo(s2.renderLayer);
             }
         });
