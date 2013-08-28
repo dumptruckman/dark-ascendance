@@ -33,11 +33,11 @@ public class ThrustSystem extends EntityProcessingSystem {
     }
 
     static void processThrust(Thrust thrust, Velocity velocity, Position position, float delta) {
-        if (thrust.getThrust() == 0F) {
+        if (thrust.getCurrentThrust() == 0F) {
             return;
         }
 
-        float deltaThrust = delta * thrust.getThrust();
+        float deltaThrust = delta * thrust.getCurrentThrust();
         float r = MathUtils.degreesToRadians * position.getRotation();
 
         velocity.addToX(deltaThrust * -(float)MathUtils.sin(r));

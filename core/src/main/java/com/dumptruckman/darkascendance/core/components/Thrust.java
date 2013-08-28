@@ -1,30 +1,32 @@
 package com.dumptruckman.darkascendance.core.components;
 
 import com.artemis.Component;
-import com.badlogic.gdx.math.MathUtils;
 
 public class Thrust extends Component {
-    private float thrust = 0f;
-    private float acceleration = 80f;
-    private float reverseAcceleration = 0f;
+    private float currentThrust = 0f;
+    private float thrustAmount = 80f;
+    private float reverseThrustAmount = 0f;
 
-    public float getThrust() {
-        return thrust;
+    public float getCurrentThrust() {
+        return currentThrust;
     }
 
     public Thrust setThrustPercent(float percent) {
-        thrust = acceleration * percent;
+        if (percent >= 0) {
+            currentThrust = thrustAmount * percent;
+        } else {
+            currentThrust = reverseThrustAmount * percent;
+        }
         return this;
     }
 
-    // TODO These acceleration methods need better names.
-    public Thrust setAccelerationAmount(float accelerationAmount) {
-        this.acceleration = accelerationAmount;
+    public Thrust setThrustAmount(float accelerationAmount) {
+        this.thrustAmount = accelerationAmount;
         return this;
     }
 
-    public Thrust setReverseAccelerationAmount(float accelerationAmount) {
-        this.reverseAcceleration = accelerationAmount;
+    public Thrust setReverseThrustAmount(float accelerationAmount) {
+        this.reverseThrustAmount = accelerationAmount;
         return this;
     }
 }

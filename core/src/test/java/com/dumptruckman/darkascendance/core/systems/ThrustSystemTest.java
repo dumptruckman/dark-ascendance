@@ -17,7 +17,7 @@ public class ThrustSystemTest {
     @Before
     public void setUp() {
         velocity = new Velocity().setMaxX(300F).setMaxY(300F);
-        thrust = new Thrust().setAccelerationAmount(50F).setThrustPercent(1F);
+        thrust = new Thrust().setThrustAmount(50F).setThrustPercent(1F);
         position = new Position();
     }
 
@@ -116,7 +116,7 @@ public class ThrustSystemTest {
     public void testThrustUpHalfThrustHalfDelta() {
         position.setRotation(0F);
         velocity.setX(0).setY(0);
-        thrust.setAccelerationAmount(40).setThrustPercent(.5F);
+        thrust.setThrustAmount(40).setThrustPercent(.5F);
         ThrustSystem.processThrust(thrust, velocity, position, .5F);
         assertEquals(10F, velocity.getY(), 0.0001F);
         assertEquals(0F, velocity.getX(), 0.0001F);
