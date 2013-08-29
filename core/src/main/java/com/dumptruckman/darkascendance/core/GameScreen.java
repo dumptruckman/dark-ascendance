@@ -10,12 +10,11 @@ import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
 import com.dumptruckman.darkascendance.network.Test;
-import com.dumptruckman.darkascendance.network.client.GameClient;
 import com.dumptruckman.darkascendance.util.TickRateController;
 
-import java.io.IOException;
+import java.util.Observable;
 
-public class GameScreen implements Screen {
+public class GameScreen extends Observable implements Screen {
 
     private GameLogic gameLogic;
     private TextureRenderingSystem textureRenderingSystem;
@@ -23,8 +22,6 @@ public class GameScreen implements Screen {
     private EntityFactory entityFactory;
     private OrthographicCamera camera;
     private TickRateController tickRateController = new TickRateController(GameLogic.TICK_LENGTH_MILLIS);
-
-    private GameClient gameClient;
 
     FPSLogger fpsLogger = new FPSLogger();
 
@@ -43,13 +40,6 @@ public class GameScreen implements Screen {
         entityFactory = new EntityFactory(TextureFactory.getMainTexturePack());
 
         entityFactory.createBasicShip(world, camera).addToWorld();
-
-        gameClient = new GameClient(8080);
-        try {
-            gameClient.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -65,7 +55,8 @@ public class GameScreen implements Screen {
         if (tickRateController.hasTickElapsed()) {
             gameLogic.processTick(tickRateController.getDelta());
             tickRateController.prepareForNextTick();
-            gameClient.sendMessage(new Test().setMessage("Tick"));
+            notifyObservers(new Test().setMessage("Tick"));
+            setChanged();
         } else {
             gameLogic.interpolate();
         }

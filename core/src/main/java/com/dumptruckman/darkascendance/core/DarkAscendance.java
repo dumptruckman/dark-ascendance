@@ -1,6 +1,7 @@
 package com.dumptruckman.darkascendance.core;
 
 import com.badlogic.gdx.Game;
+import com.dumptruckman.darkascendance.network.client.GameClient;
 import com.dumptruckman.darkascendance.network.server.GameServer;
 import com.dumptruckman.darkascendance.util.GameSettings;
 
@@ -21,7 +22,12 @@ public class DarkAscendance extends Game {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        GameScreen gameScreen = new GameScreen(gameSettings.getScreenWidth(), gameSettings.getScreenHeight());
-        setScreen(gameScreen);
+        GameClient gameClient = new GameClient(gameSettings, 8080);
+        try {
+            gameClient.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        setScreen(gameClient.getGameScreen());
     }
 }
