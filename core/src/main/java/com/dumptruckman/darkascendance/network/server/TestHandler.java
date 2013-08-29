@@ -1,18 +1,13 @@
 package com.dumptruckman.darkascendance.network.server;
 
-import com.dumptruckman.darkascendance.network.protos.DarkAscendanceProtos.Test;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.ReferenceCountUtil;
+import com.dumptruckman.darkascendance.network.Test;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 
-public class TestHandler extends SimpleChannelInboundHandler<Test> {
+public class TestHandler extends Listener {
 
     @Override
-    protected void channelRead0(final ChannelHandlerContext ctx, final Test msg) throws Exception {
-        try {
-            System.out.println("received: " + msg.getTestMessage());
-        } finally {
-            ReferenceCountUtil.release(msg);
-        }
+    public void received(final Connection connection, final Object o) {
+        System.out.println(((Test) o).getMessage());
     }
 }

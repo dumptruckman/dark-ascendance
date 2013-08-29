@@ -1,45 +1,27 @@
 package com.dumptruckman.darkascendance.network.client;
 
-import com.dumptruckman.darkascendance.network.Connection;
-import com.dumptruckman.darkascendance.network.PipelineConfigurator;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
+import com.dumptruckman.darkascendance.network.KryoNetwork;
+import com.esotericsoftware.kryonet.Client;
 
-public class GameClient extends Connection {
+import java.io.IOException;
 
-    public void run() {
-        String host = "127.0.0.1";
-        int port = 8080;
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+public class GameClient extends KryoNetwork {
 
-        try {
-            Bootstrap b = new Bootstrap(); // (1)
-            b.group(workerGroup); // (2)
-            b.channel(NioSocketChannel.class); // (3)
-            b.option(ChannelOption.SO_KEEPALIVE, true); // (4)
-            b.handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                public void initChannel(SocketChannel ch) throws Exception {
-                    PipelineConfigurator pipelineConfigurator = new PipelineConfigurator(ch.pipeline());
-                    pipelineConfigurator.configureDecodersAndEncoders();
-                    ch.pipeline().addLast(new GameClientHandler());
-                }
-            });
+    private int tcpPort;
+    private Client client;
 
-            // Start the client.
-            channelFuture = b.connect(host, port).sync(); // (5)
+    public GameClient(int tcpPort) {
+        this.tcpPort = tcpPort;
+        this.client = new Client();
+        initializeSerializables(client.getKryo());
+    }
 
-            // Wait until the connection is closed.
-            channelFuture.channel().closeFuture().sync();
-        } catch(InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            workerGroup.shutdownGracefully();
-        }
+    public void start() throws IOException {
+        client.start();
+        client.connect(5000, "127.0.0.1", tcpPort);
+    }
+
+    public void sendMessage(Object message) {
+        client.sendTCP(message);
     }
 }
