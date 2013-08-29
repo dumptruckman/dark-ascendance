@@ -10,6 +10,9 @@ public class DarkAscendanceDesktop {
     public static void main (String[] args) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.useGL20 = true;
+        config.vSyncEnabled = false;
+        config.foregroundFPS = 3000;
+        config.backgroundFPS = 3000;
         GameSettings gameSettings = new GameSettings(config.width, config.height);
         new LwjglApplication(new DarkAscendance(gameSettings), config);
     }
