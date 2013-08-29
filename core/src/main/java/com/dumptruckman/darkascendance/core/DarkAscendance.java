@@ -28,6 +28,6 @@ public class DarkAscendance extends Game {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setScreen(gameClient.getGameScreen());
+        setScreen(gameClient.getScreen());
     }
 }

@@ -1,4 +1,4 @@
-package com.dumptruckman.darkascendance.core;
+package com.dumptruckman.darkascendance.network.client;
 
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -6,10 +6,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.dumptruckman.darkascendance.core.EntityFactory;
+import com.dumptruckman.darkascendance.core.GameLogic;
 import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
 
-public class GameScreen extends GameLogic implements Screen {
+public class ClientLogicLoop extends GameLogic implements Screen {
 
     private TextureRenderingSystem textureRenderingSystem;
     private PlayerInputSystem playerInputSystem;
@@ -18,7 +20,7 @@ public class GameScreen extends GameLogic implements Screen {
 
     FPSLogger fpsLogger = new FPSLogger();
 
-    public GameScreen(float screenWidth, float screenHeight) {
+    public ClientLogicLoop(float screenWidth, float screenHeight) {
         super(new World(), true);
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
 
