@@ -11,6 +11,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class GameServer extends Thread {
 
+    ServerLogicThread serverLogicThread;
+
     private int port;
 
     public GameServer(int port) {
@@ -18,8 +20,7 @@ public class GameServer extends Thread {
     }
 
     public void run() {
-
-
+        serverLogicThread = new ServerLogicThread();
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
         EventLoopGroup workerGroup = new NioEventLoopGroup();

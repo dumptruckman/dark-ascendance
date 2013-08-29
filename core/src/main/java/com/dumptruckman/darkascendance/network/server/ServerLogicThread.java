@@ -2,7 +2,7 @@ package com.dumptruckman.darkascendance.network.server;
 
 import com.dumptruckman.darkascendance.util.TickRateController;
 
-public class GameThread extends Thread {
+public class ServerLogicThread extends Thread {
 
     public static final long TICK_LENGTH_MILLIS = 15L;
 
