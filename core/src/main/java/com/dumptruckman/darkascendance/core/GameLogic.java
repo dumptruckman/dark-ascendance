@@ -3,12 +3,10 @@ package com.dumptruckman.darkascendance.core;
 import com.artemis.World;
 import com.dumptruckman.darkascendance.core.systems.AccelerationSystem;
 import com.dumptruckman.darkascendance.core.systems.MovementSystem;
-import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
-import com.dumptruckman.darkascendance.util.TickRateController;
 
 public class GameLogic {
 
-
+    private static final float MILLIS_IN_SECOND = 1000F;
 
     public static final long TICK_LENGTH_MILLIS = 15L;
 
@@ -41,7 +39,8 @@ public class GameLogic {
         world.setSystem(movementSystem);
     }
 
-    public void processTick() {
+    public void processTick(long tickDelta) {
+        world.setDelta(((float) tickDelta) / MILLIS_IN_SECOND);
         world.process();
     }
 

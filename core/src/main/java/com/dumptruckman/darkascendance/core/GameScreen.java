@@ -20,6 +20,8 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private TickRateController tickRateController = new TickRateController(GameLogic.TICK_LENGTH_MILLIS);
 
+    FPSLogger fpsLogger = new FPSLogger();
+
     public GameScreen(float screenWidth, float screenHeight) {
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
 
@@ -47,14 +49,15 @@ public class GameScreen implements Screen {
 
         playerInputSystem.process();
 
-        if (!tickRateController.isTooFast()) {
-            gameLogic.processTick();
+        if (tickRateController.hasTickElapsed()) {
+            gameLogic.processTick(tickRateController.getDelta());
             tickRateController.prepareForNextTick();
         } else {
             gameLogic.interpolate();
         }
 
         textureRenderingSystem.process();
+        fpsLogger.log();
     }
 
     @Override

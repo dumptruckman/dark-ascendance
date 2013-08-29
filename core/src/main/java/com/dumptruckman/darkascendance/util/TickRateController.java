@@ -13,10 +13,10 @@ public class TickRateController {
         this.tickLengthMillis = tickLengthMillis;
     }
 
-    public boolean isTooFast() {
+    public boolean hasTickElapsed() {
         long delta = getDelta();
         //System.out.println("delta: " + delta);
-        return delta > 0 && delta < tickLengthMillis;
+        return delta >= tickLengthMillis;
     }
 
     public long getDelta() {
@@ -29,7 +29,7 @@ public class TickRateController {
             return;
         }
 
-        if (isTooFast()) {
+        if (!hasTickElapsed()) {
             long delta = getDelta();
             // TODO temporary debug output
             System.out.println("waiting " + delta + " ms for next tick");

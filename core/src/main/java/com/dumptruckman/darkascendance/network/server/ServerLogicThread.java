@@ -10,8 +10,6 @@ public class ServerLogicThread extends Thread {
         new ServerLogicThread().run();
     }
 
-    private static final float NANOS_IN_SECOND = 1000000000F;
-
     private TickRateController tickRateController = new TickRateController(GameLogic.TICK_LENGTH_MILLIS);
     private GameLogic gameLogic;
 
@@ -26,8 +24,7 @@ public class ServerLogicThread extends Thread {
     public void run() {
         while (true) {
             waitForTickIfNecessary();
-            gameLogic.getWorld().setDelta(tickRateController.getDelta() / NANOS_IN_SECOND);
-            gameLogic.processTick();
+            gameLogic.processTick(tickRateController.getDelta());
         }
     }
 
