@@ -8,8 +8,8 @@ class ServerLogicLoop extends GameLogic implements Runnable {
     private volatile boolean readyForNetworking = false;
 
     public ServerLogicLoop() {
-        super(new World(), false);
-        intializeLogicSystems();
+        super(new World());
+        addLogicSystemsAndInitializeWorld();
     }
 
     @Override

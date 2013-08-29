@@ -11,23 +11,19 @@ import com.dumptruckman.darkascendance.core.graphics.Textures;
 
 public class EntityFactory {
 
-    private final TexturePack mainTexturePack;
-    private final World world;
+    private World world;
 
     EntityFactory(World world) {
-        this.mainTexturePack = TextureFactory.getMainTexturePack();
         this.world = world;
     }
 
-    public Entity createBasicShip(OrthographicCamera camera) {
-        Entity e = world.createEntity();
+    public Entity createBasicShip() {
+        Entity entity = world.createEntity();
 
-        e.addComponent(new Position());
-        e.addComponent(new Graphics(mainTexturePack.getTexture(Textures.BASIC_SHIP)));
-        e.addComponent(new Player(camera));
-        e.addComponent(new Velocity());
-        e.addComponent(new Thrusters());
+        entity.addComponent(new Position());
+        entity.addComponent(new Velocity());
+        entity.addComponent(new Thrusters());
 
-        return e;
+        return entity;
     }
 }
