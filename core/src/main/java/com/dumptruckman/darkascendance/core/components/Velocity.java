@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Velocity extends Component {
 
     Vector2 vector = new Vector2(0, 0);
-    private Vector2 max = new Vector2(60f, 60f);
+    private Vector2 max = new Vector2(200f, 200f);
 
     public float getRotationRequiredToReverseVelocity() {
         float x = -vector.x;
