@@ -15,10 +15,11 @@ public class TickRateController {
 
     public boolean isTooFast() {
         long delta = getDelta();
+        //System.out.println("delta: " + delta);
         return delta > 0 && delta < tickLengthMillis;
     }
 
-    private long getDelta() {
+    public long getDelta() {
         return (TimeUtils.nanoTime() - lastCycleTime) / NANOS_IN_MILLI;
     }
 

@@ -3,29 +3,31 @@ package com.dumptruckman.darkascendance.core;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
+import com.dumptruckman.darkascendance.util.TickRateController;
 
 public class GameScreen implements Screen {
 
     private GameLogic gameLogic;
     private TextureRenderingSystem textureRenderingSystem;
+    private PlayerInputSystem playerInputSystem;
     private EntityFactory entityFactory;
     private OrthographicCamera camera;
-    //private Rectangle glViewport;
+    private TickRateController tickRateController = new TickRateController(GameLogic.TICK_LENGTH_MILLIS);
 
     public GameScreen(float screenWidth, float screenHeight) {
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
-        //this.glViewport = new Rectangle(0, 0, screenWidth, screenHeight);
 
         World world = new World();
-        gameLogic = new GameLogic(world);
+        gameLogic = new GameLogic(world, true);
 
         textureRenderingSystem = world.setSystem(new TextureRenderingSystem(camera), true);
-        world.setSystem(new PlayerInputSystem());
+        playerInputSystem = world.setSystem(new PlayerInputSystem(), true);
         gameLogic.intializeLogicSystems();
 
         world.initialize();
@@ -41,9 +43,16 @@ public class GameScreen implements Screen {
 
         camera.update();
 
-        world.setDelta(delta);
+        gameLogic.getWorld().setDelta(delta);
 
-        world.process();
+        playerInputSystem.process();
+
+        if (!tickRateController.isTooFast()) {
+            gameLogic.processTick();
+            tickRateController.prepareForNextTick();
+        } else {
+            gameLogic.interpolate();
+        }
 
         textureRenderingSystem.process();
     }
