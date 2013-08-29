@@ -28,7 +28,7 @@ public class GameServer extends KryoNetwork {
     }
 
     public void startServerLogic() {
-        serverLogicLoop.start();
+        new Thread(serverLogicLoop).start();
         while (!serverLogicLoop.isReadyForNetworking()) { }
     }
 

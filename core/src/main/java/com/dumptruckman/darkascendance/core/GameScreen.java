@@ -6,38 +6,29 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
-import com.dumptruckman.darkascendance.network.Test;
-import com.dumptruckman.darkascendance.util.TickRateController;
 
-import java.util.Observable;
+public class GameScreen extends GameLogic implements Screen {
 
-public class GameScreen extends Observable implements Screen {
-
-    private GameLogic gameLogic;
     private TextureRenderingSystem textureRenderingSystem;
     private PlayerInputSystem playerInputSystem;
     private EntityFactory entityFactory;
     private OrthographicCamera camera;
-    private TickRateController tickRateController = new TickRateController(GameLogic.TICK_LENGTH_MILLIS);
 
     FPSLogger fpsLogger = new FPSLogger();
 
     public GameScreen(float screenWidth, float screenHeight) {
+        super(new World(), true);
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
 
-        World world = new World();
-        gameLogic = new GameLogic(world, true);
+        textureRenderingSystem = getWorld().setSystem(new TextureRenderingSystem(camera), true);
+        playerInputSystem = getWorld().setSystem(new PlayerInputSystem(), true);
+        intializeLogicSystems();
 
-        textureRenderingSystem = world.setSystem(new TextureRenderingSystem(camera), true);
-        playerInputSystem = world.setSystem(new PlayerInputSystem(), true);
-        gameLogic.intializeLogicSystems();
+        getWorld().initialize();
 
-        world.initialize();
-
-        entityFactory = new EntityFactory(world);
+        entityFactory = new EntityFactory(getWorld());
 
         entityFactory.createBasicShip(camera).addToWorld();
     }
@@ -48,17 +39,16 @@ public class GameScreen extends Observable implements Screen {
 
         camera.update();
 
-        gameLogic.getWorld().setDelta(delta);
+        getWorld().setDelta(delta);
 
         playerInputSystem.process();
 
-        if (tickRateController.hasTickElapsed()) {
-            gameLogic.processTick(tickRateController.getDelta());
-            tickRateController.prepareForNextTick();
-            notifyObservers(new Test().setMessage("Tick"));
+        if (hasTickElapsed()) {
+            processTick(getTickRateDelta());
+            prepareForNextTick();
             setChanged();
         } else {
-            gameLogic.interpolate();
+            interpolate();
         }
 
         textureRenderingSystem.process();

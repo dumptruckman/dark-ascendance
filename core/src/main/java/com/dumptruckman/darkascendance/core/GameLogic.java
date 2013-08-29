@@ -3,8 +3,11 @@ package com.dumptruckman.darkascendance.core;
 import com.artemis.World;
 import com.dumptruckman.darkascendance.core.systems.AccelerationSystem;
 import com.dumptruckman.darkascendance.core.systems.MovementSystem;
+import com.dumptruckman.darkascendance.util.TickRateController;
 
-public class GameLogic {
+import java.util.Observable;
+
+public class GameLogic extends Observable {
 
     private static final float MILLIS_IN_SECOND = 1000F;
 
@@ -14,27 +17,29 @@ public class GameLogic {
     private final AccelerationSystem accelerationSystem;
     private final MovementSystem movementSystem;
     private final boolean doInterpolation;
+    private final TickRateController tickRateController;
 
     public GameLogic(World world, boolean doInterpolation) {
         this.world = world;
         this.accelerationSystem = new AccelerationSystem();
         this.movementSystem = new MovementSystem();
         this.doInterpolation = doInterpolation;
+        this.tickRateController = new TickRateController(GameLogic.TICK_LENGTH_MILLIS);
     }
 
-    public World getWorld() {
+    protected World getWorld() {
         return world;
     }
 
-    public AccelerationSystem getAccelerationSystem() {
+    protected AccelerationSystem getAccelerationSystem() {
         return accelerationSystem;
     }
 
-    public MovementSystem getMovementSystem() {
+    protected MovementSystem getMovementSystem() {
         return movementSystem;
     }
 
-    public void intializeLogicSystems() {
+    protected void intializeLogicSystems() {
         world.setSystem(accelerationSystem);
         world.setSystem(movementSystem);
     }
@@ -44,7 +49,27 @@ public class GameLogic {
         world.process();
     }
 
-    public void interpolate() {
+    protected long getTickRateDelta() {
+        return tickRateController.getDelta();
+    }
+
+    protected void waitForTickIfNecessary() {
+        try {
+            tickRateController.waitForTickIfNecessary();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected boolean hasTickElapsed() {
+        return tickRateController.hasTickElapsed();
+    }
+
+    protected void prepareForNextTick() {
+        tickRateController.prepareForNextTick();
+    }
+
+    protected void interpolate() {
         if (doInterpolation) {
 
         }
