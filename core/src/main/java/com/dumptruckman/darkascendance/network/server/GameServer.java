@@ -6,8 +6,10 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
-public class GameServer extends KryoNetwork {
+public class GameServer extends KryoNetwork implements Observer {
 
     private int tcpPort;
     private Server server;
@@ -17,6 +19,7 @@ public class GameServer extends KryoNetwork {
         this.tcpPort = tcpPort;
         this.server = new Server();
         this.serverLogicLoop = new ServerLogicLoop();
+        serverLogicLoop.addObserver(this);
         initializeSerializables(server.getKryo());
         server.addListener(this);
     }
@@ -25,6 +28,11 @@ public class GameServer extends KryoNetwork {
         startServerLogic();
         server.start();
         server.bind(tcpPort);
+    }
+
+    @Override
+    public void update(final Observable o, final Object arg) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void startServerLogic() {
