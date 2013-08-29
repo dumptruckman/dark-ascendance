@@ -37,9 +37,9 @@ public class GameScreen extends Observable implements Screen {
 
         world.initialize();
 
-        entityFactory = new EntityFactory(TextureFactory.getMainTexturePack());
+        entityFactory = new EntityFactory(world);
 
-        entityFactory.createBasicShip(world, camera).addToWorld();
+        entityFactory.createBasicShip(camera).addToWorld();
     }
 
     @Override

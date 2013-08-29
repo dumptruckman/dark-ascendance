@@ -41,4 +41,8 @@ class ServerLogicLoop extends Thread {
     public boolean isReadyForNetworking() {
         return readyForNetworking;
     }
+
+    public void playerConnected(int connectionId) {
+
+    }
 }

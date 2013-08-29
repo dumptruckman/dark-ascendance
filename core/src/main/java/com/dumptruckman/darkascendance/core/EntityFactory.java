@@ -5,19 +5,21 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.dumptruckman.darkascendance.core.components.*;
 import com.dumptruckman.darkascendance.core.components.Graphics;
+import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.graphics.TexturePack;
 import com.dumptruckman.darkascendance.core.graphics.Textures;
 
 public class EntityFactory {
 
     private final TexturePack mainTexturePack;
+    private final World world;
 
-    EntityFactory(TexturePack mainTexturePack) {
-        this.mainTexturePack = mainTexturePack;
-
+    EntityFactory(World world) {
+        this.mainTexturePack = TextureFactory.getMainTexturePack();
+        this.world = world;
     }
 
-    public Entity createBasicShip(World world, OrthographicCamera camera) {
+    public Entity createBasicShip(OrthographicCamera camera) {
         Entity e = world.createEntity();
 
         e.addComponent(new Position());
