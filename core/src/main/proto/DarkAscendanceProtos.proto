@@ -1,0 +1,19 @@
+package com.dumptruckman.darkascendance.network.protos;
+
+message Message {
+    enum Type { Test = 1; Test2 = 2; }
+
+    required Type type = 1;
+
+    optional Test test = 2;
+    optional Test2 test = 2;
+}
+
+message Test {
+    required string testMessage = 1;
+}
+
+message Test2 {
+    required string testMessage = 1;
+    required string testMessage2 = 2;
+}

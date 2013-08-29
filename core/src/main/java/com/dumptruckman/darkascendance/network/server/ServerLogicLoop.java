@@ -4,27 +4,28 @@ import com.artemis.World;
 import com.dumptruckman.darkascendance.core.GameLogic;
 import com.dumptruckman.darkascendance.util.TickRateController;
 
-public class ServerLogicThread extends Thread {
-
-    public static void main(String[] args) {
-        new ServerLogicThread().run();
-    }
+class ServerLogicLoop extends Thread {
 
     private TickRateController tickRateController = new TickRateController(GameLogic.TICK_LENGTH_MILLIS);
     private GameLogic gameLogic;
 
-    public ServerLogicThread() {
+    private volatile boolean readyForNetworking = false;
+
+    public ServerLogicLoop() {
         World world = new World();
         gameLogic = new GameLogic(world, false);
 
         gameLogic.intializeLogicSystems();
     }
 
-    @Override
     public void run() {
         while (true) {
             waitForTickIfNecessary();
             gameLogic.processTick(tickRateController.getDelta());
+
+            if (!readyForNetworking) {
+                readyForNetworking = true;
+            }
         }
     }
 
@@ -37,4 +38,7 @@ public class ServerLogicThread extends Thread {
 
     }
 
+    public boolean isReadyForNetworking() {
+        return readyForNetworking;
+    }
 }

@@ -31,9 +31,10 @@ public class TickRateController {
 
         if (!hasTickElapsed()) {
             long delta = getDelta();
+            if (delta > 0) {
             // TODO temporary debug output
-            System.out.println("waiting " + delta + " ms for next tick");
-            Thread.sleep(delta);
+                Thread.sleep(delta);
+            }
         }
 
         prepareForNextTick();
