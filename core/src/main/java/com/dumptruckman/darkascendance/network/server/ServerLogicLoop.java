@@ -46,5 +46,6 @@ class ServerLogicLoop extends GameLogic implements Runnable {
         Entity entity = getEntityFactory().createBasicShip();
         setChanged();
         notifyObservers(Messages.createPlayerShip(connectionId, entity));
+        entity.addToWorld();
     }
 }
