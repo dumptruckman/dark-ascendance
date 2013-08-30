@@ -15,7 +15,6 @@ import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
 public class ClientLogicLoop extends GameLogic implements Screen {
 
     private TextureRenderingSystem textureRenderingSystem;
-    private PlayerInputSystem playerInputSystem;
     private OrthographicCamera camera;
     private ClientEntityConfigurator entityConfigurator;
 
@@ -28,7 +27,7 @@ public class ClientLogicLoop extends GameLogic implements Screen {
         enableInterpolation();
 
         textureRenderingSystem = getWorld().setSystem(new TextureRenderingSystem(camera), true);
-        playerInputSystem = getWorld().setSystem(new PlayerInputSystem(), true);
+        getWorld().setSystem(new PlayerInputSystem());
         addLogicSystemsAndInitializeWorld();
 
         Entity basicShip = getEntityFactory().createBasicShip();
@@ -43,8 +42,6 @@ public class ClientLogicLoop extends GameLogic implements Screen {
         camera.update();
 
         getWorld().setDelta(delta);
-
-        playerInputSystem.process();
 
         if (hasTickElapsed()) {
             processTick(getTickRateDelta());
