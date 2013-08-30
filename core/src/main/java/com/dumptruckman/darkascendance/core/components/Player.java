@@ -14,4 +14,6 @@ public class Player extends Component {
     public OrthographicCamera getCamera() {
         return camera;
     }
+
+
 }

@@ -23,6 +23,7 @@ public class EntityFactory {
         entity.addComponent(new Position());
         entity.addComponent(new Velocity());
         entity.addComponent(new Thrusters());
+        entity.addComponent(new Controls());
 
         return entity;
     }

@@ -4,28 +4,21 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
-import com.artemis.systems.EntityProcessingSystem;
+import com.artemis.systems.IntervalEntityProcessingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
+import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
 
-public class PlayerInputSystem extends EntityProcessingSystem implements InputProcessor {
-
-    private static final float THRUST_INC = 80f;
-    private static final float ROTATION_SPEED = 80F;
-    private static final float FireRate = 0.1f;
+public class PlayerInputSystem extends IntervalEntityProcessingSystem implements InputProcessor {
 
     @Mapper
-    ComponentMapper<Position> positionMap;
-    @Mapper
-    ComponentMapper<Thrusters> thrustMap;
-    @Mapper
-    ComponentMapper<Velocity> velocityMap;
+    ComponentMapper<Controls> controlsMap;
 
     private boolean up = false;
     private boolean down;
@@ -36,8 +29,8 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
 
     private Vector3 mouseVector;
 
-    public PlayerInputSystem() {
-        super(Aspect.getAspectForAll(Position.class, Player.class, Velocity.class));
+    public PlayerInputSystem(float rate) {
+        super(Aspect.getAspectForAll(Player.class, Controls.class), rate);
         this.mouseVector = new Vector3();
     }
 
@@ -48,29 +41,16 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
 
     @Override
     protected void process(Entity entity) {
-        Position position = positionMap.get(entity);
-        Velocity velocity = velocityMap.get(entity);
-        Thrusters thrusters = thrustMap.getSafe(entity);
+        Controls controls = controlsMap.get(entity);
 
         mouseVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 
-        if (thrusters != null) {
-            if(up) {
-                thrusters.setThrustLevel(1F);
-            } else {
-                thrusters.setThrustLevel(0F);
-            }
-        }
-        if(down) {
-            position.attainRotation(velocity.getRotationRequiredToReverseVelocity(), (world.getDelta() * ROTATION_SPEED));
-        }
-        if(left) {
-            position.setRotation(position.getRotation() + (world.getDelta() * ROTATION_SPEED));
-        }
-        if(right) {
-            position.setRotation(position.getRotation() - (world.getDelta() * ROTATION_SPEED));
-        }
+        controls.up = up;
+        controls.down = down;
+        controls.left = left;
+        controls.right = right;
 
+        /*
         if(shoot) {
             if(timeToFire <= 0) {
                 //EntityFactory.createPlayerBullet(world, position.x - 27, position.y + 2).addToWorld();
@@ -84,6 +64,7 @@ public class PlayerInputSystem extends EntityProcessingSystem implements InputPr
                 timeToFire = 0;
             }
         }
+        */
     }
 
     @Override

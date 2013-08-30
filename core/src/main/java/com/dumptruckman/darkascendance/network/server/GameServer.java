@@ -47,6 +47,6 @@ public class GameServer extends KryoNetwork implements Observer {
 
     @Override
     public void received(final Connection connection, final Object o) {
-        System.out.println(((Test) o).getMessage());
+        //System.out.println(((Test) o).getMessage());
     }
 }

@@ -4,20 +4,21 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
-import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.math.Vector3;
+import com.dumptruckman.darkascendance.core.IntervalEntityProcessingSystem;
 import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Velocity;
 
-public class MovementSystem extends EntityProcessingSystem {
+public class MovementSystem extends IntervalEntityProcessingSystem {
+
     @Mapper
     ComponentMapper<Position> positionMap;
     @Mapper
     ComponentMapper<Velocity> velocityMap;
 
-    public MovementSystem() {
-        super(Aspect.getAspectForAll(Position.class, Velocity.class));
+    public MovementSystem(float interval) {
+        super(Aspect.getAspectForAll(Position.class, Velocity.class), interval);
     }
 
     @Override
@@ -26,7 +27,7 @@ public class MovementSystem extends EntityProcessingSystem {
         Velocity velocity = velocityMap.get(entity);
         Player player = entity.getComponent(Player.class);
 
-        processMovement(position, velocity, player, world.getDelta());
+        processMovement(position, velocity, player, interval);
     }
 
     static void processMovement(Position position, Velocity velocity, Player player, float delta) {

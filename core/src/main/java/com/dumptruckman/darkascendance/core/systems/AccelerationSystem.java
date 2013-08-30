@@ -4,13 +4,13 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
-import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.math.MathUtils;
+import com.dumptruckman.darkascendance.core.IntervalEntityProcessingSystem;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
 
-public class AccelerationSystem extends EntityProcessingSystem {
+public class AccelerationSystem extends IntervalEntityProcessingSystem {
 
     @Mapper
     ComponentMapper<Thrusters> thrustMap;
@@ -19,8 +19,8 @@ public class AccelerationSystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<Position> positionMap;
 
-    public AccelerationSystem() {
-        super(Aspect.getAspectForAll(Velocity.class, Position.class));
+    public AccelerationSystem(float interval) {
+        super(Aspect.getAspectForAll(Velocity.class, Position.class), interval);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class AccelerationSystem extends EntityProcessingSystem {
 
         float totalForwardAcceleration = 0F;
         totalForwardAcceleration += getThrustersAcceleration(thrusters);
-        totalForwardAcceleration = modifyAccelerationByDelta(totalForwardAcceleration, world.getDelta());
+        totalForwardAcceleration = modifyAccelerationByDelta(totalForwardAcceleration, interval);
 
         float facingAngleRadians = MathUtils.degreesToRadians * position.getRotation();
 
@@ -55,7 +55,7 @@ public class AccelerationSystem extends EntityProcessingSystem {
             return;
         }
 
-        velocity.addToX(acceleration * -(float)MathUtils.sin(facingAngleRadians));
-        velocity.addToY(acceleration * (float)MathUtils.cos(facingAngleRadians));
+        velocity.addToX(acceleration * -(float) MathUtils.sin(facingAngleRadians));
+        velocity.addToY(acceleration * (float) MathUtils.cos(facingAngleRadians));
     }
 }

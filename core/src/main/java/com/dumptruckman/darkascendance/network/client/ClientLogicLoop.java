@@ -27,7 +27,7 @@ public class ClientLogicLoop extends GameLogic implements Screen {
         enableInterpolation();
 
         textureRenderingSystem = getWorld().setSystem(new TextureRenderingSystem(camera), true);
-        getWorld().setSystem(new PlayerInputSystem());
+        getWorld().setSystem(new PlayerInputSystem(TICK_LENGTH_SECONDS));
         addLogicSystemsAndInitializeWorld();
 
         Entity basicShip = getEntityFactory().createBasicShip();
@@ -41,15 +41,7 @@ public class ClientLogicLoop extends GameLogic implements Screen {
 
         camera.update();
 
-        getWorld().setDelta(delta);
-
-        if (hasTickElapsed()) {
-            processTick(getTickRateDelta());
-            prepareForNextTick();
-            setChanged();
-        } else {
-            interpolate();
-        }
+        processGameLogic(delta);
 
         textureRenderingSystem.process();
         fpsLogger.log();
