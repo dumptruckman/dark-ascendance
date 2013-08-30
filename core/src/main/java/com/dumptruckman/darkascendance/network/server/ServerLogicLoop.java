@@ -1,8 +1,10 @@
 package com.dumptruckman.darkascendance.network.server;
 
+import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.dumptruckman.darkascendance.core.GameLogic;
+import com.dumptruckman.darkascendance.network.messages.Messages;
 
 class ServerLogicLoop extends GameLogic implements Runnable {
 
@@ -41,6 +43,8 @@ class ServerLogicLoop extends GameLogic implements Runnable {
     }
 
     public void playerConnected(int connectionId) {
-
+        Entity entity = getEntityFactory().createBasicShip();
+        setChanged();
+        notifyObservers(Messages.createPlayerShip(connectionId, entity));
     }
 }

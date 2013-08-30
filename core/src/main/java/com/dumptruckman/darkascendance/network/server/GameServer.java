@@ -1,7 +1,7 @@
 package com.dumptruckman.darkascendance.network.server;
 
 import com.dumptruckman.darkascendance.network.KryoNetwork;
-import com.dumptruckman.darkascendance.network.Test;
+import com.dumptruckman.darkascendance.network.messages.Message;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
@@ -31,8 +31,12 @@ public class GameServer extends KryoNetwork implements Observer {
     }
 
     @Override
-    public void update(final Observable o, final Object arg) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void update(Observable o, Object arg) {
+        if (arg instanceof Message) {
+            Message message = (Message) arg;
+            server.sendToTCP(message.getConnectionId(), message);
+            System.out.println("sent create ship message to " + message.getConnectionId());
+        }
     }
 
     public void startServerLogic() {
@@ -42,6 +46,8 @@ public class GameServer extends KryoNetwork implements Observer {
 
     @Override
     public void connected(final Connection connection) {
+        System.out.println("Player connected: " + connection);
+        connection.sendTCP("Hey");
         serverLogicLoop.playerConnected(connection.getID());
     }
 

@@ -11,6 +11,7 @@ import com.dumptruckman.darkascendance.core.GameLogic;
 import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
+import com.dumptruckman.darkascendance.network.NetworkEntity;
 
 public class ClientLogicLoop extends GameLogic implements Screen {
 
@@ -23,16 +24,12 @@ public class ClientLogicLoop extends GameLogic implements Screen {
     public ClientLogicLoop(float screenWidth, float screenHeight) {
         super(new World());
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
-        this.entityConfigurator = new ClientEntityConfigurator(new TextureFactory());
+        this.entityConfigurator = new ClientEntityConfigurator(getWorld(), new TextureFactory());
         enableInterpolation();
 
         textureRenderingSystem = getWorld().setSystem(new TextureRenderingSystem(camera), true);
         getWorld().setSystem(new PlayerInputSystem(TICK_LENGTH_SECONDS));
         addLogicSystemsAndInitializeWorld();
-
-        Entity basicShip = getEntityFactory().createBasicShip();
-        entityConfigurator.setupPlayerShip(basicShip, camera);
-        basicShip.addToWorld();
     }
 
     @Override
@@ -45,6 +42,10 @@ public class ClientLogicLoop extends GameLogic implements Screen {
 
         textureRenderingSystem.process();
         fpsLogger.log();
+    }
+
+    public void addPlayerShipToWorld(NetworkEntity networkEntity) {
+        entityConfigurator.setupPlayerShip(networkEntity, camera).addToWorld();
     }
 
     @Override
