@@ -4,6 +4,8 @@ import com.dumptruckman.darkascendance.network.KryoNetwork;
 import com.dumptruckman.darkascendance.network.NetworkEntity;
 import com.dumptruckman.darkascendance.network.messages.EntityMessage;
 import com.dumptruckman.darkascendance.network.messages.Message;
+import com.dumptruckman.darkascendance.network.systems.CommandSendSystem;
+import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
 import com.dumptruckman.darkascendance.util.GameSettings;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -14,6 +16,8 @@ import java.util.Observer;
 
 public class GameClient extends KryoNetwork implements Observer {
 
+    private static final float COMMAND_RATE = 0.050F;
+
     private int tcpPort;
     private Client client;
     private ClientLogicLoop clientLogicLoop;
@@ -22,8 +26,12 @@ public class GameClient extends KryoNetwork implements Observer {
         this.tcpPort = tcpPort;
         client = new Client();
         client.addListener(this);
-        clientLogicLoop = new ClientLogicLoop(gameSettings.getScreenWidth(), gameSettings.getScreenHeight());
+
+        NetworkSystemInjector networkSystemInjector = new NetworkSystemInjector(this);
+        networkSystemInjector.addSystem(new CommandSendSystem(this, COMMAND_RATE));
+        clientLogicLoop = new ClientLogicLoop(networkSystemInjector, gameSettings.getScreenWidth(), gameSettings.getScreenHeight());
         clientLogicLoop.addObserver(this);
+
         initializeSerializables(client.getKryo());
     }
 
@@ -37,22 +45,17 @@ public class GameClient extends KryoNetwork implements Observer {
     }
 
     @Override
-    public void update(final Observable o, final Object arg) {
-    }
-
-    private void sendMessage(Object message) {
+    public void sendMessage(final int connectionId, final Message message) {
+        client.sendTCP(message);
     }
 
     @Override
-    public void received(final Connection connection, final Object o) {
-        if (o instanceof Message) {
-            Message message = (Message) o;
-            switch (message.getMessageType()) {
-                case CREATE_PLAYER_SHIP:
-                    EntityMessage entityMessage = (EntityMessage) message;
-                    getScreen().addPlayerShipToWorld(entityMessage.getNetworkEntity());
-                    break;
-            }
+    public void handleMessage(int connectionId, Message message) {
+        switch (message.getMessageType()) {
+            case CREATE_PLAYER_SHIP:
+                EntityMessage entityMessage = (EntityMessage) message;
+                getScreen().addPlayerShipToWorld(entityMessage.getNetworkEntity());
+                break;
         }
     }
 }

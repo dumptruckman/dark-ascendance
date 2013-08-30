@@ -1,7 +1,11 @@
 package com.dumptruckman.darkascendance.network.server;
 
+import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.network.KryoNetwork;
+import com.dumptruckman.darkascendance.network.messages.ComponentMessage;
+import com.dumptruckman.darkascendance.network.messages.EntityMessage;
 import com.dumptruckman.darkascendance.network.messages.Message;
+import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
@@ -9,7 +13,7 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-public class GameServer extends KryoNetwork implements Observer {
+public class GameServer extends KryoNetwork {
 
     private int tcpPort;
     private Server server;
@@ -18,7 +22,11 @@ public class GameServer extends KryoNetwork implements Observer {
     public GameServer(int tcpPort) {
         this.tcpPort = tcpPort;
         this.server = new Server();
-        this.serverLogicLoop = new ServerLogicLoop();
+
+        NetworkSystemInjector networkSystemInjector = new NetworkSystemInjector(this);
+
+        this.serverLogicLoop = new ServerLogicLoop(networkSystemInjector);
+
         serverLogicLoop.addObserver(this);
         initializeSerializables(server.getKryo());
         server.addListener(this);
@@ -31,12 +39,8 @@ public class GameServer extends KryoNetwork implements Observer {
     }
 
     @Override
-    public void update(Observable o, Object arg) {
-        if (arg instanceof Message) {
-            Message message = (Message) arg;
-            server.sendToTCP(message.getConnectionId(), message);
-            System.out.println("sent create ship message to " + message.getConnectionId());
-        }
+    public void sendMessage(final int connectionId, final Message message) {
+        server.sendToTCP(connectionId, message);
     }
 
     public void startServerLogic() {
@@ -52,7 +56,12 @@ public class GameServer extends KryoNetwork implements Observer {
     }
 
     @Override
-    public void received(final Connection connection, final Object o) {
-        //System.out.println(((Test) o).getMessage());
+    public void handleMessage(int connectionId, Message message) {
+        switch (message.getMessageType()) {
+            case PLAYER_INPUT_STATE:
+                ComponentMessage entityMessage = (ComponentMessage) message;
+                serverLogicLoop.updatePlayerControls((Controls) entityMessage.getComponent());
+                break;
+        }
     }
 }

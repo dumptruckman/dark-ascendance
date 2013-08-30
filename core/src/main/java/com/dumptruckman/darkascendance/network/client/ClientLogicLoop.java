@@ -1,6 +1,5 @@
 package com.dumptruckman.darkascendance.network.client;
 
-import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,6 +11,7 @@ import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
 import com.dumptruckman.darkascendance.network.NetworkEntity;
+import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
 
 public class ClientLogicLoop extends GameLogic implements Screen {
 
@@ -21,7 +21,7 @@ public class ClientLogicLoop extends GameLogic implements Screen {
 
     FPSLogger fpsLogger = new FPSLogger();
 
-    public ClientLogicLoop(float screenWidth, float screenHeight) {
+    public ClientLogicLoop(NetworkSystemInjector networkSystemInjector, float screenWidth, float screenHeight) {
         super(new World());
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
         this.entityConfigurator = new ClientEntityConfigurator(getWorld(), new TextureFactory());
@@ -29,7 +29,9 @@ public class ClientLogicLoop extends GameLogic implements Screen {
 
         textureRenderingSystem = getWorld().setSystem(new TextureRenderingSystem(camera), true);
         getWorld().setSystem(new PlayerInputSystem(TICK_LENGTH_SECONDS));
-        addLogicSystemsAndInitializeWorld();
+        addLogicSystems();
+        networkSystemInjector.addSystemsToWorld(getWorld());
+        initializeWorld();
     }
 
     @Override

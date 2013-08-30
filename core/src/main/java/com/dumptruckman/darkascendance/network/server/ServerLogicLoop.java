@@ -4,7 +4,9 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.dumptruckman.darkascendance.core.GameLogic;
-import com.dumptruckman.darkascendance.network.messages.Messages;
+import com.dumptruckman.darkascendance.core.components.Controls;
+import com.dumptruckman.darkascendance.network.messages.MessageFactory;
+import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
 
 class ServerLogicLoop extends GameLogic implements Runnable {
 
@@ -14,9 +16,11 @@ class ServerLogicLoop extends GameLogic implements Runnable {
     private float deltaTime = 0L;
     private float lastTime = 0L;
 
-    public ServerLogicLoop() {
+    public ServerLogicLoop(NetworkSystemInjector networkSystemInjector) {
         super(new World());
-        addLogicSystemsAndInitializeWorld();
+        addLogicSystems();
+        networkSystemInjector.addSystemsToWorld(getWorld());
+        initializeWorld();
     }
 
     @Override
@@ -45,7 +49,13 @@ class ServerLogicLoop extends GameLogic implements Runnable {
     public void playerConnected(int connectionId) {
         Entity entity = getEntityFactory().createBasicShip();
         setChanged();
-        notifyObservers(Messages.createPlayerShip(connectionId, entity));
+        notifyObservers(MessageFactory.createPlayerShip(connectionId, entity));
         entity.addToWorld();
+    }
+
+    public void updatePlayerControls(Controls updatedControls) {
+        Entity entity = getWorld().getEntity(updatedControls.getEntityId());
+        Controls oldControls = entity.getComponent(Controls.class);
+        oldControls.copyControls(updatedControls);
     }
 }

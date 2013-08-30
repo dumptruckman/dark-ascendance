@@ -37,11 +37,13 @@ public class GameLogic extends Observable {
         return world;
     }
 
-    protected void addLogicSystemsAndInitializeWorld() {
+    protected void addLogicSystems() {
         world.setSystem(controlsSystem);
         world.setSystem(accelerationSystem);
         world.setSystem(movementSystem);
+    }
 
+    protected void initializeWorld() {
         world.initialize();
     }
 
