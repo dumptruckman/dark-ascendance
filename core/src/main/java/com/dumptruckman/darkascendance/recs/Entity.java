@@ -62,6 +62,9 @@ public class Entity {
     }
 
     public Object[] getComponents() {
+        if(data == null)
+            return EntityWorld.getScheduledAdds(this);
+
         int[] componentIds = getComponentIds();
         Object[] components = new Object[componentIds.length];
 
@@ -69,6 +72,6 @@ public class Entity {
             components[i] = data.world.getComponent(id, componentIds[i]);
         }
 
-        return null;
+        return components;
     }
 }
