@@ -9,9 +9,9 @@ public class Velocity extends Component {
     Vector2 vector = new Vector2(0, 0);
     private Vector2 max = new Vector2(200f, 200f);
 
-    public float getRotationRequiredToReverseVelocity() {
-        float x = -vector.x;
-        float y = -vector.y;
+    public static float getRotationRequiredToReverseVelocity(Velocity v) {
+        float x = -v.vector.x;
+        float y = -v.vector.y;
         double rotation = 0;
         if (x != 0) {
             if (x < 0) {

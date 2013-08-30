@@ -45,7 +45,7 @@ public class ControlsSystem extends IntervalEntityProcessingSystem {
             }
         }
         if(controls.down) {
-            position.attainRotation(velocity.getRotationRequiredToReverseVelocity(), (interval * ROTATION_SPEED));
+            position.attainRotation(Velocity.getRotationRequiredToReverseVelocity(velocity), (interval * ROTATION_SPEED));
         }
         if(controls.left) {
             position.setRotation(position.getRotation() + (interval * ROTATION_SPEED));

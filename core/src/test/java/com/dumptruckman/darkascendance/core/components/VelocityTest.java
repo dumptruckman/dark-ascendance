@@ -12,34 +12,34 @@ public class VelocityTest {
 
         v.vector.x = 0;
         v.vector.y = 1;
-        assertEquals(180f, v.getRotationRequiredToReverseVelocity(), 0.0001f);
+        assertEquals(180f, Velocity.getRotationRequiredToReverseVelocity(v), 0.0001f);
 
         v.vector.x = 0;
         v.vector.y = -1;
-        assertEquals(0f, v.getRotationRequiredToReverseVelocity(), 0.0001f);
+        assertEquals(0f, Velocity.getRotationRequiredToReverseVelocity(v), 0.0001f);
 
         v.vector.x = 1;
         v.vector.y = 0;
-        assertEquals(90f, v.getRotationRequiredToReverseVelocity(), 0.0001f);
+        assertEquals(90f, Velocity.getRotationRequiredToReverseVelocity(v), 0.0001f);
 
         v.vector.x = -1;
         v.vector.y = 0;
-        assertEquals(270f, v.getRotationRequiredToReverseVelocity(), 0.0001f);
+        assertEquals(270f, Velocity.getRotationRequiredToReverseVelocity(v), 0.0001f);
 
         v.vector.x = 1;
         v.vector.y = 1;
-        assertEquals(135f, v.getRotationRequiredToReverseVelocity(), 0.0001f);
+        assertEquals(135f, Velocity.getRotationRequiredToReverseVelocity(v), 0.0001f);
 
         v.vector.x = -1;
         v.vector.y = 1;
-        assertEquals(225f, v.getRotationRequiredToReverseVelocity(), 0.0001f);
+        assertEquals(225f, Velocity.getRotationRequiredToReverseVelocity(v), 0.0001f);
 
         v.vector.x = 1;
         v.vector.y = -1;
-        assertEquals(45f, v.getRotationRequiredToReverseVelocity(), 0.0001f);
+        assertEquals(45f, Velocity.getRotationRequiredToReverseVelocity(v), 0.0001f);
 
         v.vector.x = -1;
         v.vector.y = -1;
-        assertEquals(315f, v.getRotationRequiredToReverseVelocity(), 0.0001f);
+        assertEquals(315f, Velocity.getRotationRequiredToReverseVelocity(v), 0.0001f);
     }
 }
