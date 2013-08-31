@@ -1,6 +1,6 @@
 package com.dumptruckman.darkascendance.recs;
 
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSIntMap;
+import com.badlogic.gdx.utils.IntMap;
 
 import java.lang.reflect.Field;
 
@@ -13,9 +13,9 @@ import java.lang.reflect.Field;
  */
 public final class EntityReflection {
 	final EntityData data;
-	final RECSIntMap<Field> componentFields;
+	final IntMap<Field> componentFields;
 
-	EntityReflection(RECSIntMap<Field> componentFields, EntityData data) {
+	EntityReflection(IntMap<Field> componentFields, EntityData data) {
 		this.componentFields = componentFields;
 		this.data = data;
 	}

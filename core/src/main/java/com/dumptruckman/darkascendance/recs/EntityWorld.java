@@ -3,9 +3,9 @@ package com.dumptruckman.darkascendance.recs;
 import com.dumptruckman.darkascendance.recs.utils.BlockingThreadPoolExecutor;
 import com.dumptruckman.darkascendance.recs.utils.RECSBits;
 import com.dumptruckman.darkascendance.recs.utils.RECSIntSet.Items;
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSIntMap;
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSIntMap.Keys;
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSObjectMap;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.IntMap.Keys;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -25,13 +25,13 @@ public final class EntityWorld {
      * Maps used to temporarily store added/removed components from entities
      * that are not yet added to the EntityWorld.
      */
-    private static RECSObjectMap<Entity, LinkedList<Object>> scheduledAdds = new RECSObjectMap<Entity, LinkedList<Object>>();
-    private static RECSObjectMap<Entity, LinkedList<Object>> scheduledRemoves = new RECSObjectMap<Entity, LinkedList<Object>>();
+    private static ObjectMap<Entity, LinkedList<Object>> scheduledAdds = new ObjectMap<Entity, LinkedList<Object>>();
+    private static ObjectMap<Entity, LinkedList<Object>> scheduledRemoves = new ObjectMap<Entity, LinkedList<Object>>();
 
     /**
      * Contains all the entities so they can be retrieved with getEntity
      */
-    private final RECSIntMap<Entity> addedEntities;
+    private final IntMap<Entity> addedEntities;
 
     /**
      * Managers sepparate logic.
@@ -58,7 +58,7 @@ public final class EntityWorld {
         entitydataManager = new EntityDataManager(this);
         eventManager = new EventManager();
 
-        addedEntities = new RECSIntMap<Entity>();
+        addedEntities = new IntMap<Entity>();
         entityIds = new RECSBits();
     }
 

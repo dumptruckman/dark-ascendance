@@ -1,9 +1,9 @@
 package com.dumptruckman.darkascendance.recs;
 
 import com.dumptruckman.darkascendance.recs.utils.RECSBits;
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSIntMap;
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSObjectIntMap;
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSObjectMap;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.ObjectIntMap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public final class ComponentManager {
 	private EntityWorld world;
@@ -12,20 +12,20 @@ public final class ComponentManager {
 	 * Collection of ComponentManagers, managers are retrievable by using the
 	 * class they represent.
 	 */
-	private RECSIntMap<ComponentMapper<?>> componentMappers = new RECSIntMap<ComponentMapper<?>>();
+	private IntMap<ComponentMapper<?>> componentMappers = new IntMap<ComponentMapper<?>>();
 	/**
 	 * Map which links id's to components.
 	 */
-	private RECSObjectIntMap<Class<?>> componentIds = new RECSObjectIntMap<Class<?>>();
+	private ObjectIntMap<Class<?>> componentIds = new ObjectIntMap<Class<?>>();
 	private int componentIdCounter = 0;
 	/**
 	 * Map which handles notification of destroyed components.
 	 */
-	private final RECSObjectMap<Class<?>, ComponentDestructionListener<?>> destructionListeners;
+	private final ObjectMap<Class<?>, ComponentDestructionListener<?>> destructionListeners;
 
 	ComponentManager(EntityWorld world) {
 		this.world = world;
-		destructionListeners = new RECSObjectMap<Class<?>, ComponentDestructionListener<?>>();
+		destructionListeners = new ObjectMap<Class<?>, ComponentDestructionListener<?>>();
 	}
 
 	int getComponentId(Class<?> component) {

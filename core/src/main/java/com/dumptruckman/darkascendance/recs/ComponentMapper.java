@@ -1,7 +1,7 @@
 package com.dumptruckman.darkascendance.recs;
 
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSIntMap;
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSIntMap.Keys;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.IntMap.Keys;
 
 /**
  * Used to easily retrieve components from entities.
@@ -11,10 +11,10 @@ import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSIntMap.Keys;
  *            The component type this manager manages.
  */
 public final class ComponentMapper<T> {
-	final RECSIntMap<T> components;
+	final IntMap<T> components;
 
 	protected ComponentMapper() {
-		components = new RECSIntMap<T>();
+		components = new IntMap<T>();
 	}
 
 	protected T remove(int entityId) {

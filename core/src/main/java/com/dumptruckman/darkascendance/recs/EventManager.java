@@ -1,6 +1,6 @@
 package com.dumptruckman.darkascendance.recs;
 
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSObjectMap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import java.util.LinkedList;
 
@@ -11,10 +11,10 @@ import java.util.LinkedList;
  * @author Enrico van Oosten
  */
 public final class EventManager {
-	private final RECSObjectMap<Class<?>, LinkedList<EventListener<?>>> listeners;
+	private final ObjectMap<Class<?>, LinkedList<EventListener<?>>> listeners;
 
 	EventManager() {
-		listeners = new RECSObjectMap<Class<?>, LinkedList<EventListener<?>>>();
+		listeners = new ObjectMap<Class<?>, LinkedList<EventListener<?>>>();
 	}
 
 	void sendEvent(Object message) {

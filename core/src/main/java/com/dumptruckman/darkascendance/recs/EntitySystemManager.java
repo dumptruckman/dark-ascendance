@@ -1,7 +1,7 @@
 package com.dumptruckman.darkascendance.recs;
 
 import com.dumptruckman.darkascendance.recs.utils.RECSBits;
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSIntMap;
+import com.badlogic.gdx.utils.IntMap;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -18,7 +18,7 @@ public final class EntitySystemManager {
 	 * Linked list of EntitySystems for easy iteration.
 	 */
 	private LinkedList<EntitySystem> systems = new LinkedList<EntitySystem>();
-	private RECSIntMap<EntitySystem> systemMap = new RECSIntMap<EntitySystem>();
+	private IntMap<EntitySystem> systemMap = new IntMap<EntitySystem>();
 	private EntityWorld world;
 	private RECSBits freeSystemBits = new RECSBits();
 
