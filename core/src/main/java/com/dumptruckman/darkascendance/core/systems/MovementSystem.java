@@ -1,33 +1,29 @@
 package com.dumptruckman.darkascendance.core.systems;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
-import com.artemis.annotations.Mapper;
 import com.badlogic.gdx.math.Vector3;
-import com.dumptruckman.darkascendance.core.IntervalEntityProcessingSystem;
 import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Velocity;
+import com.dumptruckman.darkascendance.recs.ComponentMapper;
+import com.dumptruckman.darkascendance.recs.IntervalEntitySystem;
 
-public class MovementSystem extends IntervalEntityProcessingSystem {
+public class MovementSystem extends IntervalEntitySystem {
 
-    @Mapper
     ComponentMapper<Position> positionMap;
-    @Mapper
     ComponentMapper<Velocity> velocityMap;
+    ComponentMapper<Player> playerMap;
 
     public MovementSystem(float interval) {
-        super(Aspect.getAspectForAll(Position.class, Velocity.class), interval);
+        super(interval, Position.class, Velocity.class);
     }
 
     @Override
-    protected void process(Entity entity) {
-        Position position = positionMap.get(entity);
-        Velocity velocity = velocityMap.get(entity);
-        Player player = entity.getComponent(Player.class);
+    protected void processEntity(int entityId, float deltaInSec) {
+        Position position = positionMap.get(entityId);
+        Velocity velocity = velocityMap.get(entityId);
+        Player player = playerMap.get(entityId);
 
-        processMovement(position, velocity, player, interval);
+        processMovement(position, velocity, player, deltaInSec);
     }
 
     static void processMovement(Position position, Velocity velocity, Player player, float delta) {

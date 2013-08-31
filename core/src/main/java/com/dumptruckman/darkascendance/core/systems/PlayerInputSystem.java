@@ -1,23 +1,16 @@
 package com.dumptruckman.darkascendance.core.systems;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
-import com.artemis.annotations.Mapper;
-import com.artemis.systems.IntervalEntityProcessingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.core.components.Player;
-import com.dumptruckman.darkascendance.core.components.Position;
-import com.dumptruckman.darkascendance.core.components.Thrusters;
-import com.dumptruckman.darkascendance.core.components.Velocity;
+import com.dumptruckman.darkascendance.recs.ComponentMapper;
+import com.dumptruckman.darkascendance.recs.IntervalEntitySystem;
 
-public class PlayerInputSystem extends IntervalEntityProcessingSystem implements InputProcessor {
+public class PlayerInputSystem extends IntervalEntitySystem implements InputProcessor {
 
-    @Mapper
     ComponentMapper<Controls> controlsMap;
 
     private boolean up = false;
@@ -29,19 +22,15 @@ public class PlayerInputSystem extends IntervalEntityProcessingSystem implements
 
     private Vector3 mouseVector;
 
-    public PlayerInputSystem(float rate) {
-        super(Aspect.getAspectForAll(Player.class, Controls.class), rate);
+    public PlayerInputSystem(float interval) {
+        super(interval, Player.class, Controls.class);
         this.mouseVector = new Vector3();
-    }
-
-    @Override
-    protected void initialize() {
         Gdx.input.setInputProcessor(this);
     }
 
     @Override
-    protected void process(Entity entity) {
-        Controls controls = controlsMap.get(entity);
+    protected void processEntity(int entityId, float deltaInSec) {
+        Controls controls = controlsMap.get(entityId);
 
         mouseVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 

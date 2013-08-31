@@ -1,8 +1,5 @@
 package com.dumptruckman.darkascendance.network;
 
-import com.artemis.Component;
-import com.artemis.utils.Bag;
-import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.math.Vector2;
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.core.components.Position;
@@ -22,8 +19,6 @@ import java.util.Observer;
 public abstract class KryoNetwork extends Listener implements Observer {
 
     protected void initializeSerializables(Kryo kryo) {
-        kryo.register(Bag.class);
-        kryo.register(ImmutableBag.class);
         kryo.register(Object[].class);
 
         kryo.register(Message.class);
@@ -32,7 +27,6 @@ public abstract class KryoNetwork extends Listener implements Observer {
         kryo.register(EntityMessage.class);
         kryo.register(ComponentMessage.class);
 
-        kryo.register(Component.class);
         kryo.register(Controls.class);
         kryo.register(Position.class);
         kryo.register(Thrusters.class);

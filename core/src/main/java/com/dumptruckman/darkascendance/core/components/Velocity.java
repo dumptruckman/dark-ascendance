@@ -1,10 +1,9 @@
 package com.dumptruckman.darkascendance.core.components;
 
-import com.artemis.Component;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-public class Velocity extends Component {
+public class Velocity {
 
     Vector2 vector = new Vector2(0, 0);
     private Vector2 max = new Vector2(200f, 200f);

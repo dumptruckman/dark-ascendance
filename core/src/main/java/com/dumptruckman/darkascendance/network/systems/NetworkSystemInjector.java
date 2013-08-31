@@ -1,8 +1,8 @@
 package com.dumptruckman.darkascendance.network.systems;
 
-import com.artemis.EntitySystem;
-import com.artemis.World;
 import com.dumptruckman.darkascendance.network.KryoNetwork;
+import com.dumptruckman.darkascendance.recs.EntitySystem;
+import com.dumptruckman.darkascendance.recs.EntityWorld;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +20,9 @@ public class NetworkSystemInjector {
         systems.add(system);
     }
 
-    public World addSystemsToWorld(World world) {
+    public EntityWorld addSystemsToWorld(EntityWorld world) {
         for (EntitySystem system : systems) {
-            world.setSystem(system);
+            world.addSystem(system);
         }
         return world;
     }

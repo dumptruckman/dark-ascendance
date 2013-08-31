@@ -1,6 +1,5 @@
 package com.dumptruckman.darkascendance.network.client;
 
-import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
@@ -12,6 +11,8 @@ import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
 import com.dumptruckman.darkascendance.network.NetworkEntity;
 import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
+import com.dumptruckman.darkascendance.recs.Entity;
+import com.dumptruckman.darkascendance.recs.EntityWorld;
 
 public class ClientLogicLoop extends GameLogic implements Screen {
 
@@ -22,16 +23,16 @@ public class ClientLogicLoop extends GameLogic implements Screen {
     FPSLogger fpsLogger = new FPSLogger();
 
     public ClientLogicLoop(NetworkSystemInjector networkSystemInjector, float screenWidth, float screenHeight) {
-        super(new World());
+        super(new EntityWorld());
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
         this.entityConfigurator = new ClientEntityConfigurator(getWorld(), new TextureFactory());
         enableInterpolation();
 
-        textureRenderingSystem = getWorld().setSystem(new TextureRenderingSystem(camera), true);
-        getWorld().setSystem(new PlayerInputSystem(TICK_LENGTH_SECONDS));
+        getWorld().addSystem(new PlayerInputSystem(TICK_LENGTH_SECONDS));
         addLogicSystems();
+        textureRenderingSystem = new TextureRenderingSystem(camera);
+        getWorld().addSystem(textureRenderingSystem);
         networkSystemInjector.addSystemsToWorld(getWorld());
-        initializeWorld();
     }
 
     @Override
@@ -41,13 +42,11 @@ public class ClientLogicLoop extends GameLogic implements Screen {
         camera.update();
 
         processGameLogic(delta);
-
-        textureRenderingSystem.process();
         fpsLogger.log();
     }
 
     public void addPlayerShipToWorld(NetworkEntity networkEntity) {
-        entityConfigurator.setupPlayerShip(networkEntity, camera).addToWorld();
+        entityConfigurator.setupPlayerShip(networkEntity, camera);
     }
 
     @Override

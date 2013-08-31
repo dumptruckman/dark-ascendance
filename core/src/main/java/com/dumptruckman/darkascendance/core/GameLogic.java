@@ -1,9 +1,15 @@
 package com.dumptruckman.darkascendance.core;
 
-import com.artemis.World;
+import com.dumptruckman.darkascendance.core.components.Controls;
+import com.dumptruckman.darkascendance.core.components.Graphics;
+import com.dumptruckman.darkascendance.core.components.Player;
+import com.dumptruckman.darkascendance.core.components.Position;
+import com.dumptruckman.darkascendance.core.components.Thrusters;
+import com.dumptruckman.darkascendance.core.components.Velocity;
 import com.dumptruckman.darkascendance.core.systems.AccelerationSystem;
 import com.dumptruckman.darkascendance.core.systems.ControlsSystem;
 import com.dumptruckman.darkascendance.core.systems.MovementSystem;
+import com.dumptruckman.darkascendance.recs.EntityWorld;
 
 import java.util.Observable;
 
@@ -11,7 +17,7 @@ public class GameLogic extends Observable {
 
     public static final float TICK_LENGTH_SECONDS = 0.015F;
 
-    private World world;
+    private EntityWorld world;
     private boolean doInterpolation = false;
     private EntityFactory entityFactory;
 
@@ -19,8 +25,10 @@ public class GameLogic extends Observable {
     private AccelerationSystem accelerationSystem;
     private MovementSystem movementSystem;
 
-    public GameLogic(World world) {
+    public GameLogic(EntityWorld world) {
         this.world = world;
+        world.registerComponents(Controls.class, Graphics.class, Player.class, Position.class, Thrusters.class, Velocity.class);
+
         this.entityFactory = new EntityFactory(world);
 
         // initialize systems
@@ -33,29 +41,16 @@ public class GameLogic extends Observable {
         this.doInterpolation = true;
     }
 
-    protected World getWorld() {
+    protected EntityWorld getWorld() {
         return world;
     }
 
     protected void addLogicSystems() {
-        world.setSystem(controlsSystem);
-        world.setSystem(accelerationSystem);
-        world.setSystem(movementSystem);
-    }
-
-    protected void initializeWorld() {
-        world.initialize();
+        world.addSystem(controlsSystem, accelerationSystem, movementSystem);
     }
 
     public void processGameLogic(float delta) {
-        world.setDelta(delta);
-        world.process();
-    }
-
-    protected void interpolate() {
-        if (doInterpolation) {
-
-        }
+        world.process(delta);
     }
 
     protected EntityFactory getEntityFactory() {

@@ -1,12 +1,12 @@
 package com.dumptruckman.darkascendance.network.server;
 
-import com.artemis.Entity;
-import com.artemis.World;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.dumptruckman.darkascendance.core.GameLogic;
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.network.messages.MessageFactory;
 import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
+import com.dumptruckman.darkascendance.recs.Entity;
+import com.dumptruckman.darkascendance.recs.EntityWorld;
 
 class ServerLogicLoop extends GameLogic implements Runnable {
 
@@ -17,10 +17,9 @@ class ServerLogicLoop extends GameLogic implements Runnable {
     private float lastTime = 0L;
 
     public ServerLogicLoop(NetworkSystemInjector networkSystemInjector) {
-        super(new World());
+        super(new EntityWorld());
         addLogicSystems();
         networkSystemInjector.addSystemsToWorld(getWorld());
-        initializeWorld();
     }
 
     @Override
@@ -50,7 +49,6 @@ class ServerLogicLoop extends GameLogic implements Runnable {
         Entity entity = getEntityFactory().createBasicShip();
         setChanged();
         notifyObservers(MessageFactory.createPlayerShip(connectionId, entity));
-        entity.addToWorld();
     }
 
     public void updatePlayerControls(Controls updatedControls) {

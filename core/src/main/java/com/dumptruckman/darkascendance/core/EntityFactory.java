@@ -1,22 +1,23 @@
 package com.dumptruckman.darkascendance.core;
 
-import com.artemis.Entity;
-import com.artemis.World;
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
+import com.dumptruckman.darkascendance.recs.Entity;
+import com.dumptruckman.darkascendance.recs.EntityWorld;
 
 public class EntityFactory {
 
-    private World world;
+    private EntityWorld world;
 
-    EntityFactory(World world) {
+    EntityFactory(EntityWorld world) {
         this.world = world;
     }
 
     public Entity createBasicShip() {
-        Entity entity = world.createEntity();
+        Entity entity = new Entity();
+        world.addEntity(entity);
 
         entity.addComponent(new Position());
         entity.addComponent(new Velocity());

@@ -1,8 +1,6 @@
 package com.dumptruckman.darkascendance.core.components;
 
-import com.artemis.Component;
-
-public class Thrusters extends Component {
+public class Thrusters {
 
     private float thrustLevel = 0f;
     private float accelerationFactor = 80f;

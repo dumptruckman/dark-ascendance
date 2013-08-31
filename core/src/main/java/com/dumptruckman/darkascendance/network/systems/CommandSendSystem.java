@@ -1,29 +1,25 @@
 package com.dumptruckman.darkascendance.network.systems;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
-import com.artemis.annotations.Mapper;
-import com.dumptruckman.darkascendance.core.IntervalEntityProcessingSystem;
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.network.KryoNetwork;
 import com.dumptruckman.darkascendance.network.messages.MessageFactory;
+import com.dumptruckman.darkascendance.recs.ComponentMapper;
+import com.dumptruckman.darkascendance.recs.IntervalEntitySystem;
 
-public class CommandSendSystem extends IntervalEntityProcessingSystem {
+public class CommandSendSystem extends IntervalEntitySystem {
 
     private KryoNetwork kryoNetwork;
 
-    @Mapper
     ComponentMapper<Controls> controlsMap;
 
     public CommandSendSystem(KryoNetwork kryoNetwork, final float interval) {
-        super(Aspect.getAspectForAll(Player.class, Controls.class), interval);
+        super(interval, Player.class, Controls.class);
         this.kryoNetwork = kryoNetwork;
     }
 
     @Override
-    protected void process(final Entity e) {
-        kryoNetwork.sendMessage(0, MessageFactory.playerInputState(controlsMap.get(e)));
+    protected void processEntity(int entityId, float deltaInSec) {
+        kryoNetwork.sendMessage(0, MessageFactory.playerInputState(controlsMap.get(entityId)));
     }
 }

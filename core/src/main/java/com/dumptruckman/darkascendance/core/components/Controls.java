@@ -1,8 +1,6 @@
 package com.dumptruckman.darkascendance.core.components;
 
-import com.artemis.Component;
-
-public class Controls extends Component {
+public class Controls {
 
     private int entityId;
 

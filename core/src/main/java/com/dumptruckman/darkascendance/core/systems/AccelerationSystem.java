@@ -1,37 +1,32 @@
 package com.dumptruckman.darkascendance.core.systems;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
-import com.artemis.annotations.Mapper;
 import com.badlogic.gdx.math.MathUtils;
-import com.dumptruckman.darkascendance.core.IntervalEntityProcessingSystem;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
+import com.dumptruckman.darkascendance.recs.ComponentMapper;
+import com.dumptruckman.darkascendance.recs.Entity;
+import com.dumptruckman.darkascendance.recs.IntervalEntitySystem;
 
-public class AccelerationSystem extends IntervalEntityProcessingSystem {
+public class AccelerationSystem extends IntervalEntitySystem {
 
-    @Mapper
     ComponentMapper<Thrusters> thrustMap;
-    @Mapper
     ComponentMapper<Velocity> velocityMap;
-    @Mapper
     ComponentMapper<Position> positionMap;
 
     public AccelerationSystem(float interval) {
-        super(Aspect.getAspectForAll(Velocity.class, Position.class), interval);
+        super(interval, Velocity.class, Position.class);
     }
 
     @Override
-    protected void process(Entity entity) {
-        Velocity velocity = velocityMap.get(entity);
-        Position position = positionMap.get(entity);
-        Thrusters thrusters = thrustMap.getSafe(entity);
+    protected void processEntity(int entityId, float deltaInSec) {
+        Velocity velocity = velocityMap.get(entityId);
+        Position position = positionMap.get(entityId);
+        Thrusters thrusters = thrustMap.get(entityId);
 
         float totalForwardAcceleration = 0F;
         totalForwardAcceleration += getThrustersAcceleration(thrusters);
-        totalForwardAcceleration = modifyAccelerationByDelta(totalForwardAcceleration, interval);
+        totalForwardAcceleration = modifyAccelerationByDelta(totalForwardAcceleration, deltaInSec);
 
         float facingAngleRadians = MathUtils.degreesToRadians * position.getRotation();
 

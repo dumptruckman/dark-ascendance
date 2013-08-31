@@ -1,11 +1,5 @@
 package com.dumptruckman.darkascendance.core.systems;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
-import com.artemis.EntitySystem;
-import com.artemis.annotations.Mapper;
-import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,6 +9,8 @@ import com.dumptruckman.darkascendance.core.components.Graphics;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.graphics.Textures;
+import com.dumptruckman.darkascendance.recs.ComponentMapper;
+import com.dumptruckman.darkascendance.recs.EntitySystem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,25 +53,20 @@ public class TextureRenderingSystem extends EntitySystem {
             + "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
             + "}";
 
-    @Mapper
     ComponentMapper<Position> positionMap;
-    @Mapper
     ComponentMapper<Graphics> textureMap;
 
     private SpriteBatch batch;
-    private List<Entity> sortedEntities;
+    private List<Integer> sortedEntities;
     ShaderProgram program;
     private OrthographicCamera camera;
 
     private TextureRegion backgroundTexture = TextureFactory.getBackground().getTexture(Textures.STAR_FIELD);
 
     public TextureRenderingSystem(OrthographicCamera camera) {
-        super(Aspect.getAspectForAll(Position.class, Graphics.class));
+        super(Position.class, Graphics.class);
         this.camera = camera;
-    }
 
-    @Override
-    protected void initialize() {
         //load our shader program and sprite batch
         try {
             //program = new ShaderProgram(VERT, FRAG);
@@ -92,16 +83,23 @@ public class TextureRenderingSystem extends EntitySystem {
             e.printStackTrace();
             batch = new SpriteBatch();
         }
-        sortedEntities = new ArrayList<Entity>();
+        sortedEntities = new ArrayList<Integer>();
     }
 
+
     @Override
-    protected void begin() {
+    protected void processSystem(final float deltaInSec) {
         batch.setProjectionMatrix(camera.combined);
         //program.setUniformMatrix("u_projTrans", batch.getTransformMatrix());
         batch.begin();
 
         drawBackground();
+
+        for (Integer entityId : sortedEntities) {
+            processEntity(entityId, deltaInSec);
+        }
+
+        batch.end();
     }
 
     private void drawBackground() {
@@ -121,41 +119,21 @@ public class TextureRenderingSystem extends EntitySystem {
         }
     }
 
-    @Override
-    protected void processEntities(ImmutableBag<Entity> entities) {
+    protected void processEntity(int entityId, float deltaInSec) {
+        Position position = positionMap.get(entityId);
+        TextureRegion region = textureMap.get(entityId).region;
 
-        for(Entity entity : sortedEntities) {
-            process(entity);
-        }
-    }
-
-    protected void process(Entity entity) {
-        if(positionMap.has(entity)) {
-            Position position = positionMap.getSafe(entity);
-            TextureRegion region = textureMap.get(entity).region;
-
-            int halfWidth = region.getRegionWidth() / 2;
-            int halfHeight = region.getRegionHeight() / 2;
-            batch.draw(region, position.getX() - halfWidth, position.getY() - halfHeight, halfWidth, halfHeight, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, position.getRotation());
-        }
+        int halfWidth = region.getRegionWidth() / 2;
+        int halfHeight = region.getRegionHeight() / 2;
+        batch.draw(region, position.getX() - halfWidth, position.getY() - halfHeight, halfWidth, halfHeight, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, position.getRotation());
     }
 
     @Override
-    protected void end() {
-        batch.end();
-    }
-
-    @Override
-    protected boolean checkProcessing() {
-        return true;
-    }
-
-    @Override
-    protected void inserted(Entity e) {
-        sortedEntities.add(e);
-        Collections.sort(sortedEntities, new Comparator<Entity>() {
+    protected void addEntity(final int id) {
+        sortedEntities.add(id);
+        Collections.sort(sortedEntities, new Comparator<Integer>() {
             @Override
-            public int compare(Entity e1, Entity e2) {
+            public int compare(Integer e1, Integer e2) {
                 Graphics s1 = textureMap.get(e1);
                 Graphics s2 = textureMap.get(e2);
                 return s1.renderLayer.compareTo(s2.renderLayer);
@@ -164,7 +142,7 @@ public class TextureRenderingSystem extends EntitySystem {
     }
 
     @Override
-    protected void removed(Entity e) {
-        sortedEntities.remove(e);
+    protected void removeEntity(final int id) {
+        sortedEntities.remove(id);
     }
 }

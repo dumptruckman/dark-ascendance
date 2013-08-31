@@ -1,9 +1,8 @@
 package com.dumptruckman.darkascendance.core.components;
 
-import com.artemis.Component;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
-public class Player extends Component {
+public class Player {
 
     private OrthographicCamera camera;
 

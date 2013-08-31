@@ -50,8 +50,6 @@ public class GameServer extends KryoNetwork {
 
     @Override
     public void connected(final Connection connection) {
-        System.out.println("Player connected: " + connection);
-        connection.sendTCP("Hey");
         serverLogicLoop.playerConnected(connection.getID());
     }
 

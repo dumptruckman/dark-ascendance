@@ -1,8 +1,6 @@
 package com.dumptruckman.darkascendance.network.components;
 
-import com.artemis.Component;
-
-public class Identifier extends Component {
+public class Identifier {
 
     private int serverEntityId;
 
