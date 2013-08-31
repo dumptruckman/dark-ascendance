@@ -68,7 +68,7 @@ public class Entity {
         int[] componentIds = getComponentIds();
         Object[] components = new Object[componentIds.length];
 
-        for (int i = 0; i < componentIds.length - 1; i++) {
+        for (int i = 0; i < componentIds.length; i++) {
             components[i] = data.world.getComponent(id, componentIds[i]);
         }
 
