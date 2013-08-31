@@ -1,4 +1,4 @@
-package com.dumptruckman.darkascendance.core.components;
+package com.dumptruckman.darkascendance.network.client.components;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import recs.Component;
