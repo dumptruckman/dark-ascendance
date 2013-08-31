@@ -1,6 +1,6 @@
 package com.dumptruckman.darkascendance.recs;
 
-import com.dumptruckman.darkascendance.recs.utils.libgdx.RECSMathUtils;
+import com.badlogic.gdx.math.MathUtils;
 import com.dumptruckman.darkascendance.recs.components.Attack;
 import com.dumptruckman.darkascendance.recs.components.Health;
 import com.dumptruckman.darkascendance.recs.components.Position;
@@ -36,7 +36,7 @@ public class UsageExample {
 			long start = System.nanoTime();
 			long deltaNano = start - currentTime;
 			currentTime = start;
-			float deltaSec = deltaNano * RECSMathUtils.nanoToSec;
+			float deltaSec = deltaNano * MathUtils.nanoToSec;
 
 			accumulator += deltaSec;
 			while(accumulator > timeStep) {
