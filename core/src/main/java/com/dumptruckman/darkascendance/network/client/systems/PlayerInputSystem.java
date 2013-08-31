@@ -1,4 +1,4 @@
-package com.dumptruckman.darkascendance.core.systems;
+package com.dumptruckman.darkascendance.network.client.systems;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

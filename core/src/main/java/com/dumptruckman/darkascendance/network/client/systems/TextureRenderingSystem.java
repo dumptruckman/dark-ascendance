@@ -1,4 +1,4 @@
-package com.dumptruckman.darkascendance.core.systems;
+package com.dumptruckman.darkascendance.network.client.systems;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

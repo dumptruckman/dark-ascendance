@@ -7,11 +7,10 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.dumptruckman.darkascendance.core.GameLogic;
 import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
-import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
-import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
+import com.dumptruckman.darkascendance.network.client.systems.PlayerInputSystem;
+import com.dumptruckman.darkascendance.network.client.systems.TextureRenderingSystem;
 import com.dumptruckman.darkascendance.network.NetworkEntity;
-import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
-import recs.Entity;
+import com.dumptruckman.darkascendance.network.NetworkSystemInjector;
 import recs.EntityWorld;
 
 public class ClientLogicLoop extends GameLogic implements Screen {

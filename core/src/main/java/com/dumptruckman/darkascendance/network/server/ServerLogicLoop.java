@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.dumptruckman.darkascendance.core.GameLogic;
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.network.messages.MessageFactory;
-import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
+import com.dumptruckman.darkascendance.network.NetworkSystemInjector;
 import recs.Entity;
 import recs.EntityWorld;
 

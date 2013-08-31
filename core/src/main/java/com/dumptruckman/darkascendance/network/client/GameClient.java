@@ -1,17 +1,14 @@
 package com.dumptruckman.darkascendance.network.client;
 
 import com.dumptruckman.darkascendance.network.KryoNetwork;
-import com.dumptruckman.darkascendance.network.NetworkEntity;
 import com.dumptruckman.darkascendance.network.messages.EntityMessage;
 import com.dumptruckman.darkascendance.network.messages.Message;
-import com.dumptruckman.darkascendance.network.systems.CommandSendSystem;
-import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
+import com.dumptruckman.darkascendance.network.client.systems.CommandSendSystem;
+import com.dumptruckman.darkascendance.network.NetworkSystemInjector;
 import com.dumptruckman.darkascendance.util.GameSettings;
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
 
 import java.io.IOException;
-import java.util.Observable;
 import java.util.Observer;
 
 public class GameClient extends KryoNetwork implements Observer {

@@ -1,4 +1,4 @@
-package com.dumptruckman.darkascendance.network.systems;
+package com.dumptruckman.darkascendance.network;
 
 import com.dumptruckman.darkascendance.network.KryoNetwork;
 import recs.EntitySystem;

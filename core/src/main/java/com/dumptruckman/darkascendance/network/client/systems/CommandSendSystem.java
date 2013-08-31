@@ -1,4 +1,4 @@
-package com.dumptruckman.darkascendance.network.systems;
+package com.dumptruckman.darkascendance.network.client.systems;
 
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.core.components.Player;

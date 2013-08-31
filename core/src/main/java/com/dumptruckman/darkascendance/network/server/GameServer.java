@@ -3,15 +3,12 @@ package com.dumptruckman.darkascendance.network.server;
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.network.KryoNetwork;
 import com.dumptruckman.darkascendance.network.messages.ComponentMessage;
-import com.dumptruckman.darkascendance.network.messages.EntityMessage;
 import com.dumptruckman.darkascendance.network.messages.Message;
-import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
+import com.dumptruckman.darkascendance.network.NetworkSystemInjector;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
 
 public class GameServer extends KryoNetwork {
 
