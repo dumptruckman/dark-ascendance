@@ -4,13 +4,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
+import recs.Component;
 import recs.ComponentMapper;
 import recs.Entity;
 import recs.IntervalEntitySystem;
 
 public class AccelerationSystem extends IntervalEntitySystem {
 
-    ComponentMapper<Thrusters> thrustMap;
     ComponentMapper<Velocity> velocityMap;
     ComponentMapper<Position> positionMap;
 
@@ -22,7 +22,8 @@ public class AccelerationSystem extends IntervalEntitySystem {
     protected void processEntity(int entityId, float deltaInSec) {
         Velocity velocity = velocityMap.get(entityId);
         Position position = positionMap.get(entityId);
-        Thrusters thrusters = thrustMap.get(entityId);
+        Entity entity = world.getEntity(entityId);
+        Thrusters thrusters = entity.getComponent(Thrusters.class);
 
         float totalForwardAcceleration = 0F;
         totalForwardAcceleration += getThrustersAcceleration(thrusters);

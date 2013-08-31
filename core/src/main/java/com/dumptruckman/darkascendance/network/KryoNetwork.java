@@ -12,6 +12,7 @@ import com.dumptruckman.darkascendance.network.messages.MessageType;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import recs.Component;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -19,6 +20,8 @@ import java.util.Observer;
 public abstract class KryoNetwork extends Listener implements Observer {
 
     protected void initializeSerializables(Kryo kryo) {
+        kryo.register(Component.class);
+        kryo.register(Component[].class);
         kryo.register(Object[].class);
 
         kryo.register(Message.class);

@@ -27,7 +27,6 @@ public class GameLogic extends Observable {
 
     public GameLogic(EntityWorld world) {
         this.world = world;
-        world.registerComponents(Controls.class, Graphics.class, Player.class, Position.class, Thrusters.class, Velocity.class);
 
         this.entityFactory = new EntityFactory(world);
 

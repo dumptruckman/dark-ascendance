@@ -1,6 +1,8 @@
 package com.dumptruckman.darkascendance.core.components;
 
-public class Controls {
+import recs.Component;
+
+public class Controls extends Component {
 
     private int entityId;
 

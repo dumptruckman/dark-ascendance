@@ -2,8 +2,9 @@ package com.dumptruckman.darkascendance.core.components;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import recs.Component;
 
-public class Velocity {
+public class Velocity extends Component {
 
     Vector2 vector = new Vector2(0, 0);
     private Vector2 max = new Vector2(200f, 200f);

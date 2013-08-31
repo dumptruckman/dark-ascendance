@@ -1,8 +1,9 @@
 package com.dumptruckman.darkascendance.core.components;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import recs.Component;
 
-public class Graphics {
+public class Graphics extends Component {
 
     public static enum RenderLayer {
         BACKGROUND,

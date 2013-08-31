@@ -1,10 +1,11 @@
 package com.dumptruckman.darkascendance.network;
 
+import recs.Component;
 import recs.Entity;
 
 public class NetworkEntity {
 
-    private Object[] components;
+    private Component[] components;
 
     private NetworkEntity() { }
 
@@ -13,9 +14,7 @@ public class NetworkEntity {
     }
 
     public Entity addComponentsToEntity(Entity entity) {
-        for (Object component : components) {
-            entity.addComponent(component);
-        }
+        entity.addComponent(components);
         return entity;
     }
 }

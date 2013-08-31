@@ -1,6 +1,8 @@
 package com.dumptruckman.darkascendance.core.components;
 
-public class Position {
+import recs.Component;
+
+public class Position extends Component {
 
     private float x = 0F;
     private float y = 0F;

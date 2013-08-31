@@ -6,6 +6,7 @@ import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
 import recs.ComponentMapper;
+import recs.Entity;
 import recs.IntervalEntitySystem;
 
 public class ControlsSystem extends IntervalEntitySystem {
@@ -14,7 +15,6 @@ public class ControlsSystem extends IntervalEntitySystem {
 
     ComponentMapper<Controls> controlsMap;
     ComponentMapper<Position> positionMap;
-    ComponentMapper<Thrusters> thrustMap;
     ComponentMapper<Velocity> velocityMap;
 
     private float timeToFire;
@@ -28,7 +28,8 @@ public class ControlsSystem extends IntervalEntitySystem {
         Controls controls = controlsMap.get(entityId);
         Position position = positionMap.get(entityId);
         Velocity velocity = velocityMap.get(entityId);
-        Thrusters thrusters = thrustMap.get(entityId);
+        Entity entity = world.getEntity(entityId);
+        Thrusters thrusters = entity.getComponent(Thrusters.class);
 
         if (thrusters != null) {
             if(controls.up) {
