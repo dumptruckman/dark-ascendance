@@ -13,6 +13,7 @@ public class AccelerationSystem extends IntervalEntitySystem {
 
     ComponentMapper<Velocity> velocityMap;
     ComponentMapper<Position> positionMap;
+    ComponentMapper<Thrusters> thrustersMap;
 
     public AccelerationSystem(float interval) {
         super(interval, Velocity.class, Position.class);
@@ -22,8 +23,7 @@ public class AccelerationSystem extends IntervalEntitySystem {
     protected void processEntity(int entityId, float deltaInSec) {
         Velocity velocity = velocityMap.get(entityId);
         Position position = positionMap.get(entityId);
-        Entity entity = world.getEntity(entityId);
-        Thrusters thrusters = entity.getComponent(Thrusters.class);
+        Thrusters thrusters = thrustersMap.get(entityId);
 
         float totalForwardAcceleration = 0F;
         totalForwardAcceleration += getThrustersAcceleration(thrusters);

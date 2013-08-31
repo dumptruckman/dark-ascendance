@@ -16,6 +16,7 @@ public class ControlsSystem extends IntervalEntitySystem {
     ComponentMapper<Controls> controlsMap;
     ComponentMapper<Position> positionMap;
     ComponentMapper<Velocity> velocityMap;
+    ComponentMapper<Thrusters> thrustersMap;
 
     private float timeToFire;
 
@@ -28,8 +29,7 @@ public class ControlsSystem extends IntervalEntitySystem {
         Controls controls = controlsMap.get(entityId);
         Position position = positionMap.get(entityId);
         Velocity velocity = velocityMap.get(entityId);
-        Entity entity = world.getEntity(entityId);
-        Thrusters thrusters = entity.getComponent(Thrusters.class);
+        Thrusters thrusters = thrustersMap.get(entityId);
 
         if (thrusters != null) {
             if(controls.up) {
