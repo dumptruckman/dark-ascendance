@@ -1,11 +1,20 @@
 package com.dumptruckman.darkascendance.core.components;
 
-import recs.Component;
-
-public class Thrusters extends Component {
+public class Thrusters extends Component implements Cloneable {
 
     private float thrustLevel = 0f;
     private float accelerationFactor = 80f;
+
+    public void copyState(Component component) {
+        if (component instanceof Thrusters) {
+            copyState((Thrusters) component);
+        }
+    }
+
+    public void copyState(Thrusters thrusters) {
+        this.thrustLevel = thrusters.thrustLevel;
+        this.accelerationFactor = thrusters.accelerationFactor;
+    }
 
     public float getAccelerationAddedByThrust() {
         return thrustLevel * accelerationFactor;
@@ -27,5 +36,10 @@ public class Thrusters extends Component {
     public Thrusters setAccelerationFactor(float accelerationAmount) {
         this.accelerationFactor = accelerationAmount;
         return this;
+    }
+
+    @Override
+    public Thrusters clone() {
+        return (Thrusters) super.clone();
     }
 }

@@ -1,16 +1,22 @@
 package com.dumptruckman.darkascendance.network.server;
 
+import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.dumptruckman.darkascendance.core.Entity;
 import com.dumptruckman.darkascendance.core.GameLogic;
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.network.messages.MessageFactory;
 import com.dumptruckman.darkascendance.network.NetworkSystemInjector;
-import recs.Entity;
+import com.dumptruckman.darkascendance.network.server.systems.SnapshotCreationSystem;
 import recs.EntityWorld;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 class ServerLogicLoop extends GameLogic implements Runnable {
 
     private static final float NANOS_IN_SECOND = 1000000000.0F;
+
+    private static ConcurrentHashMap<Integer, Entity> connectedPlayerShips = new ConcurrentHashMap<Integer, Entity>();
 
     private volatile boolean readyForNetworking = false;
     private float deltaTime = 0L;
@@ -24,6 +30,7 @@ class ServerLogicLoop extends GameLogic implements Runnable {
 
     @Override
     public void run() {
+        SnapshotCreationSystem.lockToThread();
         lastTime = TimeUtils.nanoTime();
         while (true) {
             updateTime();
@@ -46,14 +53,31 @@ class ServerLogicLoop extends GameLogic implements Runnable {
     }
 
     public void playerConnected(int connectionId) {
+        System.out.println("Player connected: " + connectionId);
+        IntMap.Values<recs.Entity> entities = getWorld().getAddedEntities().values();
+        while (entities.hasNext()) {
+            Entity entity = (Entity) entities.next();
+            setChanged();
+            notifyObservers(MessageFactory.createEntity(connectionId, entity));
+        }
         Entity entity = getEntityFactory().createBasicShip();
         setChanged();
         notifyObservers(MessageFactory.createPlayerShip(connectionId, entity));
+        connectedPlayerShips.put(connectionId, entity);
+    }
+
+    public void playerDisconnected(int connectionId) {
+        Entity entity = connectedPlayerShips.get(connectionId);
+        setChanged();
+        notifyObservers(MessageFactory.destroyEntity(connectionId, entity));
+        getWorld().removeEntity(entity.getId());
+        connectedPlayerShips.remove(connectionId);
+        System.out.println("Player disconnected: " + connectionId);
     }
 
     public void updatePlayerControls(Controls updatedControls) {
-        Entity entity = getWorld().getEntity(updatedControls.getEntityId());
+        recs.Entity entity = getWorld().getEntity(updatedControls.getEntityId());
         Controls oldControls = entity.getComponent(Controls.class);
-        oldControls.copyControls(updatedControls);
+        oldControls.copyState(updatedControls);
     }
 }

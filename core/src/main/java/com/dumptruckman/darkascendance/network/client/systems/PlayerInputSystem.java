@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import com.dumptruckman.darkascendance.core.components.Controls;
-import com.dumptruckman.darkascendance.core.components.Player;
+import com.dumptruckman.darkascendance.network.client.components.Player;
 import recs.ComponentMapper;
 import recs.IntervalEntitySystem;
 
@@ -34,10 +34,27 @@ public class PlayerInputSystem extends IntervalEntitySystem implements InputProc
 
         mouseVector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 
-        controls.up = up;
-        controls.down = down;
-        controls.left = left;
-        controls.right = right;
+        boolean changed = false;
+        if (controls.up() != up) {
+            controls.up(up);
+            changed = true;
+        }
+        if (controls.down() != down) {
+            controls.down(down);
+            changed = true;
+        }
+        if (controls.left() != left) {
+            controls.left(left);
+            changed = true;
+        }
+        if (controls.right() != right) {
+            controls.right(right);
+            changed = true;
+        }
+        if (changed) {
+            System.out.println("Proccessing controls for entity: " + entityId);
+            CommandSendSystem.setPlayerControlsChanged(controls);
+        }
 
         /*
         if(shoot) {

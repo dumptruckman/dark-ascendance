@@ -1,12 +1,22 @@
 package com.dumptruckman.darkascendance.core.components;
 
-import recs.Component;
-
-public class Position extends Component {
+public class Position extends Component implements Cloneable {
 
     private float x = 0F;
     private float y = 0F;
     private float rotation = 0F;
+
+    public void copyState(Component component) {
+        if (component instanceof Position) {
+            copyState((Position) component);
+        }
+    }
+
+    public void copyState(Position position) {
+        this.x = position.x;
+        this.y = position.y;
+        this.rotation = position.rotation;
+    }
 
     public float getX() {
         return x;
@@ -85,5 +95,10 @@ public class Position extends Component {
         setRotation(newRotation);
 
         return this;
+    }
+
+    @Override
+    public Position clone() {
+        return (Position) super.clone();
     }
 }

@@ -2,12 +2,22 @@ package com.dumptruckman.darkascendance.core.components;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import recs.Component;
 
-public class Velocity extends Component {
+public class Velocity extends Component implements Cloneable {
 
     Vector2 vector = new Vector2(0, 0);
     private Vector2 max = new Vector2(200f, 200f);
+
+    public void copyState(Component component) {
+        if (component instanceof Velocity) {
+            copyState((Velocity) component);
+        }
+    }
+
+    public void copyState(Velocity velocity) {
+        this.vector = velocity.vector;
+        this.max = velocity.max;
+    }
 
     public static float getRotationRequiredToReverseVelocity(Velocity v) {
         float x = -v.vector.x;
@@ -70,5 +80,14 @@ public class Velocity extends Component {
     public Velocity setMaxY(float y) {
         max.y = y;
         return this;
+    }
+
+    @Override
+    public Velocity clone() {
+        Velocity copy = new Velocity();
+        copy.vector = new Vector2(this.vector);
+        copy.max = new Vector2(this.max);
+        copy.setEntityId(getEntityId());
+        return copy;
     }
 }

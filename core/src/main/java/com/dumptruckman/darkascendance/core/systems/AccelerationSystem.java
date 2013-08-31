@@ -4,9 +4,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
-import recs.Component;
+import com.dumptruckman.darkascendance.network.server.systems.SnapshotCreationSystem;
 import recs.ComponentMapper;
-import recs.Entity;
 import recs.IntervalEntitySystem;
 
 public class AccelerationSystem extends IntervalEntitySystem {
@@ -53,5 +52,6 @@ public class AccelerationSystem extends IntervalEntitySystem {
 
         velocity.addToX(acceleration * -(float) MathUtils.sin(facingAngleRadians));
         velocity.addToY(acceleration * (float) MathUtils.cos(facingAngleRadians));
+        SnapshotCreationSystem.addChangedComponentToSnapshot(velocity);
     }
 }

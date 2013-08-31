@@ -1,12 +1,11 @@
 package com.dumptruckman.darkascendance.core.systems;
 
 import com.dumptruckman.darkascendance.core.components.Controls;
-import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
+import com.dumptruckman.darkascendance.network.server.systems.SnapshotCreationSystem;
 import recs.ComponentMapper;
-import recs.Entity;
 import recs.IntervalEntitySystem;
 
 public class ControlsSystem extends IntervalEntitySystem {
@@ -21,7 +20,7 @@ public class ControlsSystem extends IntervalEntitySystem {
     private float timeToFire;
 
     public ControlsSystem(float interval) {
-        super(interval, Controls.class, Position.class, Player.class, Velocity.class);
+        super(interval, Controls.class, Position.class, Velocity.class);
     }
 
     @Override
@@ -32,20 +31,31 @@ public class ControlsSystem extends IntervalEntitySystem {
         Thrusters thrusters = thrustersMap.get(entityId);
 
         if (thrusters != null) {
-            if(controls.up) {
-                thrusters.setThrustLevel(1F);
+            if(controls.up()) {
+                if (thrusters.getThrustLevel() != 1F) {
+                    thrusters.setThrustLevel(1F);
+                    SnapshotCreationSystem.addChangedComponentToSnapshot(thrusters);
+                }
             } else {
-                thrusters.setThrustLevel(0F);
+                if (thrusters.getThrustLevel() != 0F) {
+                    thrusters.setThrustLevel(0F);
+                    SnapshotCreationSystem.addChangedComponentToSnapshot(thrusters);
+                }
             }
+
         }
-        if(controls.down) {
+        if(controls.down()) {
             position.attainRotation(Velocity.getRotationRequiredToReverseVelocity(velocity), (deltaInSec * ROTATION_SPEED));
         }
-        if(controls.left) {
+        if(controls.left()) {
             position.setRotation(position.getRotation() + (deltaInSec * ROTATION_SPEED));
         }
-        if(controls.right) {
+        if(controls.right()) {
             position.setRotation(position.getRotation() - (deltaInSec * ROTATION_SPEED));
+        }
+
+        if (controls.down() || controls.right() || controls.left()) {
+            SnapshotCreationSystem.addChangedComponentToSnapshot(position);
         }
 
         /*

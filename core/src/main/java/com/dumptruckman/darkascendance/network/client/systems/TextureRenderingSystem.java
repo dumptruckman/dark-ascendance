@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
-import com.dumptruckman.darkascendance.core.components.Graphics;
+import com.badlogic.gdx.utils.SortedIntList;
+import com.dumptruckman.darkascendance.network.client.components.Graphics;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.graphics.Textures;
@@ -143,6 +144,6 @@ public class TextureRenderingSystem extends EntitySystem {
 
     @Override
     protected void removeEntity(final int id) {
-        sortedEntities.remove(id);
+        sortedEntities.remove((Object) id);
     }
 }

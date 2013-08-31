@@ -1,7 +1,7 @@
 package com.dumptruckman.darkascendance.network.messages;
 
+import com.dumptruckman.darkascendance.core.Entity;
 import com.dumptruckman.darkascendance.network.NetworkEntity;
-import recs.Entity;
 
 public class EntityMessage extends Message {
 

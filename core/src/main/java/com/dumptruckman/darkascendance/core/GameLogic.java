@@ -1,11 +1,5 @@
 package com.dumptruckman.darkascendance.core;
 
-import com.dumptruckman.darkascendance.core.components.Controls;
-import com.dumptruckman.darkascendance.core.components.Graphics;
-import com.dumptruckman.darkascendance.core.components.Player;
-import com.dumptruckman.darkascendance.core.components.Position;
-import com.dumptruckman.darkascendance.core.components.Thrusters;
-import com.dumptruckman.darkascendance.core.components.Velocity;
 import com.dumptruckman.darkascendance.core.systems.AccelerationSystem;
 import com.dumptruckman.darkascendance.core.systems.ControlsSystem;
 import com.dumptruckman.darkascendance.core.systems.MovementSystem;

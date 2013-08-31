@@ -17,12 +17,7 @@ public class DarkAscendance extends Game {
 
     @Override
     public void create() {
-        try {
-            new GameServer(8080).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        GameClient gameClient = new GameClient(gameSettings, 8080);
+        GameClient gameClient = new GameClient(gameSettings, 25565, 25562);
         try {
             gameClient.start();
         } catch (IOException e) {
