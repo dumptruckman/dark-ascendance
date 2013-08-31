@@ -1,7 +1,7 @@
 package com.dumptruckman.darkascendance.network.messages;
 
 import com.dumptruckman.darkascendance.core.components.Controls;
-import com.dumptruckman.darkascendance.recs.Entity;
+import recs.Entity;
 
 public class MessageFactory {
 

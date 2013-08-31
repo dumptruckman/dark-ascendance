@@ -4,8 +4,8 @@ import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.network.KryoNetwork;
 import com.dumptruckman.darkascendance.network.messages.MessageFactory;
-import com.dumptruckman.darkascendance.recs.ComponentMapper;
-import com.dumptruckman.darkascendance.recs.IntervalEntitySystem;
+import recs.ComponentMapper;
+import recs.IntervalEntitySystem;
 
 public class CommandSendSystem extends IntervalEntitySystem {
 

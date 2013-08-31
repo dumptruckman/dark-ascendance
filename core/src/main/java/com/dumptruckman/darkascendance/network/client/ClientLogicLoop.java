@@ -11,8 +11,8 @@ import com.dumptruckman.darkascendance.core.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.core.systems.TextureRenderingSystem;
 import com.dumptruckman.darkascendance.network.NetworkEntity;
 import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
-import com.dumptruckman.darkascendance.recs.Entity;
-import com.dumptruckman.darkascendance.recs.EntityWorld;
+import recs.Entity;
+import recs.EntityWorld;
 
 public class ClientLogicLoop extends GameLogic implements Screen {
 

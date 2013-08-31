@@ -4,9 +4,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
-import com.dumptruckman.darkascendance.recs.ComponentMapper;
-import com.dumptruckman.darkascendance.recs.Entity;
-import com.dumptruckman.darkascendance.recs.IntervalEntitySystem;
+import recs.ComponentMapper;
+import recs.Entity;
+import recs.IntervalEntitySystem;
 
 public class AccelerationSystem extends IntervalEntitySystem {
 

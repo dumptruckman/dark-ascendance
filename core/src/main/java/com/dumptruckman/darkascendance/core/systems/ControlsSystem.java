@@ -5,8 +5,8 @@ import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
-import com.dumptruckman.darkascendance.recs.ComponentMapper;
-import com.dumptruckman.darkascendance.recs.IntervalEntitySystem;
+import recs.ComponentMapper;
+import recs.IntervalEntitySystem;
 
 public class ControlsSystem extends IntervalEntitySystem {
 

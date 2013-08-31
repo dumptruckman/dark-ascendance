@@ -9,7 +9,7 @@ import com.dumptruckman.darkascendance.core.components.Velocity;
 import com.dumptruckman.darkascendance.core.systems.AccelerationSystem;
 import com.dumptruckman.darkascendance.core.systems.ControlsSystem;
 import com.dumptruckman.darkascendance.core.systems.MovementSystem;
-import com.dumptruckman.darkascendance.recs.EntityWorld;
+import recs.EntityWorld;
 
 import java.util.Observable;
 

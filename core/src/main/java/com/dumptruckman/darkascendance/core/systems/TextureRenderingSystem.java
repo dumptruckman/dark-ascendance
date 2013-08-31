@@ -9,8 +9,8 @@ import com.dumptruckman.darkascendance.core.components.Graphics;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.graphics.Textures;
-import com.dumptruckman.darkascendance.recs.ComponentMapper;
-import com.dumptruckman.darkascendance.recs.EntitySystem;
+import recs.ComponentMapper;
+import recs.EntitySystem;
 
 import java.util.ArrayList;
 import java.util.Collections;

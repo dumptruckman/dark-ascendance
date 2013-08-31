@@ -1,6 +1,6 @@
 package com.dumptruckman.darkascendance.network;
 
-import com.dumptruckman.darkascendance.recs.Entity;
+import recs.Entity;
 
 public class NetworkEntity {
 

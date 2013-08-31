@@ -6,8 +6,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.core.components.Player;
-import com.dumptruckman.darkascendance.recs.ComponentMapper;
-import com.dumptruckman.darkascendance.recs.IntervalEntitySystem;
+import recs.ComponentMapper;
+import recs.IntervalEntitySystem;
 
 public class PlayerInputSystem extends IntervalEntitySystem implements InputProcessor {
 

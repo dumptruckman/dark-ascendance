@@ -1,8 +1,8 @@
 package com.dumptruckman.darkascendance.network.systems;
 
 import com.dumptruckman.darkascendance.network.KryoNetwork;
-import com.dumptruckman.darkascendance.recs.EntitySystem;
-import com.dumptruckman.darkascendance.recs.EntityWorld;
+import recs.EntitySystem;
+import recs.EntityWorld;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,8 +6,8 @@ import com.dumptruckman.darkascendance.core.components.Player;
 import com.dumptruckman.darkascendance.core.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.core.graphics.Textures;
 import com.dumptruckman.darkascendance.network.NetworkEntity;
-import com.dumptruckman.darkascendance.recs.Entity;
-import com.dumptruckman.darkascendance.recs.EntityWorld;
+import recs.Entity;
+import recs.EntityWorld;
 
 public class ClientEntityConfigurator {
 

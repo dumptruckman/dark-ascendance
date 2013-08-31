@@ -4,8 +4,8 @@ import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.core.components.Position;
 import com.dumptruckman.darkascendance.core.components.Thrusters;
 import com.dumptruckman.darkascendance.core.components.Velocity;
-import com.dumptruckman.darkascendance.recs.Entity;
-import com.dumptruckman.darkascendance.recs.EntityWorld;
+import recs.Entity;
+import recs.EntityWorld;
 
 public class EntityFactory {
 

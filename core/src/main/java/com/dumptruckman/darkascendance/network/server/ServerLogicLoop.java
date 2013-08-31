@@ -5,8 +5,8 @@ import com.dumptruckman.darkascendance.core.GameLogic;
 import com.dumptruckman.darkascendance.core.components.Controls;
 import com.dumptruckman.darkascendance.network.messages.MessageFactory;
 import com.dumptruckman.darkascendance.network.systems.NetworkSystemInjector;
-import com.dumptruckman.darkascendance.recs.Entity;
-import com.dumptruckman.darkascendance.recs.EntityWorld;
+import recs.Entity;
+import recs.EntityWorld;
 
 class ServerLogicLoop extends GameLogic implements Runnable {
 
