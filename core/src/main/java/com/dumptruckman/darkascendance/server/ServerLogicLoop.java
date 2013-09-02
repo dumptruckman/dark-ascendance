@@ -8,11 +8,12 @@ import com.dumptruckman.darkascendance.shared.components.Controls;
 import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
 import com.dumptruckman.darkascendance.shared.network.NetworkSystemInjector;
 import com.dumptruckman.darkascendance.server.systems.SnapshotCreationSystem;
+import com.dumptruckman.darkascendance.shared.snapshot.Snapshot;
 import recs.EntityWorld;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-class ServerLogicLoop extends GameLogic implements Runnable {
+public class ServerLogicLoop extends GameLogic implements Runnable {
 
     private static final float NANOS_IN_SECOND = 1000000000.0F;
 
@@ -22,11 +23,11 @@ class ServerLogicLoop extends GameLogic implements Runnable {
     private float deltaTime = 0L;
     private float lastTime = 0L;
 
-    public ServerLogicLoop(NetworkSystemInjector networkSystemInjector) {
+    ServerLogicLoop(NetworkSystemInjector networkSystemInjector) {
         super(new EntityWorld());
         networkSystemInjector.addTimeKeepingSystemToWorld(getWorld());
         addLogicSystems();
-        networkSystemInjector.addSystemsToWorld(getWorld());
+        getWorld().addSystem(new SnapshotCreationSystem(this, GameServer.SNAPSHOT_RATE));
     }
 
     @Override
@@ -80,5 +81,10 @@ class ServerLogicLoop extends GameLogic implements Runnable {
         recs.Entity entity = getWorld().getEntity(updatedControls.getEntityId());
         Controls oldControls = entity.getComponent(Controls.class);
         oldControls.copyState(updatedControls);
+    }
+
+    public void snapshotPrepared(Snapshot snapshot) {
+        setChanged();
+        notifyObservers(MessageFactory.createSnapshot(snapshot));
     }
 }

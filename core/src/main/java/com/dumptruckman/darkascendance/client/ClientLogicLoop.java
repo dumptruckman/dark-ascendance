@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.dumptruckman.darkascendance.client.systems.CommandSendSystem;
 import com.dumptruckman.darkascendance.client.systems.SnapshotInterpolationSystem;
 import com.dumptruckman.darkascendance.client.systems.SnapshotProcessingSystem;
 import com.dumptruckman.darkascendance.shared.Entity;
@@ -14,6 +15,8 @@ import com.dumptruckman.darkascendance.client.systems.PlayerCameraSystem;
 import com.dumptruckman.darkascendance.client.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.client.systems.ServerEntityHandlingSystem;
 import com.dumptruckman.darkascendance.client.systems.TextureRenderingSystem;
+import com.dumptruckman.darkascendance.shared.components.Controls;
+import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
 import com.dumptruckman.darkascendance.shared.network.NetworkEntity;
 import com.dumptruckman.darkascendance.shared.network.NetworkSystemInjector;
 import com.dumptruckman.darkascendance.server.GameServer;
@@ -23,6 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientLogicLoop extends GameLogic implements Screen {
 
+    private static final float COMMAND_RATE = 0.050F;
+
     private static ConcurrentHashMap<Integer, Entity> serverEntityIdMap = new ConcurrentHashMap<Integer, Entity>();
 
     private TextureRenderingSystem textureRenderingSystem;
@@ -31,7 +36,7 @@ public class ClientLogicLoop extends GameLogic implements Screen {
 
     FPSLogger fpsLogger = new FPSLogger();
 
-    public ClientLogicLoop(NetworkSystemInjector networkSystemInjector, float screenWidth, float screenHeight) {
+    public ClientLogicLoop(float screenWidth, float screenHeight) {
         super(new EntityWorld());
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
         this.entityConfigurator = new ClientEntityConfigurator(getWorld(), new TextureFactory());
@@ -43,7 +48,7 @@ public class ClientLogicLoop extends GameLogic implements Screen {
         //addLogicSystems();
         textureRenderingSystem = new TextureRenderingSystem(camera);
         getWorld().addSystem(textureRenderingSystem);
-        networkSystemInjector.addSystemsToWorld(getWorld());
+        getWorld().addSystem(new CommandSendSystem(this, COMMAND_RATE));
         getWorld().addSystem(new ServerEntityHandlingSystem());
     }
 
@@ -80,6 +85,11 @@ public class ClientLogicLoop extends GameLogic implements Screen {
 
     public static Entity getEntityByServerEntityId(int entityId) {
         return serverEntityIdMap.get(entityId);
+    }
+
+    public void controlsPrepared(Controls playerControls) {
+        setChanged();
+        notifyObservers(MessageFactory.playerInputState(playerControls));
     }
 
     @Override

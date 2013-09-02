@@ -34,7 +34,6 @@ public class GameServer extends KryoNetwork {
         this.server = new Server();
 
         NetworkSystemInjector networkSystemInjector = new NetworkSystemInjector(this);
-        networkSystemInjector.addSystem(new SnapshotCreationSystem(this, SNAPSHOT_RATE));
         this.serverLogicLoop = new ServerLogicLoop(networkSystemInjector);
 
         serverLogicLoop.addObserver(this);

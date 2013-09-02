@@ -43,7 +43,7 @@ public abstract class KryoNetwork extends Listener implements Observer {
         kryo.register(Vector2.class);
     }
 
-    public abstract void sendMessage(Message message);
+    protected abstract void sendMessage(Message message);
 
     @Override
     public final void update(final Observable o, final Object arg) {

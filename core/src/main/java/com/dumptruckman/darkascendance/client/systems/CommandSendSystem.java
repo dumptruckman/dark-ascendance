@@ -1,5 +1,6 @@
 package com.dumptruckman.darkascendance.client.systems;
 
+import com.dumptruckman.darkascendance.client.ClientLogicLoop;
 import com.dumptruckman.darkascendance.shared.components.Controls;
 import com.dumptruckman.darkascendance.client.components.Player;
 import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
@@ -8,13 +9,13 @@ import recs.IntervalEntitySystem;
 
 public class CommandSendSystem extends IntervalEntitySystem {
 
-    private KryoNetwork kryoNetwork;
+    private ClientLogicLoop client;
 
     private static Controls playerControls = null;
 
-    public CommandSendSystem(KryoNetwork kryoNetwork, final float interval) {
+    public CommandSendSystem(ClientLogicLoop client, final float interval) {
         super(interval, Player.class, Controls.class);
-        this.kryoNetwork = kryoNetwork;
+        this.client = client;
     }
 
     public static void setPlayerControlsChanged(Controls controls) {
@@ -25,7 +26,7 @@ public class CommandSendSystem extends IntervalEntitySystem {
     @Override
     protected void processEntity(int entityId, float deltaInSec) {
         if (playerControls != null) {
-            kryoNetwork.sendMessage(MessageFactory.playerInputState(playerControls));
+            client.controlsPrepared(playerControls);
             playerControls = null;
         }
     }

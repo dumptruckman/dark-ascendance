@@ -14,8 +14,6 @@ import java.util.Observer;
 
 public class GameClient extends KryoNetwork implements Observer {
 
-    private static final float COMMAND_RATE = 0.050F;
-
     private int tcpPort;
     private int udpPort;
     private Client client;
@@ -27,9 +25,7 @@ public class GameClient extends KryoNetwork implements Observer {
         client = new Client();
         client.addListener(this);
 
-        NetworkSystemInjector networkSystemInjector = new NetworkSystemInjector(this);
-        networkSystemInjector.addSystem(new CommandSendSystem(this, COMMAND_RATE));
-        clientLogicLoop = new ClientLogicLoop(networkSystemInjector, gameSettings.getScreenWidth(), gameSettings.getScreenHeight());
+        clientLogicLoop = new ClientLogicLoop(gameSettings.getScreenWidth(), gameSettings.getScreenHeight());
         clientLogicLoop.addObserver(this);
 
         initializeSerializables(client.getKryo());
