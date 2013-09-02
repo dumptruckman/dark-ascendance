@@ -5,8 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Velocity extends Component implements Cloneable {
 
-    Vector2 vector = new Vector2(0, 0);
-    private Vector2 max = new Vector2(200f, 200f);
+    float x = 0;
+    float y = 0;
+    float maxX = 200;
+    float maxY = 200;
 
     public void copyState(Component component) {
         if (component instanceof Velocity) {
@@ -15,13 +17,15 @@ public class Velocity extends Component implements Cloneable {
     }
 
     public void copyState(Velocity velocity) {
-        this.vector = velocity.vector;
-        this.max = velocity.max;
+        this.x = velocity.x;
+        this.y = velocity.y;
+        this.maxX = velocity.maxX;
+        this.maxY = velocity.maxY;
     }
 
     public static float getRotationRequiredToReverseVelocity(Velocity v) {
-        float x = -v.vector.x;
-        float y = -v.vector.y;
+        float x = -v.x;
+        float y = -v.y;
         double rotation = 0;
         if (x != 0) {
             if (x < 0) {
@@ -37,57 +41,53 @@ public class Velocity extends Component implements Cloneable {
     }
 
     public float getX() {
-        return vector.x;
+        return x;
     }
 
     public float getY() {
-        return vector.y;
+        return y;
     }
 
     public Velocity setX(float x) {
-        vector.x = x;
+        this.x = x;
         return this;
     }
 
     public Velocity setY(float y) {
-        vector.y = y;
+        this.y = y;
         return this;
     }
 
     public Velocity addToX(float amount) {
-        vector.x = MathUtils.clamp(vector.x + amount, -max.x, max.x);
+        this.x = MathUtils.clamp(this.x + amount, -maxX, maxX);
         return this;
     }
 
     public Velocity addToY(float amount) {
-        vector.y = MathUtils.clamp(vector.y + amount, -max.y, max.y);
+        this.y = MathUtils.clamp(this.y + amount, -maxY, maxY);
         return this;
     }
 
     public float getMaxX() {
-        return max.x;
+        return maxX;
     }
 
     public float getMaxY() {
-        return max.y;
+        return maxY;
     }
 
     public Velocity setMaxX(float x) {
-        max.x = x;
+        this.maxX = x;
         return this;
     }
 
     public Velocity setMaxY(float y) {
-        max.y = y;
+        this.maxY = y;
         return this;
     }
 
     @Override
     public Velocity clone() {
-        Velocity copy = new Velocity();
-        copy.vector = new Vector2(this.vector);
-        copy.max = new Vector2(this.max);
-        copy.setEntityId(getEntityId());
-        return copy;
+        return (Velocity) super.clone();
     }
 }
