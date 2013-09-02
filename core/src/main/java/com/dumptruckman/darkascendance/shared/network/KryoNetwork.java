@@ -1,4 +1,4 @@
-package com.dumptruckman.darkascendance.shared;
+package com.dumptruckman.darkascendance.shared.network;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectSet;
@@ -20,6 +20,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 public abstract class KryoNetwork extends Listener implements Observer {
+
+    private long currentGameTime = 0L;
 
     protected void initializeSerializables(Kryo kryo) {
         kryo.register(Component.class);
@@ -55,9 +57,17 @@ public abstract class KryoNetwork extends Listener implements Observer {
     public final void received(final Connection connection, final Object o) {
         if (o instanceof Message) {
             int latency = connection.getReturnTripTime();
-            handleMessage(connection.getID(), (Message) o, latency);
+            handleMessage((Message) o, latency);
         }
     }
 
-    public abstract void handleMessage(int connectionId, Message message, final int latency);
+    public abstract void handleMessage(Message message, final int latency);
+
+    public void setCurrentGameTime(long currentGameTime) {
+        this.currentGameTime = currentGameTime;
+    }
+
+    public long getCurrentGameTime() {
+        return currentGameTime;
+    }
 }

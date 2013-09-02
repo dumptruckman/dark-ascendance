@@ -1,10 +1,10 @@
 package com.dumptruckman.darkascendance.server;
 
 import com.dumptruckman.darkascendance.shared.components.Controls;
-import com.dumptruckman.darkascendance.shared.KryoNetwork;
+import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import com.dumptruckman.darkascendance.shared.messages.ComponentMessage;
 import com.dumptruckman.darkascendance.shared.messages.Message;
-import com.dumptruckman.darkascendance.shared.NetworkSystemInjector;
+import com.dumptruckman.darkascendance.shared.network.NetworkSystemInjector;
 import com.dumptruckman.darkascendance.server.systems.SnapshotCreationSystem;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
@@ -15,7 +15,7 @@ public class GameServer extends KryoNetwork {
 
     public static void main(String[] args) {
         try {
-            new GameServer(25565, 25562).start();
+            new GameServer(25565, 27000).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,11 +45,37 @@ public class GameServer extends KryoNetwork {
     public void start() throws IOException {
         startServerLogic();
         server.start();
-        server.bind(tcpPort);
+        server.bind(tcpPort, udpPort);
     }
 
     @Override
-    public void sendMessage(final Message message) {
+    public void sendMessage(Message message) {
+        message.time(getCurrentGameTime());
+        if (message.isUdp()) {
+            sendUdpMessage(message);
+        } else {
+            sendTcpMessage(message);
+        }
+    }
+
+    private void sendUdpMessage(Message message) {
+        server.sendToAllUDP(message);
+        /*
+        if (message.isForAllConnections()) {
+            if (message.isForAllButOneConnections()) {
+                server.sendToAllExceptUDP(message.getConnectionId(), message);
+            } else {
+                server.sendToAllUDP(message);
+            }
+        } else {
+            server.sendToUDP(message.getConnectionId(), message);
+        }
+        */
+    }
+
+    private void sendTcpMessage(final Message message) {
+        server.sendToAllTCP(message);
+        /*
         if (message.isForAllConnections()) {
             if (message.isForAllButOneConnections()) {
                 server.sendToAllExceptTCP(message.getConnectionId(), message);
@@ -59,6 +85,7 @@ public class GameServer extends KryoNetwork {
         } else {
             server.sendToTCP(message.getConnectionId(), message);
         }
+        */
     }
 
     public void startServerLogic() {
@@ -77,23 +104,12 @@ public class GameServer extends KryoNetwork {
     }
 
     @Override
-    public void handleMessage(int connectionId, Message message, final int latency) {
+    public void handleMessage(Message message, final int latency) {
         switch (message.getMessageType()) {
             case PLAYER_INPUT_STATE:
                 ComponentMessage entityMessage = (ComponentMessage) message;
                 serverLogicLoop.updatePlayerControls((Controls) entityMessage.getComponent());
                 break;
         }
-    }
-
-    public void sendMessageToAll(Message message) {
-        server.sendToAllTCP(message);
-        /*
-        try {
-            server.update(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
     }
 }

@@ -12,7 +12,6 @@ public class GameLogic extends Observable {
     public static final float TICK_LENGTH_SECONDS = 0.015F;
 
     private EntityWorld world;
-    private boolean doInterpolation = false;
     private EntityFactory entityFactory;
 
     private ControlsSystem controlsSystem;
@@ -28,10 +27,6 @@ public class GameLogic extends Observable {
         this.controlsSystem = new ControlsSystem(TICK_LENGTH_SECONDS);
         this.accelerationSystem = new AccelerationSystem(TICK_LENGTH_SECONDS);
         this.movementSystem = new MovementSystem(TICK_LENGTH_SECONDS);
-    }
-
-    protected void enableInterpolation() {
-        this.doInterpolation = true;
     }
 
     protected EntityWorld getWorld() {

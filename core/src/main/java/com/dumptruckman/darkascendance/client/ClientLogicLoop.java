@@ -5,16 +5,17 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.dumptruckman.darkascendance.client.systems.SnapshotInterpolationSystem;
+import com.dumptruckman.darkascendance.client.systems.SnapshotProcessingSystem;
 import com.dumptruckman.darkascendance.shared.Entity;
 import com.dumptruckman.darkascendance.shared.GameLogic;
 import com.dumptruckman.darkascendance.client.graphics.TextureFactory;
 import com.dumptruckman.darkascendance.client.systems.PlayerCameraSystem;
 import com.dumptruckman.darkascendance.client.systems.PlayerInputSystem;
 import com.dumptruckman.darkascendance.client.systems.ServerEntityHandlingSystem;
-import com.dumptruckman.darkascendance.client.systems.SnapshotApplicationSystem;
 import com.dumptruckman.darkascendance.client.systems.TextureRenderingSystem;
-import com.dumptruckman.darkascendance.shared.NetworkEntity;
-import com.dumptruckman.darkascendance.shared.NetworkSystemInjector;
+import com.dumptruckman.darkascendance.shared.network.NetworkEntity;
+import com.dumptruckman.darkascendance.shared.network.NetworkSystemInjector;
 import com.dumptruckman.darkascendance.server.GameServer;
 import recs.EntityWorld;
 
@@ -34,9 +35,9 @@ public class ClientLogicLoop extends GameLogic implements Screen {
         super(new EntityWorld());
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
         this.entityConfigurator = new ClientEntityConfigurator(getWorld(), new TextureFactory());
-        enableInterpolation();
 
-        getWorld().addSystem(new SnapshotApplicationSystem(GameServer.SNAPSHOT_RATE));
+        getWorld().addSystem(new SnapshotProcessingSystem(GameServer.SNAPSHOT_RATE));
+        getWorld().addSystem(new SnapshotInterpolationSystem());
         getWorld().addSystem(new PlayerInputSystem(TICK_LENGTH_SECONDS));
         getWorld().addSystem(new PlayerCameraSystem());
         //addLogicSystems();

@@ -2,7 +2,7 @@ package com.dumptruckman.darkascendance.shared.messages;
 
 import com.badlogic.gdx.utils.ObjectSet;
 import com.dumptruckman.darkascendance.shared.components.Component;
-import com.dumptruckman.darkascendance.server.snapshot.Snapshot;
+import com.dumptruckman.darkascendance.shared.snapshot.Snapshot;
 
 public class SnapshotMessage extends Message {
 

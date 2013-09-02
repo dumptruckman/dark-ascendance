@@ -6,6 +6,7 @@ public class Position extends Component implements Cloneable {
     private float y = 0F;
     private float rotation = 0F;
 
+    @Override
     public void copyState(Component component) {
         if (component instanceof Position) {
             copyState((Position) component);

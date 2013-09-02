@@ -6,7 +6,7 @@ import com.dumptruckman.darkascendance.shared.Entity;
 import com.dumptruckman.darkascendance.shared.GameLogic;
 import com.dumptruckman.darkascendance.shared.components.Controls;
 import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
-import com.dumptruckman.darkascendance.shared.NetworkSystemInjector;
+import com.dumptruckman.darkascendance.shared.network.NetworkSystemInjector;
 import com.dumptruckman.darkascendance.server.systems.SnapshotCreationSystem;
 import recs.EntityWorld;
 
@@ -24,6 +24,7 @@ class ServerLogicLoop extends GameLogic implements Runnable {
 
     public ServerLogicLoop(NetworkSystemInjector networkSystemInjector) {
         super(new EntityWorld());
+        networkSystemInjector.addTimeKeepingSystemToWorld(getWorld());
         addLogicSystems();
         networkSystemInjector.addSystemsToWorld(getWorld());
     }

@@ -16,7 +16,7 @@ public class DarkAscendance extends Game {
 
     @Override
     public void create() {
-        GameClient gameClient = new GameClient(gameSettings, 25565, 25562);
+        GameClient gameClient = new GameClient(gameSettings, 25565, 27000);
         try {
             gameClient.start();
         } catch (IOException e) {

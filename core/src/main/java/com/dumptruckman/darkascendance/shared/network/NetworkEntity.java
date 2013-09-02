@@ -1,5 +1,6 @@
-package com.dumptruckman.darkascendance.shared;
+package com.dumptruckman.darkascendance.shared.network;
 
+import com.dumptruckman.darkascendance.shared.Entity;
 import recs.Component;
 
 public class NetworkEntity {

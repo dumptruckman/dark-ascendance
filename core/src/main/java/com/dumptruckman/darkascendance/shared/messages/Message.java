@@ -6,6 +6,8 @@ public class Message {
     private int connectionId;
     private boolean forAllConnections = true;
     private boolean forAllButOneConnections = false;
+    private boolean udp = true;
+    private long messageTime;
 
     public Message type(MessageType messageType) {
         this.messageType = messageType;
@@ -32,6 +34,15 @@ public class Message {
         return this;
     }
 
+    public Message useTcp() {
+        this.udp = false;
+        return this;
+    }
+
+    public boolean isUdp() {
+        return udp;
+    }
+
     public Message notForConnectionId(int id) {
         this.connectionId = id;
         this.forAllConnections = true;
@@ -45,5 +56,14 @@ public class Message {
 
     public boolean isForAllButOneConnections() {
         return forAllButOneConnections;
+    }
+
+    public long getTime() {
+        return messageTime;
+    }
+
+    public Message time(long messageTime) {
+        this.messageTime = messageTime;
+        return this;
     }
 }

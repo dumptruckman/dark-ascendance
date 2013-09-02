@@ -1,5 +1,6 @@
-package com.dumptruckman.darkascendance.shared;
+package com.dumptruckman.darkascendance.shared.network;
 
+import com.dumptruckman.darkascendance.shared.systems.TimeKeepingSystem;
 import recs.EntitySystem;
 import recs.EntityWorld;
 
@@ -23,6 +24,11 @@ public class NetworkSystemInjector {
         for (EntitySystem system : systems) {
             world.addSystem(system);
         }
+        return world;
+    }
+
+    public EntityWorld addTimeKeepingSystemToWorld(EntityWorld world) {
+        world.addSystem(new TimeKeepingSystem(kryoNetwork));
         return world;
     }
 }

@@ -1,11 +1,11 @@
 package com.dumptruckman.darkascendance.client;
 
-import com.dumptruckman.darkascendance.shared.KryoNetwork;
-import com.dumptruckman.darkascendance.client.systems.SnapshotApplicationSystem;
+import com.dumptruckman.darkascendance.client.systems.SnapshotProcessingSystem;
+import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import com.dumptruckman.darkascendance.shared.messages.EntityMessage;
 import com.dumptruckman.darkascendance.shared.messages.Message;
 import com.dumptruckman.darkascendance.client.systems.CommandSendSystem;
-import com.dumptruckman.darkascendance.shared.NetworkSystemInjector;
+import com.dumptruckman.darkascendance.shared.network.NetworkSystemInjector;
 import com.dumptruckman.darkascendance.shared.messages.SnapshotMessage;
 import com.esotericsoftware.kryonet.Client;
 
@@ -37,7 +37,7 @@ public class GameClient extends KryoNetwork implements Observer {
 
     public void start() throws IOException {
         client.start();
-        client.connect(5000, "75.143.227.173", tcpPort);
+        client.connect(5000, "75.143.227.173", tcpPort, udpPort);
     }
 
     public ClientLogicLoop getScreen() {
@@ -50,7 +50,13 @@ public class GameClient extends KryoNetwork implements Observer {
     }
 
     @Override
-    public void handleMessage(int connectionId, Message message, final int latency) {
+    public void handleMessage(Message message, final int latency) {
+        if (message.isForAllButOneConnections() && message.getConnectionId() == client.getID()) {
+            return;
+        }
+        if (!message.isForAllConnections() && message.getConnectionId() != client.getID()) {
+            return;
+        }
         EntityMessage entityMessage;
         switch (message.getMessageType()) {
             case CREATE_PLAYER_SHIP:
@@ -70,7 +76,7 @@ public class GameClient extends KryoNetwork implements Observer {
                 getScreen().removeEntityFromWorld(entityMessage.getNetworkEntity());
                 break;
             case SNAPSHOT:
-                SnapshotApplicationSystem.addSnapshot((SnapshotMessage) message);
+                SnapshotProcessingSystem.addSnapshot((SnapshotMessage) message);
                 break;
         }
     }

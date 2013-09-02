@@ -3,7 +3,7 @@ package com.dumptruckman.darkascendance.server.systems;
 import com.dumptruckman.darkascendance.shared.components.Component;
 import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
 import com.dumptruckman.darkascendance.server.GameServer;
-import com.dumptruckman.darkascendance.server.snapshot.Snapshot;
+import com.dumptruckman.darkascendance.shared.snapshot.Snapshot;
 import recs.IntervalEntitySystem;
 
 import java.util.concurrent.locks.ReentrantLock;
@@ -31,7 +31,7 @@ public class SnapshotCreationSystem extends IntervalEntitySystem {
     }
 
     private void sendSnapshot(Snapshot snapshot) {
-        server.sendMessageToAll(MessageFactory.createSnapshot(snapshot));
+        server.sendMessage(MessageFactory.createSnapshot(snapshot));
     }
 
     private void resetCurrentSnapshot() {

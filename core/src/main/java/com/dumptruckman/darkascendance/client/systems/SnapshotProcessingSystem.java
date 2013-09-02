@@ -9,11 +9,11 @@ import recs.IntervalEntitySystem;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class SnapshotApplicationSystem extends IntervalEntitySystem {
+public class SnapshotProcessingSystem extends IntervalEntitySystem {
 
     private static Queue<SnapshotMessage> snapshotQueue = new ConcurrentLinkedQueue<SnapshotMessage>();
 
-    public SnapshotApplicationSystem(final float intervalInSec) {
+    public SnapshotProcessingSystem(final float intervalInSec) {
         super(intervalInSec);
     }
 
@@ -42,5 +42,6 @@ public class SnapshotApplicationSystem extends IntervalEntitySystem {
     public static void addSnapshot(SnapshotMessage snapshot) {
         snapshotQueue.add(snapshot);
     }
+
 
 }

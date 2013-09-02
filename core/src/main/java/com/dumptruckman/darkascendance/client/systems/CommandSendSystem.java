@@ -2,7 +2,7 @@ package com.dumptruckman.darkascendance.client.systems;
 
 import com.dumptruckman.darkascendance.shared.components.Controls;
 import com.dumptruckman.darkascendance.client.components.Player;
-import com.dumptruckman.darkascendance.shared.KryoNetwork;
+import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
 import recs.IntervalEntitySystem;
 
