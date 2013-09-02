@@ -51,11 +51,11 @@ public class GameServer extends KryoNetwork {
     @Override
     public void sendMessage(Message message) {
         message.time(getCurrentGameTime());
-        if (message.isUdp()) {
+        //if (message.isUdp()) {
             sendUdpMessage(message);
-        } else {
-            sendTcpMessage(message);
-        }
+        //} else {
+        //    sendTcpMessage(message);
+        //}
     }
 
     private void sendUdpMessage(Message message) {

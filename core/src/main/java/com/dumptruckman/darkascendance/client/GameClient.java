@@ -46,7 +46,7 @@ public class GameClient extends KryoNetwork implements Observer {
 
     @Override
     public void sendMessage(final Message message) {
-        client.sendTCP(message);
+        client.sendUDP(message);
     }
 
     @Override

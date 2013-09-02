@@ -11,7 +11,7 @@ public class MessageFactory {
                 .entity(entity)
                 .type(MessageType.CREATE_ENTITY)
                 .onlyForConnectionId(connectionId)
-                .useTcp();
+                .important(true);
     }
 
     public static Message destroyEntity(int connectionId, Entity entity) {
@@ -19,7 +19,7 @@ public class MessageFactory {
                 .entity(entity)
                 .type(MessageType.DESTROY_ENTITY)
                 .notForConnectionId(connectionId)
-                .useTcp();
+                .important(true);
     }
 
     public static Message createPlayerShip(int connectionId, Entity entity) {
@@ -27,7 +27,7 @@ public class MessageFactory {
                 .entity(entity)
                 .type(MessageType.CREATE_PLAYER_SHIP)
                 .connectionId(connectionId)
-                .useTcp();
+                .important(true);
     }
 
     public static Message playerInputState(Controls controls) {

@@ -6,7 +6,7 @@ public class Message {
     private int connectionId;
     private boolean forAllConnections = true;
     private boolean forAllButOneConnections = false;
-    private boolean udp = true;
+    private boolean important = false;
     private long messageTime;
 
     public Message type(MessageType messageType) {
@@ -34,13 +34,13 @@ public class Message {
         return this;
     }
 
-    public Message useTcp() {
-        this.udp = false;
+    public Message important(boolean important) {
+        this.important = important;
         return this;
     }
 
-    public boolean isUdp() {
-        return udp;
+    public boolean isImportant() {
+        return important;
     }
 
     public Message notForConnectionId(int id) {
