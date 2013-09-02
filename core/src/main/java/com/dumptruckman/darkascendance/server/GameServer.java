@@ -1,11 +1,11 @@
 package com.dumptruckman.darkascendance.server;
 
 import com.dumptruckman.darkascendance.shared.components.Controls;
+import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
 import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import com.dumptruckman.darkascendance.shared.messages.ComponentMessage;
 import com.dumptruckman.darkascendance.shared.messages.Message;
 import com.dumptruckman.darkascendance.shared.network.NetworkSystemInjector;
-import com.dumptruckman.darkascendance.server.systems.SnapshotCreationSystem;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
@@ -28,15 +28,15 @@ public class GameServer extends KryoNetwork {
     private Server server;
     private ServerLogicLoop serverLogicLoop;
 
+
     public GameServer(int tcpPort, int udpPort) {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
         this.server = new Server();
 
-        NetworkSystemInjector networkSystemInjector = new NetworkSystemInjector(this);
-        this.serverLogicLoop = new ServerLogicLoop(networkSystemInjector);
-
+        this.serverLogicLoop = new ServerLogicLoop(new NetworkSystemInjector(this));
         serverLogicLoop.addObserver(this);
+
         initializeSerializables(server.getKryo());
         server.addListener(this);
     }
@@ -49,42 +49,20 @@ public class GameServer extends KryoNetwork {
 
     @Override
     public void sendMessage(Message message) {
-        message.time(getCurrentGameTime());
-        //if (message.isUdp()) {
-            sendUdpMessage(message);
-        //} else {
-        //    sendTcpMessage(message);
-        //}
-    }
-
-    private void sendUdpMessage(Message message) {
+        getUdpGuarantor().guaranteeMessage(message);
         server.sendToAllUDP(message);
-        /*
-        if (message.isForAllConnections()) {
-            if (message.isForAllButOneConnections()) {
-                server.sendToAllExceptUDP(message.getConnectionId(), message);
-            } else {
-                server.sendToAllUDP(message);
-            }
-        } else {
-            server.sendToUDP(message.getConnectionId(), message);
-        }
-        */
     }
 
-    private void sendTcpMessage(final Message message) {
-        server.sendToAllTCP(message);
-        /*
-        if (message.isForAllConnections()) {
-            if (message.isForAllButOneConnections()) {
-                server.sendToAllExceptTCP(message.getConnectionId(), message);
-            } else {
-                server.sendToAllTCP(message);
-            }
-        } else {
-            server.sendToTCP(message.getConnectionId(), message);
-        }
-        */
+    @Override
+    public void resendMessage(final int connectionId, final Message message) {
+        System.out.println("Resending message " + message.getMessageId() + " to connection " + connectionId);
+        server.sendToUDP(connectionId, message);
+    }
+
+    @Override
+    public void sendAcknowledgement(final int connectionId, final Acknowledgement acknowledgement) {
+        System.out.println("Sending ack " + acknowledgement.getMessageId() + " to connection " + connectionId);
+        server.sendToUDP(connectionId, acknowledgement);
     }
 
     public void startServerLogic() {
@@ -94,16 +72,18 @@ public class GameServer extends KryoNetwork {
 
     @Override
     public void connected(final Connection connection) {
+        getUdpGuarantor().addConnection(connection.getID());
         serverLogicLoop.playerConnected(connection.getID());
     }
 
     @Override
     public void disconnected(final Connection connection) {
+        getUdpGuarantor().removeConnection(connection.getID());
         serverLogicLoop.playerDisconnected(connection.getID());
     }
 
     @Override
-    public void handleMessage(Message message, final int latency) {
+    public void handleMessage(Message message) {
         switch (message.getMessageType()) {
             case PLAYER_INPUT_STATE:
                 ComponentMessage entityMessage = (ComponentMessage) message;

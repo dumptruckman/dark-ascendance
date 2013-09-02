@@ -1,23 +1,24 @@
 package com.dumptruckman.darkascendance.shared.network;
 
-import com.dumptruckman.darkascendance.shared.systems.TimeKeepingSystem;
+import com.badlogic.gdx.utils.ObjectSet;
 import recs.EntitySystem;
 import recs.EntityWorld;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NetworkSystemInjector {
 
-    private KryoNetwork kryoNetwork;
-    private List<EntitySystem> systems = new ArrayList<EntitySystem>();
+    private ObjectSet<EntitySystem> systems = new ObjectSet<EntitySystem>();
+    private ObjectSet<EntitySystem> highPrioritySystems = new ObjectSet<EntitySystem>();
 
     public NetworkSystemInjector(KryoNetwork kryoNetwork) {
-        this.kryoNetwork = kryoNetwork;
+        addHighPrioritySystem(kryoNetwork.getUdpGuarantor());
     }
 
     public void addSystem(EntitySystem system) {
         systems.add(system);
+    }
+
+    public void addHighPrioritySystem(EntitySystem system) {
+        highPrioritySystems.add(system);
     }
 
     public EntityWorld addSystemsToWorld(EntityWorld world) {
@@ -27,8 +28,10 @@ public class NetworkSystemInjector {
         return world;
     }
 
-    public EntityWorld addTimeKeepingSystemToWorld(EntityWorld world) {
-        world.addSystem(new TimeKeepingSystem(kryoNetwork));
+    public EntityWorld addHighPrioritySystemsToWorld(EntityWorld world) {
+        for (EntitySystem system : highPrioritySystems) {
+            world.addSystem(system);
+        }
         return world;
     }
 }

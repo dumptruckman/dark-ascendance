@@ -1,6 +1,6 @@
 package com.dumptruckman.darkascendance.shared.messages;
 
-public class Message {
+public class Message extends MessageBase {
 
     private MessageType messageType;
     private int connectionId;

@@ -36,11 +36,12 @@ public class ClientLogicLoop extends GameLogic implements Screen {
 
     FPSLogger fpsLogger = new FPSLogger();
 
-    public ClientLogicLoop(float screenWidth, float screenHeight) {
+    public ClientLogicLoop(NetworkSystemInjector networkSystemInjector, float screenWidth, float screenHeight) {
         super(new EntityWorld());
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
         this.entityConfigurator = new ClientEntityConfigurator(getWorld(), new TextureFactory());
 
+        networkSystemInjector.addHighPrioritySystemsToWorld(getWorld());
         getWorld().addSystem(new SnapshotProcessingSystem(GameServer.SNAPSHOT_RATE));
         getWorld().addSystem(new SnapshotInterpolationSystem());
         getWorld().addSystem(new PlayerInputSystem(TICK_LENGTH_SECONDS));

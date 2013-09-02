@@ -1,12 +1,12 @@
 package com.dumptruckman.darkascendance.client;
 
 import com.dumptruckman.darkascendance.client.systems.SnapshotProcessingSystem;
+import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
 import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import com.dumptruckman.darkascendance.shared.messages.EntityMessage;
 import com.dumptruckman.darkascendance.shared.messages.Message;
-import com.dumptruckman.darkascendance.client.systems.CommandSendSystem;
-import com.dumptruckman.darkascendance.shared.network.NetworkSystemInjector;
 import com.dumptruckman.darkascendance.shared.messages.SnapshotMessage;
+import com.dumptruckman.darkascendance.shared.network.NetworkSystemInjector;
 import com.esotericsoftware.kryonet.Client;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class GameClient extends KryoNetwork implements Observer {
         client = new Client();
         client.addListener(this);
 
-        clientLogicLoop = new ClientLogicLoop(gameSettings.getScreenWidth(), gameSettings.getScreenHeight());
+        clientLogicLoop = new ClientLogicLoop(new NetworkSystemInjector(this), gameSettings.getScreenWidth(), gameSettings.getScreenHeight());
         clientLogicLoop.addObserver(this);
 
         initializeSerializables(client.getKryo());
@@ -46,7 +46,19 @@ public class GameClient extends KryoNetwork implements Observer {
     }
 
     @Override
-    public void handleMessage(Message message, final int latency) {
+    public void resendMessage(final int connectionId, final Message message) {
+        System.out.println("Resending message " + message.getMessageId() + " to server.");
+        client.sendUDP(message);
+    }
+
+    @Override
+    public void sendAcknowledgement(final int connectionId, final Acknowledgement acknowledgement) {
+        System.out.println("Sending ack " + acknowledgement.getMessageId() + " to server.");
+        client.sendUDP(acknowledgement);
+    }
+
+    @Override
+    public void handleMessage(Message message) {
         if (message.isForAllButOneConnections() && message.getConnectionId() == client.getID()) {
             return;
         }

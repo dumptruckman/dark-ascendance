@@ -6,11 +6,14 @@ import com.dumptruckman.darkascendance.shared.components.Controls;
 import com.dumptruckman.darkascendance.shared.components.Position;
 import com.dumptruckman.darkascendance.shared.components.Thrusters;
 import com.dumptruckman.darkascendance.shared.components.Velocity;
+import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
 import com.dumptruckman.darkascendance.shared.messages.ComponentMessage;
 import com.dumptruckman.darkascendance.shared.messages.EntityMessage;
 import com.dumptruckman.darkascendance.shared.messages.Message;
+import com.dumptruckman.darkascendance.shared.messages.MessageBase;
 import com.dumptruckman.darkascendance.shared.messages.MessageType;
 import com.dumptruckman.darkascendance.shared.messages.SnapshotMessage;
+import com.dumptruckman.darkascendance.shared.systems.UdpMessageGuarantorSystem;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -22,6 +25,7 @@ import java.util.Observer;
 public abstract class KryoNetwork extends Listener implements Observer {
 
     private long currentGameTime = 0L;
+    private UdpMessageGuarantorSystem udpGuarantor = new UdpMessageGuarantorSystem(this);
 
     protected void initializeSerializables(Kryo kryo) {
         kryo.register(Component.class);
@@ -43,7 +47,15 @@ public abstract class KryoNetwork extends Listener implements Observer {
         kryo.register(Vector2.class);
     }
 
+    protected UdpMessageGuarantorSystem getUdpGuarantor() {
+        return udpGuarantor;
+    }
+
     protected abstract void sendMessage(Message message);
+
+    public abstract void resendMessage(int connectionId, Message message);
+
+    public abstract void sendAcknowledgement(int connectionId, Acknowledgement acknowledgement);
 
     @Override
     public final void update(final Observable o, final Object arg) {
@@ -55,13 +67,15 @@ public abstract class KryoNetwork extends Listener implements Observer {
 
     @Override
     public final void received(final Connection connection, final Object o) {
-        if (o instanceof Message) {
+        if (o instanceof MessageBase) {
+            int connectionId = connection.getID();
+            MessageBase messageBase = (MessageBase) o;
             int latency = connection.getReturnTripTime();
-            handleMessage((Message) o, latency);
+            getUdpGuarantor().receiveMessage(connectionId, messageBase, latency);
         }
     }
 
-    public abstract void handleMessage(Message message, final int latency);
+    public abstract void handleMessage(Message message);
 
     public void setCurrentGameTime(long currentGameTime) {
         this.currentGameTime = currentGameTime;
