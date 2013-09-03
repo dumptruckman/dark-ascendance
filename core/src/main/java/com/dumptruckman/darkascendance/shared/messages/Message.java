@@ -66,4 +66,17 @@ public class Message extends MessageBase {
         this.messageTime = messageTime;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "messageId=" + getMessageId() +
+                ", messageType=" + getMessageType() +
+                ", connectionId=" + getConnectionId() +
+                ", forAllConnections=" + isForAllConnections() +
+                ", forAllButOneConnections=" + isForAllButOneConnections() +
+                ", important=" + isImportant() +
+                ", messageTime=" + getTime() +
+                '}';
+    }
 }
