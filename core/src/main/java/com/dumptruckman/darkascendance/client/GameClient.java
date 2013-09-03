@@ -8,6 +8,7 @@ import com.dumptruckman.darkascendance.shared.messages.Message;
 import com.dumptruckman.darkascendance.shared.messages.SnapshotMessage;
 import com.dumptruckman.darkascendance.shared.network.NetworkSystemInjector;
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
 
 import java.io.IOException;
 import java.util.Observer;
@@ -47,6 +48,11 @@ public class GameClient extends KryoNetwork implements Observer {
         if (message.isImportant())
             System.out.println("Sending " + message + " to server.");
         client.sendUDP(message);
+    }
+
+    @Override
+    public void connected(final Connection connection) {
+        getUdpGuarantor().addConnection(connection.getID());
     }
 
     @Override
