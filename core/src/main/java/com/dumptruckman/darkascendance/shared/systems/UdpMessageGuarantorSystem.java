@@ -181,6 +181,7 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
             Message message = (Message) messageBase;
             if (message.isImportant()) {
                 kryoNetwork.sendAcknowledgement(connectionId, (Acknowledgement) new Acknowledgement().messageId(message.getMessageId()));
+                kryoNetwork.handleMessage(message);
             } else {
                 kryoNetwork.handleMessage(message);
             }
