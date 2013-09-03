@@ -7,6 +7,7 @@ import com.dumptruckman.darkascendance.shared.components.Position;
 import com.dumptruckman.darkascendance.shared.components.Thrusters;
 import com.dumptruckman.darkascendance.shared.components.Velocity;
 import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
+import com.dumptruckman.darkascendance.shared.messages.AcknowledgementBatch;
 import com.dumptruckman.darkascendance.shared.messages.ComponentMessage;
 import com.dumptruckman.darkascendance.shared.messages.EntityMessage;
 import com.dumptruckman.darkascendance.shared.messages.Message;
@@ -32,6 +33,7 @@ public abstract class KryoNetwork extends Listener implements Observer {
         kryo.register(Component[].class);
         kryo.register(Object[].class);
         kryo.register(ObjectSet.class);
+        kryo.register(Iterable.class);
 
         kryo.register(Message.class);
         kryo.register(NetworkEntity.class);
@@ -41,6 +43,7 @@ public abstract class KryoNetwork extends Listener implements Observer {
         kryo.register(SnapshotMessage.class);
         kryo.register(Acknowledgement.class);
         kryo.register(MessageBase.class);
+        kryo.register(AcknowledgementBatch.class);
 
         kryo.register(Controls.class);
         kryo.register(Position.class);
@@ -57,7 +60,7 @@ public abstract class KryoNetwork extends Listener implements Observer {
 
     public abstract void resendMessage(int connectionId, Message message);
 
-    public abstract void sendAcknowledgement(int connectionId, Acknowledgement acknowledgement);
+    public abstract void sendAcknowledgement(int connectionId, AcknowledgementBatch acknowledgementBatch);
 
     @Override
     public final void update(final Observable o, final Object arg) {
