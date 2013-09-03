@@ -43,19 +43,21 @@ public class GameClient extends KryoNetwork implements Observer {
     }
 
     @Override
-    public void sendMessage(final Message message) {
+    protected void sendMessage(final Message message) {
+        if (message.isImportant())
+            System.out.println("Sending " + message + " to server.");
         client.sendUDP(message);
     }
 
     @Override
     public void resendMessage(final int connectionId, final Message message) {
-        System.out.println("Resending message " + message.getMessageId() + " to server.");
+        System.out.println("Resending " + message + " to server.");
         client.sendUDP(message);
     }
 
     @Override
     public void sendAcknowledgement(final int connectionId, final Acknowledgement acknowledgement) {
-        System.out.println("Sending ack " + acknowledgement.getMessageId() + " to server.");
+        System.out.println("Sending " + acknowledgement + " to server.");
         client.sendUDP(acknowledgement);
     }
 

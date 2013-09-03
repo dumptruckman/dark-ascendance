@@ -39,6 +39,8 @@ public abstract class KryoNetwork extends Listener implements Observer {
         kryo.register(EntityMessage.class);
         kryo.register(ComponentMessage.class);
         kryo.register(SnapshotMessage.class);
+        kryo.register(Acknowledgement.class);
+        kryo.register(MessageBase.class);
 
         kryo.register(Controls.class);
         kryo.register(Position.class);
@@ -61,6 +63,7 @@ public abstract class KryoNetwork extends Listener implements Observer {
     public final void update(final Observable o, final Object arg) {
         if (arg instanceof Message) {
             Message message = (Message) arg;
+            getUdpGuarantor().guaranteeMessage(message);
             sendMessage(message);
         }
     }

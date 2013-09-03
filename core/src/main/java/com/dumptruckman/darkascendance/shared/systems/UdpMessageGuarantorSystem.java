@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.IntMap;
 import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
 import com.dumptruckman.darkascendance.shared.messages.Message;
 import com.dumptruckman.darkascendance.shared.messages.MessageBase;
+import com.dumptruckman.darkascendance.shared.messages.MessageType;
 import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import recs.EntitySystem;
 
@@ -30,6 +31,8 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
     private Queue<Integer> removedConnections = new ConcurrentLinkedQueue<Integer>();
     private Semaphore connectionProcessingSemaphore = new Semaphore(1);
 
+    private Queue<Message> incomingMessageQueue = new ConcurrentLinkedQueue<Message>();
+
     private KryoNetwork kryoNetwork;
     private long currentTime = 0L;
 
@@ -41,6 +44,7 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
     protected void processSystem(float deltaInSec) {
         updateTime(deltaInSec);
         processAddedRemovedConnections();
+        processIncomingMessages();
         resendMessagesIfNotAcknowledgedWithinTimeout();
     }
 
@@ -81,11 +85,21 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
         lastSentTimes.remove(connectionId);
     }
 
+    private void processIncomingMessages() {
+        Message message;
+        while ((message = incomingMessageQueue.poll()) != null) {
+            kryoNetwork.handleMessage(message);
+        }
+    }
+
     private void resendMessagesIfNotAcknowledgedWithinTimeout() {
         for (IntMap.Entry<Queue<Message>> outgoingMessagesEntry : importantOutgoingMessageQueues.entries()) {
             int connectionId = outgoingMessagesEntry.key;
             int timeout = resendTimeoutMap.get(connectionId);
             Queue<Message> outgoingMessageQueue = outgoingMessagesEntry.value;
+            if (outgoingMessageQueue == null) {
+                System.out.println("HOUSTON, WE HAVE A PROBLEM!");
+            }
             Map<Short, Acknowledgement> acknowledgements = acknowledgementMaps.get(connectionId);
             Map<Short, Long> lastSentTimeMap = lastSentTimes.get(connectionId);
 
@@ -179,12 +193,12 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
             }
         } else if (messageBase instanceof Message) {
             Message message = (Message) messageBase;
-            if (message.isImportant()) {
+            if (message.isImportant()
+                    && message.getMessageType() != MessageType.PLAYER_CONNECTED
+                    && message.getMessageType() != MessageType.PLAYER_DISCONNECTED) {
                 kryoNetwork.sendAcknowledgement(connectionId, (Acknowledgement) new Acknowledgement().messageId(message.getMessageId()));
-                kryoNetwork.handleMessage(message);
-            } else {
-                kryoNetwork.handleMessage(message);
             }
+            incomingMessageQueue.add(message);
         }
     }
 
@@ -192,7 +206,6 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
         if (returnTripTime == 0) {
             returnTripTime = 30;
         }
-        System.out.println("Updating timeout to: " + (int) (returnTripTime * 1.5));
         resendTimeoutMap.put(connectionId, (int) (returnTripTime * 1.5));
     }
 }

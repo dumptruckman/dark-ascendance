@@ -2,6 +2,7 @@ package com.dumptruckman.darkascendance.server;
 
 import com.dumptruckman.darkascendance.shared.components.Controls;
 import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
+import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
 import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import com.dumptruckman.darkascendance.shared.messages.ComponentMessage;
 import com.dumptruckman.darkascendance.shared.messages.Message;
@@ -58,19 +59,20 @@ public class GameServer extends KryoNetwork {
 
     @Override
     public void sendMessage(Message message) {
-        getUdpGuarantor().guaranteeMessage(message);
+        if (message.isImportant())
+            System.out.println("Sending " + message + " to all clients.");
         server.sendToAllUDP(message);
     }
 
     @Override
     public void resendMessage(final int connectionId, final Message message) {
-        System.out.println("Resending message " + message.getMessageId() + " to connection " + connectionId);
+        System.out.println("Resending " + message + " to connection " + connectionId);
         server.sendToUDP(connectionId, message);
     }
 
     @Override
     public void sendAcknowledgement(final int connectionId, final Acknowledgement acknowledgement) {
-        System.out.println("Sending ack " + acknowledgement.getMessageId() + " to connection " + connectionId);
+        System.out.println("Sending " + acknowledgement + " to connection " + connectionId);
         server.sendToUDP(connectionId, acknowledgement);
     }
 
@@ -81,19 +83,27 @@ public class GameServer extends KryoNetwork {
 
     @Override
     public void connected(final Connection connection) {
-        getUdpGuarantor().addConnection(connection.getID());
-        serverLogicLoop.playerConnected(connection.getID());
+        int connectionId = connection.getID();
+        getUdpGuarantor().addConnection(connectionId);
+        getUdpGuarantor().receiveMessage(connectionId, MessageFactory.playerConnected(connectionId), connection.getReturnTripTime());
     }
 
     @Override
     public void disconnected(final Connection connection) {
-        getUdpGuarantor().removeConnection(connection.getID());
-        serverLogicLoop.playerDisconnected(connection.getID());
+        int connectionId = connection.getID();
+        getUdpGuarantor().removeConnection(connectionId);
+        getUdpGuarantor().receiveMessage(connectionId, MessageFactory.playerDisconnected(connectionId), connection.getReturnTripTime());
     }
 
     @Override
     public void handleMessage(Message message) {
         switch (message.getMessageType()) {
+            case PLAYER_CONNECTED:
+                serverLogicLoop.playerConnected(message.getConnectionId());
+                break;
+            case PLAYER_DISCONNECTED:
+                serverLogicLoop.playerDisconnected(message.getConnectionId());
+                break;
             case PLAYER_INPUT_STATE:
                 ComponentMessage entityMessage = (ComponentMessage) message;
                 serverLogicLoop.updatePlayerControls((Controls) entityMessage.getComponent());

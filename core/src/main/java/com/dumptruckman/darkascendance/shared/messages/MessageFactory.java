@@ -6,6 +6,20 @@ import com.dumptruckman.darkascendance.shared.snapshot.Snapshot;
 
 public class MessageFactory {
 
+    public static Message playerConnected(int connectionId) {
+        return new Message()
+                .connectionId(connectionId)
+                .type(MessageType.PLAYER_CONNECTED)
+                .important(true);
+    }
+
+    public static Message playerDisconnected(int connectionId) {
+        return new Message()
+                .connectionId(connectionId)
+                .type(MessageType.PLAYER_DISCONNECTED)
+                .important(true);
+    }
+
     public static Message createEntity(int connectionId, Entity entity) {
         return new EntityMessage()
                 .entity(entity)
@@ -33,7 +47,8 @@ public class MessageFactory {
     public static Message playerInputState(Controls controls) {
         return new ComponentMessage()
                 .component(controls)
-                .type(MessageType.PLAYER_INPUT_STATE);
+                .type(MessageType.PLAYER_INPUT_STATE)
+                .important(true);
     }
 
     public static Message createSnapshot(Snapshot snapshot) {

@@ -75,9 +75,9 @@ public class ServerLogicLoop extends GameLogic implements Runnable {
             notifyObservers(MessageFactory.destroyEntity(connectionId, entity));
             getWorld().removeEntity(entity.getId());
             connectedPlayerShips.remove(connectionId);
-            System.out.println("Player disconnected before loading: " + connectionId);
-        } else {
             System.out.println("Player disconnected: " + connectionId);
+        } else {
+            System.out.println("Player disconnected before loading: " + connectionId);
         }
     }
 
