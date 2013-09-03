@@ -2,6 +2,7 @@ package com.dumptruckman.darkascendance.client;
 
 import com.dumptruckman.darkascendance.client.systems.SnapshotProcessingSystem;
 import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
+import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
 import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import com.dumptruckman.darkascendance.shared.messages.EntityMessage;
 import com.dumptruckman.darkascendance.shared.messages.Message;
@@ -52,7 +53,8 @@ public class GameClient extends KryoNetwork implements Observer {
 
     @Override
     public void connected(final Connection connection) {
-        getUdpGuarantor().addConnection(connection.getID());
+        int connectionId = connection.getID();
+        getUdpGuarantor().receiveMessage(connectionId, MessageFactory.playerConnected(connectionId), connection.getReturnTripTime());
     }
 
     @Override

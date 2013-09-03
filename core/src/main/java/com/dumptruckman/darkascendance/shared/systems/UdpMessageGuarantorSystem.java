@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 
 public class UdpMessageGuarantorSystem extends EntitySystem {
 
@@ -26,10 +25,6 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
     private IntMap<Map<Short, Long>> lastSentTimes = new IntMap<Map<Short, Long>>();
     private Map<Integer, Map<Short, Acknowledgement>> acknowledgementMaps = new ConcurrentHashMap<Integer, Map<Short, Acknowledgement>>();
     private Map<Integer, Integer> resendTimeoutMap = new ConcurrentHashMap<Integer, Integer>();
-
-    private Queue<Integer> addedConnections = new ConcurrentLinkedQueue<Integer>();
-    private Queue<Integer> removedConnections = new ConcurrentLinkedQueue<Integer>();
-    private Semaphore connectionProcessingSemaphore = new Semaphore(1);
 
     private Queue<Message> incomingMessageQueue = new ConcurrentLinkedQueue<Message>();
 
@@ -43,7 +38,6 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
     @Override
     protected void processSystem(float deltaInSec) {
         updateTime(deltaInSec);
-        processAddedRemovedConnections();
         processIncomingMessages();
         resendMessagesIfNotAcknowledgedWithinTimeout();
     }
@@ -51,24 +45,6 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
     private void updateTime(float deltaInSec) {
         currentTime += deltaInSec * 1000;
         kryoNetwork.setCurrentGameTime(currentTime);
-    }
-
-    private void processAddedRemovedConnections() {
-        try {
-            connectionProcessingSemaphore.acquire();
-
-            Integer connectionId;
-            while ((connectionId = addedConnections.poll()) != null) {
-                addNewConnection(connectionId);
-            }
-            while ((connectionId = removedConnections.poll()) != null) {
-                removeOldConnection(connectionId);
-            }
-
-            connectionProcessingSemaphore.release();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     private void addNewConnection(Integer connectionId) {
@@ -88,6 +64,11 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
     private void processIncomingMessages() {
         Message message;
         while ((message = incomingMessageQueue.poll()) != null) {
+            if (message.getMessageType() == MessageType.PLAYER_CONNECTED) {
+                addNewConnection(message.getConnectionId());
+            } else if (message.getMessageType() == MessageType.PLAYER_DISCONNECTED) {
+                removeOldConnection(message.getConnectionId());
+            }
             kryoNetwork.handleMessage(message);
         }
     }
@@ -117,32 +98,6 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
                     kryoNetwork.resendMessage(connectionId, outgoingMessage);
                 }
             }
-        }
-    }
-
-    public void addConnection(Integer connectionId) {
-        try {
-            connectionProcessingSemaphore.acquire();
-
-            addedConnections.add(connectionId);
-            removedConnections.remove(connectionId);
-
-            connectionProcessingSemaphore.release();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void removeConnection(Integer connectionId) {
-        try {
-            connectionProcessingSemaphore.acquire();
-
-            removedConnections.add(connectionId);
-            addedConnections.remove(connectionId);
-
-            connectionProcessingSemaphore.release();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 

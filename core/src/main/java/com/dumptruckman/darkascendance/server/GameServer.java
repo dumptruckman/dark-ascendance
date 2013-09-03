@@ -84,14 +84,12 @@ public class GameServer extends KryoNetwork {
     @Override
     public void connected(final Connection connection) {
         int connectionId = connection.getID();
-        getUdpGuarantor().addConnection(connectionId);
         getUdpGuarantor().receiveMessage(connectionId, MessageFactory.playerConnected(connectionId), connection.getReturnTripTime());
     }
 
     @Override
     public void disconnected(final Connection connection) {
         int connectionId = connection.getID();
-        getUdpGuarantor().removeConnection(connectionId);
         getUdpGuarantor().receiveMessage(connectionId, MessageFactory.playerDisconnected(connectionId), connection.getReturnTripTime());
     }
 
