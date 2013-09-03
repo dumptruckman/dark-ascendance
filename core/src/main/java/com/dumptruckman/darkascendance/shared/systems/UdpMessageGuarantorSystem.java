@@ -188,6 +188,10 @@ public class UdpMessageGuarantorSystem extends EntitySystem {
     }
 
     private void updateTimeoutForConnection(int connectionId, int returnTripTime) {
+        if (returnTripTime == 0) {
+            returnTripTime = 30;
+        }
+        System.out.println("Updating timeout to: " + (int) (returnTripTime * 1.5));
         resendTimeoutMap.put(connectionId, (int) (returnTripTime * 1.5));
     }
 }
