@@ -52,7 +52,6 @@ public class PlayerInputSystem extends IntervalEntitySystem implements InputProc
             changed = true;
         }
         if (changed) {
-            System.out.println("Proccessing controls for entity: " + entityId);
             CommandSendSystem.setPlayerControlsChanged(controls);
         }
 

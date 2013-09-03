@@ -19,7 +19,6 @@ public class CommandSendSystem extends IntervalEntitySystem {
     }
 
     public static void setPlayerControlsChanged(Controls controls) {
-        System.out.println("Player controls changed: " + controls.getEntityId());
         playerControls = controls;
     }
 
