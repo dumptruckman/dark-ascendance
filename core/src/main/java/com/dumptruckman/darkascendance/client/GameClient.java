@@ -14,12 +14,14 @@ import java.util.Observer;
 
 public class GameClient extends KryoNetwork implements Observer {
 
+    private String host;
     private int tcpPort;
     private int udpPort;
     private Client client;
     private ClientLogicLoop clientLogicLoop;
 
-    public GameClient(GameSettings gameSettings, int tcpPort, int udpPort) {
+    public GameClient(GameSettings gameSettings, String host, int tcpPort, int udpPort) {
+        this.host = host;
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
         client = new Client();
@@ -33,7 +35,7 @@ public class GameClient extends KryoNetwork implements Observer {
 
     public void start() throws IOException {
         client.start();
-        client.connect(5000, "75.143.227.173", tcpPort, udpPort);
+        client.connect(5000, host, tcpPort, udpPort);
     }
 
     public ClientLogicLoop getScreen() {

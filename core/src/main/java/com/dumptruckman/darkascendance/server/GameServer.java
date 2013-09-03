@@ -14,8 +14,17 @@ import java.io.IOException;
 public class GameServer extends KryoNetwork {
 
     public static void main(String[] args) {
+        int tcpPort = 25565;
+        int udpPort = 25566;
+
+        if (args.length > 1) {
+            try {
+                tcpPort = Integer.parseInt(args[0]);
+                udpPort = Integer.parseInt(args[1]);
+            } catch (NumberFormatException ignore) { }
+        }
         try {
-            new GameServer(25565, 27000).start();
+            new GameServer(tcpPort, udpPort).start();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -13,7 +13,19 @@ public class DarkAscendanceDesktop {
         config.vSyncEnabled = false;
         config.foregroundFPS = 3000;
         config.backgroundFPS = 3000;
+        String host = "127.0.0.1";
+        int tcpPort = 25565;
+        int udpPort = 25566;
+
+        if (args.length > 2) {
+            host = args[0];
+            try {
+                tcpPort = Integer.parseInt(args[1]);
+                udpPort = Integer.parseInt(args[2]);
+            } catch (NumberFormatException ignore) { }
+        }
+
         GameSettings gameSettings = new GameSettings(config.width, config.height);
-        new LwjglApplication(new DarkAscendance(gameSettings), config);
+        new LwjglApplication(new DarkAscendance(gameSettings, host, tcpPort, udpPort), config);
     }
 }
