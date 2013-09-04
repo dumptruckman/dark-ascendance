@@ -2,7 +2,6 @@ package com.dumptruckman.darkascendance.server;
 
 import com.dumptruckman.darkascendance.shared.components.Controls;
 import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
-import com.dumptruckman.darkascendance.shared.messages.AcknowledgementBatch;
 import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
 import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import com.dumptruckman.darkascendance.shared.messages.ComponentMessage;
@@ -72,9 +71,9 @@ public class GameServer extends KryoNetwork {
     }
 
     @Override
-    public void sendAcknowledgement(int connectionId, AcknowledgementBatch acknowledgementBatch) {
-        System.out.println("Sending " + acknowledgementBatch + " to connection " + connectionId);
-        server.sendToUDP(connectionId, acknowledgementBatch);
+    public void sendAcknowledgement(int connectionId, Acknowledgement acknowledgement) {
+        System.out.println("Sending " + acknowledgement + " to connection " + connectionId);
+        server.sendToUDP(connectionId, acknowledgement);
     }
 
     public void startServerLogic() {

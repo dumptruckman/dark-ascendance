@@ -2,7 +2,6 @@ package com.dumptruckman.darkascendance.client;
 
 import com.dumptruckman.darkascendance.client.systems.SnapshotProcessingSystem;
 import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
-import com.dumptruckman.darkascendance.shared.messages.AcknowledgementBatch;
 import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
 import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import com.dumptruckman.darkascendance.shared.messages.EntityMessage;
@@ -65,9 +64,9 @@ public class GameClient extends KryoNetwork implements Observer {
     }
 
     @Override
-    public void sendAcknowledgement(final int connectionId, AcknowledgementBatch acknowledgementBatch) {
-        System.out.println("Sending " + acknowledgementBatch + " to server.");
-        client.sendUDP(acknowledgementBatch);
+    public void sendAcknowledgement(final int connectionId, Acknowledgement acknowledgement) {
+        System.out.println("Sending " + acknowledgement + " to server.");
+        client.sendUDP(acknowledgement);
     }
 
     @Override

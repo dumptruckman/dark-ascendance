@@ -7,7 +7,6 @@ import com.dumptruckman.darkascendance.shared.components.Position;
 import com.dumptruckman.darkascendance.shared.components.Thrusters;
 import com.dumptruckman.darkascendance.shared.components.Velocity;
 import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
-import com.dumptruckman.darkascendance.shared.messages.AcknowledgementBatch;
 import com.dumptruckman.darkascendance.shared.messages.ComponentMessage;
 import com.dumptruckman.darkascendance.shared.messages.EntityMessage;
 import com.dumptruckman.darkascendance.shared.messages.Message;
@@ -45,7 +44,6 @@ public abstract class KryoNetwork extends Listener implements Observer {
         kryo.register(SnapshotMessage.class);
         kryo.register(Acknowledgement.class);
         kryo.register(MessageBase.class);
-        kryo.register(AcknowledgementBatch.class);
 
         kryo.register(Controls.class);
         kryo.register(Position.class);
@@ -62,7 +60,7 @@ public abstract class KryoNetwork extends Listener implements Observer {
 
     public abstract void resendMessage(int connectionId, Message message);
 
-    public abstract void sendAcknowledgement(int connectionId, AcknowledgementBatch acknowledgementBatch);
+    public abstract void sendAcknowledgement(int connectionId, Acknowledgement acknowledgement);
 
     @Override
     public final void update(final Observable o, final Object arg) {
@@ -76,14 +74,10 @@ public abstract class KryoNetwork extends Listener implements Observer {
     @Override
     public final void received(final Connection connection, final Object o) {
         int connectionId = connection.getID();
-            int latency = connection.getReturnTripTime();
+        int latency = connection.getReturnTripTime();
         if (o instanceof MessageBase) {
             MessageBase messageBase = (MessageBase) o;
             getUdpGuarantor().receiveMessage(connectionId, messageBase, latency);
-        } else if (o instanceof AcknowledgementBatch) {
-            for (Acknowledgement acknowledgement : (AcknowledgementBatch) o) {
-                getUdpGuarantor().receiveMessage(connectionId, acknowledgement, latency);
-            }
         }
     }
 
