@@ -75,11 +75,15 @@ public abstract class KryoNetwork extends Listener implements Observer {
 
     @Override
     public final void received(final Connection connection, final Object o) {
-        if (o instanceof MessageBase) {
-            int connectionId = connection.getID();
-            MessageBase messageBase = (MessageBase) o;
+        int connectionId = connection.getID();
             int latency = connection.getReturnTripTime();
+        if (o instanceof MessageBase) {
+            MessageBase messageBase = (MessageBase) o;
             getUdpGuarantor().receiveMessage(connectionId, messageBase, latency);
+        } else if (o instanceof AcknowledgementBatch) {
+            for (Acknowledgement acknowledgement : (AcknowledgementBatch) o) {
+                getUdpGuarantor().receiveMessage(connectionId, acknowledgement, latency);
+            }
         }
     }
 
