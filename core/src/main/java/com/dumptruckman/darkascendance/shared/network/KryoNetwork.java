@@ -20,6 +20,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import recs.Component;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -34,6 +35,7 @@ public abstract class KryoNetwork extends Listener implements Observer {
         kryo.register(Object[].class);
         kryo.register(ObjectSet.class);
         kryo.register(Iterable.class);
+        kryo.register(ArrayList.class);
 
         kryo.register(Message.class);
         kryo.register(NetworkEntity.class);

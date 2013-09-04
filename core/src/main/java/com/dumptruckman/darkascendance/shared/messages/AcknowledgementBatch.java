@@ -1,12 +1,12 @@
 package com.dumptruckman.darkascendance.shared.messages;
 
-import com.badlogic.gdx.utils.ObjectSet;
-
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class AcknowledgementBatch implements Iterable<Acknowledgement> {
 
-    private ObjectSet<Acknowledgement> acknowledgements = new ObjectSet<Acknowledgement>();
+    private List<Acknowledgement> acknowledgements = new ArrayList<Acknowledgement>();
 
     @Override
     public Iterator<Acknowledgement> iterator() {
@@ -18,7 +18,7 @@ public class AcknowledgementBatch implements Iterable<Acknowledgement> {
     }
 
     public int size() {
-        return acknowledgements.size;
+        return acknowledgements.size();
     }
 
     @Override
