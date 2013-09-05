@@ -33,7 +33,9 @@ class MessageReceiver {
         if (isPotentialConnection(connectionId)) {
             updateTimeoutForConnection(connectionId, returnTripTime);
             sendAcknowledgementIfAppropriate(connectionId, message);
-            if (message.isImportant()) {
+            if (message.isImportant()
+                    && message.getMessageType() != MessageType.PLAYER_CONNECTED
+                    && message.getMessageType() != MessageType.PLAYER_DISCONNECTED) {
                 resequencer.ensureMessageOrder(connectionId, message);
                 while (resequencer.hasOrderlyMessage(connectionId)) {
                     Message nextOrderlyMessage = resequencer.getNextOrderlyMessage(connectionId);

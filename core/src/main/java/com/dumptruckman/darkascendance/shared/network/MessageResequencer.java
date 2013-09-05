@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 class MessageResequencer {
 
     private Map<Integer, Map<Short, Message>> messages = new ConcurrentHashMap<Integer, Map<Short, Message>>();
-    Map<Integer, Short> lastOrderlyMessage = new ConcurrentHashMap<Integer, Short>();
+    ConcurrentHashMap<Integer, Short> lastOrderlyMessage = new ConcurrentHashMap<Integer, Short>();
 
     void addConnection(Integer connectionId) {
         messages.put(connectionId, new ConcurrentHashMap<Short, Message>());
