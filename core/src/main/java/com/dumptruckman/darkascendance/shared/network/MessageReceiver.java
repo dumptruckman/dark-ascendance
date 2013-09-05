@@ -2,7 +2,6 @@ package com.dumptruckman.darkascendance.shared.network;
 
 import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
 import com.dumptruckman.darkascendance.shared.messages.Message;
-import com.dumptruckman.darkascendance.shared.messages.MessageBase;
 import com.dumptruckman.darkascendance.shared.messages.MessageType;
 
 import java.util.Collections;
@@ -32,13 +31,7 @@ public class MessageReceiver {
         if (isPotentialConnection(connectionId)) {
             updateTimeoutForConnection(connectionId, returnTripTime);
         }
-        if (message.isImportant()
-                && message.getMessageType() != MessageType.PLAYER_CONNECTED
-                && message.getMessageType() != MessageType.PLAYER_DISCONNECTED) {
-            if (isPotentialConnection(connectionId)) {
-                kryoNetwork.sendAcknowledgement(connectionId, (Acknowledgement) new Acknowledgement().messageId(message.getMessageId()));
-            }
-        }
+        sendAcknowledgementIfAppropriate(connectionId, message);
         incomingMessageQueue.add(message);
     }
 
@@ -79,6 +72,15 @@ public class MessageReceiver {
             resendTimeoutMap.put(connectionId, 30);
         } else {
             resendTimeoutMap.put(connectionId, (int) (returnTripTime * 1.5));
+        }
+    }
+
+    private void sendAcknowledgementIfAppropriate(int connectionId, Message message) {
+        if (message.isImportant()
+                && message.getMessageType() != MessageType.PLAYER_CONNECTED
+                && message.getMessageType() != MessageType.PLAYER_DISCONNECTED
+                && isPotentialConnection(connectionId)) {
+            kryoNetwork.sendAcknowledgement(connectionId, (Acknowledgement) new Acknowledgement().messageId(message.getMessageId()));
         }
     }
 
