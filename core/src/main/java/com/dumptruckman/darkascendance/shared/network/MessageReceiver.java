@@ -29,41 +29,45 @@ class MessageReceiver {
     }
 
     public void receiveMessage(Integer connectionId, Message message, int returnTripTime) {
-        handleConnectDisconnect(connectionId, message);
+        checkPlayerConnect(message);
         if (isPotentialConnection(connectionId)) {
             updateTimeoutForConnection(connectionId, returnTripTime);
             sendAcknowledgementIfAppropriate(connectionId, message);
-            if (message.isImportant()
-                    && message.getMessageType() != MessageType.PLAYER_CONNECTED
-                    && message.getMessageType() != MessageType.PLAYER_DISCONNECTED) {
+            if (message.isImportant()) {
+                System.out.println("Received important message: " + message);
                 resequencer.ensureMessageOrder(connectionId, message);
                 while (resequencer.hasOrderlyMessage(connectionId)) {
                     Message nextOrderlyMessage = resequencer.getNextOrderlyMessage(connectionId);
+                    System.out.println("got: " + nextOrderlyMessage);
                     incomingMessageQueue.add(nextOrderlyMessage);
                 }
             } else {
                 incomingMessageQueue.add(message);
             }
+        } else {
+            System.out.println("Received message from invalid connection: " + message);
         }
     }
 
     public void receiveAcknowledgement(int connectionId, Acknowledgement acknowledgement) {
         Map<Short, Acknowledgement> acknowledgementMap = receivedAcknowledgements.get(connectionId);
         if (acknowledgementMap != null) {
+            System.out.println("Received ack " + connectionId + " for " + acknowledgement.getMessageId());
             acknowledgementMap.put(acknowledgement.getMessageId(), acknowledgement);
         } else {
             System.out.println("Received and discarded acknowledgement " + acknowledgement.getMessageId() + " from disconnected client: " + connectionId);
         }
     }
 
-    private void handleConnectDisconnect(int connectionId, Message message) {
-        switch (message.getMessageType()) {
-            case PLAYER_CONNECTED:
-                addConnection(connectionId);
-                break;
-            case PLAYER_DISCONNECTED:
-                removeConnection(connectionId);
-                break;
+    private void checkPlayerConnect(Message message) {
+        if (message.getMessageType() == MessageType.PLAYER_CONNECTED) {
+            addConnection(message.getConnectionId());
+        }
+    }
+
+    private void checkPlayerDisconnect(Message message) {
+        if (message.getMessageType() == MessageType.PLAYER_DISCONNECTED) {
+            removeConnection(message.getConnectionId());
         }
     }
 
@@ -102,7 +106,11 @@ class MessageReceiver {
     }
 
     public Message getNextIncomingMessage() {
-        return incomingMessageQueue.poll();
+        Message message = incomingMessageQueue.poll();
+        if (message != null) {
+            checkPlayerDisconnect(message);
+        }
+        return message;
     }
 
     public boolean hasAcknowledgement(Integer connectionId, Short messageId) {

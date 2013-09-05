@@ -26,11 +26,13 @@ class MessageGuarantor {
     }
 
     public void addConnection(int connectionId) {
+        System.out.println("Adding conenction " + connectionId);
         messageQueues.put(connectionId, new LinkedList<Message>());
         lastSentTimes.put(connectionId, new IntMap<Long>());
     }
 
     public void removeConnection(int connectionId) {
+        System.out.println("Removing conenction " + connectionId);
         messageQueues.remove(connectionId);
         lastSentTimes.remove(connectionId);
     }

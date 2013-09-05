@@ -1,6 +1,7 @@
 package com.dumptruckman.darkascendance.shared.network;
 
 import com.dumptruckman.darkascendance.shared.messages.Message;
+import com.dumptruckman.darkascendance.shared.messages.MessageType;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,6 +10,8 @@ class MessageResequencer {
 
     private Map<Integer, Map<Short, Message>> messages = new ConcurrentHashMap<Integer, Map<Short, Message>>();
     ConcurrentHashMap<Integer, Short> lastOrderlyMessage = new ConcurrentHashMap<Integer, Short>();
+    private Map<Integer, Message> connections = new ConcurrentHashMap<Integer, Message>();
+    private Map<Integer, Message> disconnections = new ConcurrentHashMap<Integer, Message>();
 
     void addConnection(Integer connectionId) {
         messages.put(connectionId, new ConcurrentHashMap<Short, Message>());
@@ -21,28 +24,49 @@ class MessageResequencer {
     }
 
     public void ensureMessageOrder(Integer connectionId, Message message) {
-        short messageId = message.getMessageId();
-        if (messageId < 0) {
-            throw new IllegalArgumentException("Message must have valid message ID!");
+        if (message.getMessageType() == MessageType.PLAYER_CONNECTED) {
+            System.out.println("Resquencer put player connect");
+            connections.put(connectionId, message);
+        } else if (message.getMessageType() == MessageType.PLAYER_DISCONNECTED) {
+            System.out.println("Resquencer put player disconnect");
+            disconnections.put(connectionId, message);
+        } else {
+            short messageId = message.getMessageId();
+            if (messageId < 0) {
+                throw new IllegalArgumentException("Message must have valid message ID!");
+            }
+            Map<Short, Message> messages = this.messages.get(connectionId);
+            messages.put(message.getMessageId(), message);
         }
-        Map<Short, Message> messages = this.messages.get(connectionId);
-        messages.put(message.getMessageId(), message);
     }
 
     public boolean hasOrderlyMessage(Integer connectionId) {
-        boolean hasOrderlyMessage = this.messages.get(connectionId).containsKey(getNextOrderlyMessageId(connectionId));
-        if (!hasOrderlyMessage) {
-            System.out.println("Some messages have been received out of order for " + connectionId);
+        boolean hasOrderlyMessage = this.messages.get(connectionId).containsKey(getNextOrderlyMessageId(connectionId))
+                || connections.containsKey(connectionId)
+                || disconnections.containsKey(connectionId);
+        if (!hasOrderlyMessage && !this.messages.get(connectionId).isEmpty()) {
+            System.out.println("Messages out of order for connection " + connectionId);
+            System.out.println(this.messages.get(connectionId).keySet());
         }
         return hasOrderlyMessage;
     }
 
     public Message getNextOrderlyMessage(Integer connectionId) {
+        Message connectMessage = connections.remove(connectionId);
+        if (connectMessage != null) {
+            System.out.println("Deal with connection first");
+            return connectMessage;
+        }
         short nextOrderlyMessageId = getNextOrderlyMessageId(connectionId);
         Message message = this.messages.get(connectionId).get(nextOrderlyMessageId);
         if (message != null) {
             incrementLastOrderlyMessageId(connectionId);
             this.messages.get(connectionId).remove(nextOrderlyMessageId);
+        } else {
+            message = disconnections.remove(connectionId);
+            if (message != null) {
+                System.out.println("Deal with disconnection last");
+            }
         }
         return message;
     }

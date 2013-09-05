@@ -74,6 +74,7 @@ public class GameClient extends KryoNetwork implements Observer {
         EntityMessage entityMessage;
         switch (message.getMessageType()) {
             case CREATE_PLAYER_SHIP:
+                System.out.println("Creating ship");
                 entityMessage = (EntityMessage) message;
                 if (entityMessage.getConnectionId() == client.getID()) {
                     getScreen().addPlayerShipToWorld(entityMessage.getNetworkEntity());
