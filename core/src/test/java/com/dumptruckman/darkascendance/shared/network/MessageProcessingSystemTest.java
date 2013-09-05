@@ -6,41 +6,12 @@ import org.junit.Before;
 
 public class MessageProcessingSystemTest {
 
-    private static class TestKryoNetwork extends KryoNetwork {
-
-        Acknowledgement lastAckSent;
-        int lastAckConnection;
-
-        @Override
-        protected void sendMessage(final Message message) { }
-
-        @Override
-        public void resendMessage(final int connectionId, final Message message) { }
-
-        @Override
-        public void sendAcknowledgement(final int connectionId, final Acknowledgement acknowledgement) {
-            lastAckSent = acknowledgement;
-            lastAckConnection = connectionId;
-        }
-
-        @Override
-        public void handleMessage(final Message message) { }
-
-        public Acknowledgement getLastAcknowledgementSent() {
-            return lastAckSent;
-        }
-
-        public int getLastAcknowledgementConnectionId() {
-            return lastAckConnection;
-        }
-    }
-
-    TestKryoNetwork testKryoNetwork;
+    TestableKryoNetwork testKryoNetwork;
     MessageProcessingSystem testUdpSystem;
 
     @Before
     public void setup() {
-        testKryoNetwork = new TestKryoNetwork();
+        testKryoNetwork = new TestableKryoNetwork();
         //testUdpSystem = new MessageProcessingSystem(testKryoNetwork);
     }
 

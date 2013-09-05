@@ -16,6 +16,7 @@ class MessageReceiver {
     private static final Integer DEFAULT_RESEND_TIMEOUT = 500;
 
     private KryoNetwork kryoNetwork;
+    MessageResequencer resequencer;
 
     private Set<Integer> potentialConnections = Collections.newSetFromMap(new ConcurrentHashMap<Integer, Boolean>());
     private Map<Integer, Integer> resendTimeoutMap = new ConcurrentHashMap<Integer, Integer>();
@@ -24,14 +25,23 @@ class MessageReceiver {
 
     public MessageReceiver(KryoNetwork kryoNetwork) {
         this.kryoNetwork = kryoNetwork;
+        resequencer = new MessageResequencer();
     }
 
-    public void receiveMessage(int connectionId, Message message, int returnTripTime) {
+    public void receiveMessage(Integer connectionId, Message message, int returnTripTime) {
         handleConnectDisconnect(connectionId, message);
         if (isPotentialConnection(connectionId)) {
             updateTimeoutForConnection(connectionId, returnTripTime);
             sendAcknowledgementIfAppropriate(connectionId, message);
-            incomingMessageQueue.add(message);
+            if (message.isImportant()) {
+                resequencer.ensureMessageOrder(connectionId, message);
+                while (resequencer.hasOrderlyMessage(connectionId)) {
+                    Message nextOrderlyMessage = resequencer.getNextOrderlyMessage(connectionId);
+                    incomingMessageQueue.add(nextOrderlyMessage);
+                }
+            } else {
+                incomingMessageQueue.add(message);
+            }
         }
     }
 
@@ -55,16 +65,18 @@ class MessageReceiver {
         }
     }
 
-    private void addConnection(Integer connectionId) {
+    void addConnection(Integer connectionId) {
         potentialConnections.add(connectionId);
         resendTimeoutMap.put(connectionId, DEFAULT_RESEND_TIMEOUT);
         receivedAcknowledgements.put(connectionId, new ConcurrentHashMap<Short, Acknowledgement>());
+        resequencer.addConnection(connectionId);
     }
 
-    private void removeConnection(Integer connectionId) {
+    void removeConnection(Integer connectionId) {
         potentialConnections.remove(connectionId);
         resendTimeoutMap.remove(connectionId);
         receivedAcknowledgements.remove(connectionId);
+        resequencer.removeConnection(connectionId);
     }
 
     private void updateTimeoutForConnection(int connectionId, int returnTripTime) {

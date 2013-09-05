@@ -2,9 +2,7 @@ package com.dumptruckman.darkascendance.shared.messages;
 
 public class MessageBase {
 
-    public static final short INVALID_MESSAGE_ID = -1;
-
-    private short messageId = INVALID_MESSAGE_ID;
+    private short messageId = -1;
 
     public MessageBase messageId(short id) {
         this.messageId = id;

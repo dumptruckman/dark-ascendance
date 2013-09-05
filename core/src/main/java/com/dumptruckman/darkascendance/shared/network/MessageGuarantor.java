@@ -8,7 +8,7 @@ import java.util.Queue;
 
 class MessageGuarantor {
 
-    private static final short HALF_SHORT_MAX_VALUE = Short.MAX_VALUE / 2;
+    static final short HALF_SHORT_MAX_VALUE = Short.MAX_VALUE / 2;
 
     private long currentTime = 0L;
     private short outgoingMessageIdCounter = 0;
