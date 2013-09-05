@@ -29,13 +29,13 @@ public class MessageReceiver {
 
     public void receiveMessage(int connectionId, Message message, int returnTripTime) {
         handleConnectDisconnect(connectionId, message);
-        if (potentialConnections.contains(connectionId)) {
+        if (isPotentialConnection(connectionId)) {
             updateTimeoutForConnection(connectionId, returnTripTime);
         }
         if (message.isImportant()
                 && message.getMessageType() != MessageType.PLAYER_CONNECTED
                 && message.getMessageType() != MessageType.PLAYER_DISCONNECTED) {
-            if (potentialConnections.contains(connectionId)) {
+            if (isPotentialConnection(connectionId)) {
                 kryoNetwork.sendAcknowledgement(connectionId, (Acknowledgement) new Acknowledgement().messageId(message.getMessageId()));
             }
         }
@@ -100,5 +100,9 @@ public class MessageReceiver {
         if (acknowledgements != null) {
             acknowledgements.remove(messageId);
         }
+    }
+
+    public boolean isPotentialConnection(int connectionId) {
+        return potentialConnections.contains(connectionId);
     }
 }

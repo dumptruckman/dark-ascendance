@@ -27,9 +27,8 @@ import java.util.Observer;
 
 public abstract class KryoNetwork extends Listener implements Observer {
 
-    private MessageProcessingSystem udpGuarantor = new MessageProcessingSystem(this);
-    private MessageReceiver receiver;
-    private MessageGuarantor messageGuarantor;
+    private MessageReceiver receiver = new MessageReceiver(this);
+    private MessageGuarantor messageGuarantor = new MessageGuarantor();
 
     protected void initializeSerializables(Kryo kryo) {
         kryo.register(Component.class);
@@ -55,14 +54,10 @@ public abstract class KryoNetwork extends Listener implements Observer {
         kryo.register(Vector2.class);
     }
 
-    protected MessageProcessingSystem getUdpGuarantor() {
-        return udpGuarantor;
-    }
-
     protected NetworkSystemInjector getNetworkSystemInjector() {
         NetworkSystemInjector networkSystemInjector = new NetworkSystemInjector();
         networkSystemInjector.addHighPrioritySystem(new TimeKeepingSystem(this));
-        networkSystemInjector.addHighPrioritySystem(udpGuarantor);
+        networkSystemInjector.addHighPrioritySystem(new MessageProcessingSystem(this, receiver, messageGuarantor));
         return networkSystemInjector;
     }
 

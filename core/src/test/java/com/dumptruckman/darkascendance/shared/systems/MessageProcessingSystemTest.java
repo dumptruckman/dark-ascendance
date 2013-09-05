@@ -47,7 +47,7 @@ public class MessageProcessingSystemTest {
     @Before
     public void setup() {
         testKryoNetwork = new TestKryoNetwork();
-        testUdpSystem = new MessageProcessingSystem(testKryoNetwork);
+        //testUdpSystem = new MessageProcessingSystem(testKryoNetwork);
     }
 
     /*

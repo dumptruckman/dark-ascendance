@@ -15,8 +15,10 @@ public class MessageProcessingSystem extends EntitySystem {
     private MessageReceiver receiver;
     private MessageGuarantor messageGuarantor;
 
-    public MessageProcessingSystem(KryoNetwork kryoNetwork) {
+    public MessageProcessingSystem(KryoNetwork kryoNetwork, MessageReceiver receiver, MessageGuarantor messageGuarantor) {
         this.kryoNetwork = kryoNetwork;
+        this.receiver = receiver;
+        this.messageGuarantor = messageGuarantor;
     }
 
     @Override
@@ -60,16 +62,18 @@ public class MessageProcessingSystem extends EntitySystem {
     }
 
     private void resendStaleMessagesForConnection(int connectionId) {
-        int timeout = receiver.getResendTimeout(connectionId);
-        if (messageGuarantor.hasMessagesOlderThan(connectionId, timeout)) {
-            Message message = messageGuarantor.getNextMessage(connectionId);
-            short messageId = message.getMessageId();
-            if (receiver.hasAcknowledgement(connectionId, messageId)) {
-                receiver.removeAcknowledgement(connectionId, messageId);
-                messageGuarantor.notifyMessageAcknowledged(connectionId, messageId);
-            } else {
-                messageGuarantor.updateGuarantee(connectionId, message);
-                kryoNetwork.resendMessage(connectionId, message);
+        if (receiver.isPotentialConnection(connectionId)) {
+            int timeout = receiver.getResendTimeout(connectionId);
+            if (messageGuarantor.hasMessagesOlderThan(connectionId, timeout)) {
+                Message message = messageGuarantor.getNextMessage(connectionId);
+                short messageId = message.getMessageId();
+                if (receiver.hasAcknowledgement(connectionId, messageId)) {
+                    receiver.removeAcknowledgement(connectionId, messageId);
+                    messageGuarantor.notifyMessageAcknowledged(connectionId, messageId);
+                } else {
+                    messageGuarantor.updateGuarantee(connectionId, message);
+                    kryoNetwork.resendMessage(connectionId, message);
+                }
             }
         }
     }
