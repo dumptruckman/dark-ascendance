@@ -1,4 +1,4 @@
-package com.dumptruckman.darkascendance.shared.systems;
+package com.dumptruckman.darkascendance.shared.network;
 
 import com.badlogic.gdx.utils.IntMap;
 import com.dumptruckman.darkascendance.shared.messages.Message;
@@ -9,7 +9,7 @@ import recs.EntitySystem;
 
 import java.util.Queue;
 
-public class MessageProcessingSystem extends EntitySystem {
+class MessageProcessingSystem extends EntitySystem {
 
     private KryoNetwork kryoNetwork;
     private MessageReceiver receiver;

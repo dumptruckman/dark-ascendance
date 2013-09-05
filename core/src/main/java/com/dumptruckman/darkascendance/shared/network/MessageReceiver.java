@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class MessageReceiver {
+class MessageReceiver {
 
     private static final Integer DEFAULT_RESEND_TIMEOUT = 500;
 

@@ -1,14 +1,8 @@
-package com.dumptruckman.darkascendance.shared.systems;
+package com.dumptruckman.darkascendance.shared.network;
 
-import com.dumptruckman.darkascendance.shared.components.Controls;
 import com.dumptruckman.darkascendance.shared.messages.Acknowledgement;
 import com.dumptruckman.darkascendance.shared.messages.Message;
-import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
-import com.dumptruckman.darkascendance.shared.network.KryoNetwork;
 import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class MessageProcessingSystemTest {
 

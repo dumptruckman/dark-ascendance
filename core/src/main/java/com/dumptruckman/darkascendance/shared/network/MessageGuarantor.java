@@ -6,7 +6,7 @@ import com.dumptruckman.darkascendance.shared.messages.Message;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class MessageGuarantor {
+class MessageGuarantor {
 
     private static final short HALF_SHORT_MAX_VALUE = Short.MAX_VALUE / 2;
 
