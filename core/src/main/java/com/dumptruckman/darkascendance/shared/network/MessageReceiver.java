@@ -30,9 +30,9 @@ class MessageReceiver {
         handleConnectDisconnect(connectionId, message);
         if (isPotentialConnection(connectionId)) {
             updateTimeoutForConnection(connectionId, returnTripTime);
+            sendAcknowledgementIfAppropriate(connectionId, message);
+            incomingMessageQueue.add(message);
         }
-        sendAcknowledgementIfAppropriate(connectionId, message);
-        incomingMessageQueue.add(message);
     }
 
     public void receiveAcknowledgement(int connectionId, Acknowledgement acknowledgement) {
@@ -78,8 +78,7 @@ class MessageReceiver {
     private void sendAcknowledgementIfAppropriate(int connectionId, Message message) {
         if (message.isImportant()
                 && message.getMessageType() != MessageType.PLAYER_CONNECTED
-                && message.getMessageType() != MessageType.PLAYER_DISCONNECTED
-                && isPotentialConnection(connectionId)) {
+                && message.getMessageType() != MessageType.PLAYER_DISCONNECTED) {
             kryoNetwork.sendAcknowledgement(connectionId, (Acknowledgement) new Acknowledgement().messageId(message.getMessageId()));
         }
     }
