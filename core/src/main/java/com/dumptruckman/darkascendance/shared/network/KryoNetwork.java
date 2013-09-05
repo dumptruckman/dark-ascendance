@@ -11,9 +11,11 @@ import com.dumptruckman.darkascendance.shared.messages.ComponentMessage;
 import com.dumptruckman.darkascendance.shared.messages.EntityMessage;
 import com.dumptruckman.darkascendance.shared.messages.Message;
 import com.dumptruckman.darkascendance.shared.messages.MessageBase;
+import com.dumptruckman.darkascendance.shared.messages.MessageFactory;
 import com.dumptruckman.darkascendance.shared.messages.MessageType;
 import com.dumptruckman.darkascendance.shared.messages.SnapshotMessage;
-import com.dumptruckman.darkascendance.shared.systems.UdpMessageGuarantorSystem;
+import com.dumptruckman.darkascendance.shared.systems.MessageProcessingSystem;
+import com.dumptruckman.darkascendance.shared.systems.TimeKeepingSystem;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -25,8 +27,9 @@ import java.util.Observer;
 
 public abstract class KryoNetwork extends Listener implements Observer {
 
-    private long currentGameTime = 0L;
-    private UdpMessageGuarantorSystem udpGuarantor = new UdpMessageGuarantorSystem(this);
+    private MessageProcessingSystem udpGuarantor = new MessageProcessingSystem(this);
+    private MessageReceiver receiver;
+    private MessageGuarantor messageGuarantor;
 
     protected void initializeSerializables(Kryo kryo) {
         kryo.register(Component.class);
@@ -52,8 +55,15 @@ public abstract class KryoNetwork extends Listener implements Observer {
         kryo.register(Vector2.class);
     }
 
-    protected UdpMessageGuarantorSystem getUdpGuarantor() {
+    protected MessageProcessingSystem getUdpGuarantor() {
         return udpGuarantor;
+    }
+
+    protected NetworkSystemInjector getNetworkSystemInjector() {
+        NetworkSystemInjector networkSystemInjector = new NetworkSystemInjector();
+        networkSystemInjector.addHighPrioritySystem(new TimeKeepingSystem(this));
+        networkSystemInjector.addHighPrioritySystem(udpGuarantor);
+        return networkSystemInjector;
     }
 
     protected abstract void sendMessage(Message message);
@@ -66,7 +76,10 @@ public abstract class KryoNetwork extends Listener implements Observer {
     public final void update(final Observable o, final Object arg) {
         if (arg instanceof Message) {
             Message message = (Message) arg;
-            getUdpGuarantor().guaranteeMessage(message);
+            message.time(getCurrentTime());
+            if (message.isImportant()) {
+                messageGuarantor.guaranteeMessage(message);
+            }
             sendMessage(message);
         }
     }
@@ -75,19 +88,34 @@ public abstract class KryoNetwork extends Listener implements Observer {
     public final void received(final Connection connection, final Object o) {
         int connectionId = connection.getID();
         int latency = connection.getReturnTripTime();
-        if (o instanceof MessageBase) {
-            MessageBase messageBase = (MessageBase) o;
-            getUdpGuarantor().receiveMessage(connectionId, messageBase, latency);
+        if (o instanceof Message) {
+            receiver.receiveMessage(connectionId, (Message) o, latency);
+        } else if (o instanceof Acknowledgement) {
+            receiver.receiveAcknowledgement(connectionId, (Acknowledgement) o);
         }
+    }
+
+    @Override
+    public void connected(final Connection connection) {
+        int connectionId = connection.getID();
+        Message playerConnectionMessage = MessageFactory.playerConnected(connectionId);
+        receiver.receiveMessage(connectionId, playerConnectionMessage, connection.getReturnTripTime());
+    }
+
+    @Override
+    public void disconnected(final Connection connection) {
+        int connectionId = connection.getID();
+        Message playerConnectionMessage = MessageFactory.playerDisconnected(connectionId);
+        receiver.receiveMessage(connectionId, MessageFactory.playerDisconnected(connectionId), connection.getReturnTripTime());
     }
 
     public abstract void handleMessage(Message message);
 
-    public void setCurrentGameTime(long currentGameTime) {
-        this.currentGameTime = currentGameTime;
+    public void setCurrentTime(long currentTime) {
+        messageGuarantor.setCurrentTime(currentTime);
     }
 
-    public long getCurrentGameTime() {
-        return currentGameTime;
+    public long getCurrentTime() {
+        return messageGuarantor.getCurrentTime();
     }
 }

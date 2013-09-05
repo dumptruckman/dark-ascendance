@@ -29,7 +29,7 @@ public class GameClient extends KryoNetwork implements Observer {
         client = new Client();
         client.addListener(this);
 
-        clientLogicLoop = new ClientLogicLoop(new NetworkSystemInjector(this), gameSettings.getScreenWidth(), gameSettings.getScreenHeight());
+        clientLogicLoop = new ClientLogicLoop(getNetworkSystemInjector(), gameSettings.getScreenWidth(), gameSettings.getScreenHeight());
         clientLogicLoop.addObserver(this);
 
         initializeSerializables(client.getKryo());
@@ -49,12 +49,6 @@ public class GameClient extends KryoNetwork implements Observer {
         if (message.isImportant())
             System.out.println("Sending " + message + " to server.");
         client.sendUDP(message);
-    }
-
-    @Override
-    public void connected(final Connection connection) {
-        int connectionId = connection.getID();
-        getUdpGuarantor().receiveMessage(connectionId, MessageFactory.playerConnected(connectionId), connection.getReturnTripTime());
     }
 
     @Override

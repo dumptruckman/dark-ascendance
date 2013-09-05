@@ -6,7 +6,6 @@ import recs.EntitySystem;
 public class TimeKeepingSystem extends EntitySystem {
 
     private KryoNetwork kryoNetwork;
-    private long currentTime = 0L;
 
     public TimeKeepingSystem(KryoNetwork kryoNetwork) {
         this.kryoNetwork = kryoNetwork;
@@ -14,7 +13,8 @@ public class TimeKeepingSystem extends EntitySystem {
 
     @Override
     protected void processSystem(final float deltaInSec) {
+        long currentTime = kryoNetwork.getCurrentTime();
         currentTime += deltaInSec * 1000;
-        kryoNetwork.setCurrentGameTime(currentTime);
+        kryoNetwork.setCurrentTime(currentTime);
     }
 }

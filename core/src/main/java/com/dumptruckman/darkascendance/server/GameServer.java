@@ -44,7 +44,7 @@ public class GameServer extends KryoNetwork {
         this.udpPort = udpPort;
         this.server = new Server();
 
-        this.serverLogicLoop = new ServerLogicLoop(new NetworkSystemInjector(this));
+        this.serverLogicLoop = new ServerLogicLoop(getNetworkSystemInjector());
         serverLogicLoop.addObserver(this);
 
         initializeSerializables(server.getKryo());
@@ -79,18 +79,6 @@ public class GameServer extends KryoNetwork {
     public void startServerLogic() {
         new Thread(serverLogicLoop).start();
         while (!serverLogicLoop.isReadyForNetworking()) { }
-    }
-
-    @Override
-    public void connected(final Connection connection) {
-        int connectionId = connection.getID();
-        getUdpGuarantor().receiveMessage(connectionId, MessageFactory.playerConnected(connectionId), connection.getReturnTripTime());
-    }
-
-    @Override
-    public void disconnected(final Connection connection) {
-        int connectionId = connection.getID();
-        getUdpGuarantor().receiveMessage(connectionId, MessageFactory.playerDisconnected(connectionId), connection.getReturnTripTime());
     }
 
     @Override

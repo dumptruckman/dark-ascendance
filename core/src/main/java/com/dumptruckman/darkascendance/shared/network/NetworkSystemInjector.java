@@ -9,9 +9,7 @@ public class NetworkSystemInjector {
     private ObjectSet<EntitySystem> systems = new ObjectSet<EntitySystem>();
     private ObjectSet<EntitySystem> highPrioritySystems = new ObjectSet<EntitySystem>();
 
-    public NetworkSystemInjector(KryoNetwork kryoNetwork) {
-        addHighPrioritySystem(kryoNetwork.getUdpGuarantor());
-    }
+    NetworkSystemInjector() { }
 
     public void addSystem(EntitySystem system) {
         systems.add(system);
