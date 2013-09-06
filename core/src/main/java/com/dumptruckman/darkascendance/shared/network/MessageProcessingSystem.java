@@ -23,15 +23,8 @@ class MessageProcessingSystem extends EntitySystem {
 
     @Override
     protected void processSystem(float deltaInSec) {
-        updateTime(deltaInSec);
         processIncomingMessages();
         resendStaleMessagesForAllConnections();
-    }
-
-    private void updateTime(float deltaInSec) {
-        long currentTime = messageGuarantor.getCurrentTime();
-        currentTime += deltaInSec * 1000;
-        messageGuarantor.setCurrentTime(currentTime);
     }
 
     private void processIncomingMessages() {

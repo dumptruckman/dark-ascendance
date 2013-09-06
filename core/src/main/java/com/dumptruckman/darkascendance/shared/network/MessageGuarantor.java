@@ -2,6 +2,7 @@ package com.dumptruckman.darkascendance.shared.network;
 
 import com.badlogic.gdx.utils.IntMap;
 import com.dumptruckman.darkascendance.shared.messages.Message;
+import com.dumptruckman.darkascendance.shared.messages.MessageType;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -45,14 +46,19 @@ class MessageGuarantor {
 
     public boolean hasMessagesOlderThan(int connectionId, int timeout) {
         Message message = getMessageQueue(connectionId).peek();
-        return message != null && currentTime - getTimeMessageLastSent(connectionId, message.getMessageId()) > timeout;
+        if (message != null) {
+            float lastTimeSent = getTimeMessageLastSent(connectionId, message.getMessageId());
+            float delta = currentTime - lastTimeSent;
+            return delta > timeout;
+        }
+        return false;
     }
 
     private Queue<Message> getMessageQueue(int connectionId) {
         return messageQueues.get(connectionId);
     }
 
-    private long getTimeMessageLastSent(int connectionId, short messageId) {
+    private float getTimeMessageLastSent(int connectionId, short messageId) {
         return lastSentTimes.get(connectionId).get(messageId);
     }
 
@@ -76,8 +82,11 @@ class MessageGuarantor {
     }
 
     private void setupMessageId(int connectionId, Message message) {
-        message.messageId(outgoingMessageIdCounter.get(connectionId));
-        incrementOutgoingMessageIdCounter(connectionId);
+        if (message.getMessageType() != MessageType.PLAYER_CONNECTED
+                && message.getMessageType() != MessageType.PLAYER_DISCONNECTED) {
+            message.messageId(outgoingMessageIdCounter.get(connectionId));
+            incrementOutgoingMessageIdCounter(connectionId);
+        }
     }
 
     private void incrementOutgoingMessageIdCounter(int connectionId) {

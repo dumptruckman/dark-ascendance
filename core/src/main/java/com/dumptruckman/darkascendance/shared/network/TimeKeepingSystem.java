@@ -13,7 +13,7 @@ class TimeKeepingSystem extends EntitySystem {
     @Override
     protected void processSystem(final float deltaInSec) {
         long currentTime = kryoNetwork.getCurrentTime();
-        currentTime += deltaInSec * 1000;
+        currentTime += deltaInSec * 1000L;
         kryoNetwork.setCurrentTime(currentTime);
     }
 }

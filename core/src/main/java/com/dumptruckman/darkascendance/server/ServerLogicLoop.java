@@ -1,5 +1,6 @@
 package com.dumptruckman.darkascendance.server;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.dumptruckman.darkascendance.shared.Entity;
@@ -15,13 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerLogicLoop extends GameLogic implements Runnable {
 
-    private static final float NANOS_IN_SECOND = 1000000000.0F;
-
     private static ConcurrentHashMap<Integer, Entity> connectedPlayerShips = new ConcurrentHashMap<Integer, Entity>();
 
     private volatile boolean readyForNetworking = false;
     private float deltaTime = 0L;
-    private float lastTime = 0L;
+    private long lastTime = 0L;
 
     ServerLogicLoop(NetworkSystemInjector networkSystemInjector) {
         super(new EntityWorld());
@@ -33,7 +32,7 @@ public class ServerLogicLoop extends GameLogic implements Runnable {
     @Override
     public void run() {
         SnapshotCreationSystem.lockToThread();
-        lastTime = TimeUtils.nanoTime();
+        updateTime();
         while (true) {
             updateTime();
             processGameLogic(deltaTime);
@@ -45,8 +44,8 @@ public class ServerLogicLoop extends GameLogic implements Runnable {
     }
 
     private void updateTime() {
-        long time = System.nanoTime();
-        deltaTime = (time - lastTime) / NANOS_IN_SECOND;
+        long time = TimeUtils.nanoTime();
+        deltaTime = (time - lastTime) / 1000000000.0f;
         lastTime = time;
     }
 

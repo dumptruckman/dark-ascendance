@@ -121,7 +121,7 @@ public abstract class KryoNetwork extends Listener implements Observer {
         Integer connectionId = connection.getID();
         connections.remove(connectionId);
         Message playerConnectionMessage = MessageFactory.playerDisconnected(connectionId);
-        receiver.receiveMessage(connectionId, MessageFactory.playerDisconnected(connectionId), connection.getReturnTripTime());
+        receiver.receiveMessage(connectionId, playerConnectionMessage, connection.getReturnTripTime());
     }
 
     public abstract void handleMessage(Message message);
