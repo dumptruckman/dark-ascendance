@@ -1,6 +1,6 @@
 package com.dumptruckman.darkascendance.shared.messages;
 
-public class Message extends MessageBase {
+public class Message extends MessageBase implements Cloneable {
 
     private MessageType messageType;
     private int connectionId;
@@ -78,5 +78,14 @@ public class Message extends MessageBase {
                 ", important=" + isImportant() +
                 ", messageTime=" + getTime() +
                 '}';
+    }
+
+    @Override
+    public Message clone() {
+        try {
+            return (Message) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

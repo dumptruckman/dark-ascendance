@@ -12,6 +12,8 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observer;
 
 public class GameClient extends KryoNetwork implements Observer {
@@ -45,10 +47,15 @@ public class GameClient extends KryoNetwork implements Observer {
     }
 
     @Override
-    protected void sendMessage(final Message message) {
+    protected void sendMessageToAll(final Message message) {
         if (message.isImportant())
             System.out.println("Sending " + message + " to server.");
         client.sendUDP(message);
+    }
+
+    @Override
+    protected void sendMessage(final int connectionId, final Message message) {
+        sendMessageToAll(message);
     }
 
     @Override

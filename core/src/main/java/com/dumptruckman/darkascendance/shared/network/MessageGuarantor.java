@@ -11,7 +11,7 @@ class MessageGuarantor {
     static final short HALF_SHORT_MAX_VALUE = Short.MAX_VALUE / 2;
 
     private long currentTime = 0L;
-    private short outgoingMessageIdCounter = 0;
+    private IntMap<Short> outgoingMessageIdCounter = new IntMap<Short>();
     private IntMap<Queue<Message>> messageQueues = new IntMap<Queue<Message>>();
     private IntMap<IntMap<Long>> lastSentTimes = new IntMap<IntMap<Long>>();
 
@@ -29,12 +29,14 @@ class MessageGuarantor {
         System.out.println("Adding conenction " + connectionId);
         messageQueues.put(connectionId, new LinkedList<Message>());
         lastSentTimes.put(connectionId, new IntMap<Long>());
+        outgoingMessageIdCounter.put(connectionId, (short) 0);
     }
 
     public void removeConnection(int connectionId) {
         System.out.println("Removing conenction " + connectionId);
         messageQueues.remove(connectionId);
         lastSentTimes.remove(connectionId);
+        outgoingMessageIdCounter.remove(connectionId);
     }
 
     public IntMap.Keys getConnectionsWithRemainingMessages() {
@@ -67,22 +69,25 @@ class MessageGuarantor {
         getMessageQueue(connectionId).add(message);
     }
 
-    public void guaranteeMessage(Message message) {
-        setupMessageId(message);
+    public void guaranteeMessage(int connectionId, Message message) {
+        setupMessageId(connectionId, message);
         setSendTime(message);
+        getMessageQueue(connectionId).add(message);
     }
 
-    private void setupMessageId(Message message) {
-        message.messageId(outgoingMessageIdCounter);
-        incrementOutgoingMessageIdCounter();
+    private void setupMessageId(int connectionId, Message message) {
+        message.messageId(outgoingMessageIdCounter.get(connectionId));
+        incrementOutgoingMessageIdCounter(connectionId);
     }
 
-    private void incrementOutgoingMessageIdCounter() {
-        outgoingMessageIdCounter++;
-        if (outgoingMessageIdCounter > HALF_SHORT_MAX_VALUE) {
-            outgoingMessageIdCounter = 0;
+    private void incrementOutgoingMessageIdCounter(int connectionId) {
+        short counter = outgoingMessageIdCounter.get(connectionId);
+        counter++;
+        if (counter > HALF_SHORT_MAX_VALUE) {
+            counter = 0;
             System.out.println("Reset outgoing message id counter");
         }
+        outgoingMessageIdCounter.put(connectionId, counter);
     }
 
     private void setSendTime(Message message) {

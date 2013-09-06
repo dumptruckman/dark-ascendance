@@ -9,7 +9,7 @@ public class TestableKryoNetwork extends KryoNetwork {
     int lastAckConnection;
 
     @Override
-    protected void sendMessage(final Message message) { }
+    protected void sendMessageToAll(final Message message) { }
 
     @Override
     public void resendMessage(final int connectionId, final Message message) { }
@@ -29,5 +29,10 @@ public class TestableKryoNetwork extends KryoNetwork {
 
     public int getLastAcknowledgementConnectionId() {
         return lastAckConnection;
+    }
+
+    @Override
+    protected void sendMessage(final int connectionId, final Message message) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

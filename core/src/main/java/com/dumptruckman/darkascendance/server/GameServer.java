@@ -11,6 +11,8 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameServer extends KryoNetwork {
 
@@ -58,10 +60,19 @@ public class GameServer extends KryoNetwork {
     }
 
     @Override
-    public void sendMessage(Message message) {
-        if (message.isImportant())
+    public void sendMessageToAll(Message message) {
+        if (message.isImportant()) {
             System.out.println("Sending " + message + " to all clients.");
+        }
         server.sendToAllUDP(message);
+    }
+
+    @Override
+    protected void sendMessage(final int connectionId, final Message message) {
+        if (message.isImportant()) {
+            System.out.println("Sending " + message + " to " + connectionId);
+        }
+        server.sendToUDP(connectionId, message);
     }
 
     @Override

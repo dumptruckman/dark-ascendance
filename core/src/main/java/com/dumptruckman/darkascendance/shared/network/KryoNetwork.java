@@ -1,6 +1,7 @@
 package com.dumptruckman.darkascendance.shared.network;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.dumptruckman.darkascendance.shared.components.Controls;
 import com.dumptruckman.darkascendance.shared.components.Position;
@@ -20,13 +21,17 @@ import com.esotericsoftware.kryonet.Listener;
 import recs.Component;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class KryoNetwork extends Listener implements Observer {
 
     private MessageReceiver receiver = new MessageReceiver(this);
     private MessageGuarantor messageGuarantor = new MessageGuarantor();
+    private List<Integer> connections = new CopyOnWriteArrayList<Integer>();
 
     protected void initializeSerializables(Kryo kryo) {
         kryo.register(Component.class);
@@ -59,11 +64,13 @@ public abstract class KryoNetwork extends Listener implements Observer {
         return networkSystemInjector;
     }
 
-    protected abstract void sendMessage(Message message);
+    protected abstract void sendMessageToAll(Message message);
 
-    public abstract void resendMessage(int connectionId, Message message);
+    protected abstract void sendMessage(int connectionId, Message message);
 
-    public abstract void sendAcknowledgement(int connectionId, Acknowledgement acknowledgement);
+    protected abstract void resendMessage(int connectionId, Message message);
+
+    protected abstract void sendAcknowledgement(int connectionId, Acknowledgement acknowledgement);
 
     @Override
     public final void update(final Observable o, final Object arg) {
@@ -71,9 +78,22 @@ public abstract class KryoNetwork extends Listener implements Observer {
             Message message = (Message) arg;
             message.time(getCurrentTime());
             if (message.isImportant()) {
-                messageGuarantor.guaranteeMessage(message);
+                Iterator<Integer> connectionsIterator = connections.iterator();
+                Integer connectionId = null;
+                while (connectionsIterator.hasNext()) {
+                    Message messageCopy;
+                    if (connectionId == null) {
+                        messageCopy = message;
+                    } else {
+                        messageCopy = message.clone();
+                    }
+                    connectionId = connectionsIterator.next();
+                    messageGuarantor.guaranteeMessage(connectionId, messageCopy);
+                    sendMessage(connectionId, messageCopy);
+                }
+            } else {
+                sendMessageToAll(message);
             }
-            sendMessage(message);
         }
     }
 
@@ -91,13 +111,15 @@ public abstract class KryoNetwork extends Listener implements Observer {
     @Override
     public void connected(final Connection connection) {
         int connectionId = connection.getID();
+        connections.add(connectionId);
         Message playerConnectionMessage = MessageFactory.playerConnected(connectionId);
         receiver.receiveMessage(connectionId, playerConnectionMessage, connection.getReturnTripTime());
     }
 
     @Override
     public void disconnected(final Connection connection) {
-        int connectionId = connection.getID();
+        Integer connectionId = connection.getID();
+        connections.remove(connectionId);
         Message playerConnectionMessage = MessageFactory.playerDisconnected(connectionId);
         receiver.receiveMessage(connectionId, MessageFactory.playerDisconnected(connectionId), connection.getReturnTripTime());
     }
