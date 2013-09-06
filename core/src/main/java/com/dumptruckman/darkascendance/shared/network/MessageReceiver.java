@@ -38,7 +38,6 @@ class MessageReceiver {
                 resequencer.ensureMessageOrder(connectionId, message);
                 while (resequencer.hasOrderlyMessage(connectionId)) {
                     Message nextOrderlyMessage = resequencer.getNextOrderlyMessage(connectionId);
-                    System.out.println("got: " + nextOrderlyMessage);
                     incomingMessageQueue.add(nextOrderlyMessage);
                 }
             } else {
@@ -52,7 +51,7 @@ class MessageReceiver {
     public void receiveAcknowledgement(int connectionId, Acknowledgement acknowledgement) {
         Map<Short, Acknowledgement> acknowledgementMap = receivedAcknowledgements.get(connectionId);
         if (acknowledgementMap != null) {
-            System.out.println("Received ack " + connectionId + " for " + acknowledgement.getMessageId());
+            System.out.println("Received " + acknowledgement);
             acknowledgementMap.put(acknowledgement.getMessageId(), acknowledgement);
         } else {
             System.out.println("Received and discarded acknowledgement " + acknowledgement.getMessageId() + " from disconnected client: " + connectionId);
