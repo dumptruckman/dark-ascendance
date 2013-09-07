@@ -47,16 +47,15 @@ class MessageProcessingSystem extends EntitySystem {
     }
 
     private void resendStaleMessagesForAllConnections() {
-        IntMap.Keys connectionsWithRemainingMessages = messageGuarantor.getConnectionsWithRemainingMessages();
-        while (connectionsWithRemainingMessages.hasNext) {
-            int connectionId = connectionsWithRemainingMessages.next();
+        int[] connections = messageGuarantor.getConnectionsWithRemainingMessages();
+        for (int connectionId : connections) {
             resendStaleMessagesForConnection(connectionId);
         }
     }
 
     private void resendStaleMessagesForConnection(int connectionId) {
         if (receiver.isPotentialConnection(connectionId)) {
-            int timeout = receiver.getResendTimeout(connectionId);
+            long timeout = receiver.getResendTimeout(connectionId);
             if (messageGuarantor.hasMessagesOlderThan(connectionId, timeout)) {
                 Message message = messageGuarantor.getNextMessage(connectionId);
                 short messageId = message.getMessageId();

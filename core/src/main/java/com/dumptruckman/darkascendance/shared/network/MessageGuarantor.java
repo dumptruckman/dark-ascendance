@@ -27,28 +27,35 @@ class MessageGuarantor {
     }
 
     public void addConnection(int connectionId) {
-        System.out.println("Adding conenction " + connectionId);
         messageQueues.put(connectionId, new LinkedList<Message>());
         lastSentTimes.put(connectionId, new IntMap<Long>());
         outgoingMessageIdCounter.put(connectionId, (short) 0);
     }
 
     public void removeConnection(int connectionId) {
-        System.out.println("Removing conenction " + connectionId);
         messageQueues.remove(connectionId);
         lastSentTimes.remove(connectionId);
         outgoingMessageIdCounter.remove(connectionId);
     }
 
-    public IntMap.Keys getConnectionsWithRemainingMessages() {
-        return messageQueues.keys();
+    public int[] getConnectionsWithRemainingMessages() {
+        int[] connections = new int[messageQueues.size];
+        int i = 0;
+        for (IntMap.Entry<Queue<Message>> entry : messageQueues.entries()) {
+            if (!entry.value.isEmpty()) {
+                connections[i] = entry.key;
+            }
+            i++;
+        }
+        return connections;
     }
 
-    public boolean hasMessagesOlderThan(int connectionId, int timeout) {
+    public boolean hasMessagesOlderThan(int connectionId, long timeout) {
         Message message = getMessageQueue(connectionId).peek();
         if (message != null) {
-            float lastTimeSent = getTimeMessageLastSent(connectionId, message.getMessageId());
-            float delta = currentTime - lastTimeSent;
+            long lastTimeSent = getTimeMessageLastSent(connectionId, message.getMessageId());
+            long delta = currentTime - lastTimeSent;
+            //System.out.println(currentTime + " - " + lastTimeSent + " = " + delta + " for " + message);
             return delta > timeout;
         }
         return false;
@@ -58,11 +65,12 @@ class MessageGuarantor {
         return messageQueues.get(connectionId);
     }
 
-    private float getTimeMessageLastSent(int connectionId, short messageId) {
+    private long getTimeMessageLastSent(int connectionId, short messageId) {
         return lastSentTimes.get(connectionId).get(messageId);
     }
 
     public Message getNextMessage(int connectionId) {
+        //System.out.println("next message: " + getMessageQueue(connectionId).peek());
         return getMessageQueue(connectionId).poll();
     }
 

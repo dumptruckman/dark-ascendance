@@ -13,13 +13,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 class MessageReceiver {
 
-    private static final Integer DEFAULT_RESEND_TIMEOUT = 500;
+    private static final long MS_TO_NS = 1000000L;
+    private static final Long DEFAULT_RESEND_TIMEOUT = 500L;
 
     private KryoNetwork kryoNetwork;
     MessageResequencer resequencer;
 
     private Set<Integer> potentialConnections = Collections.newSetFromMap(new ConcurrentHashMap<Integer, Boolean>());
-    private Map<Integer, Integer> resendTimeoutMap = new ConcurrentHashMap<Integer, Integer>();
+    private Map<Integer, Long> resendTimeoutMap = new ConcurrentHashMap<Integer, Long>();
     private Map<Integer, Map<Short, Acknowledgement>> receivedAcknowledgements = new ConcurrentHashMap<Integer, Map<Short, Acknowledgement>>();
     private Queue<Message> incomingMessageQueue = new ConcurrentLinkedQueue<Message>();
 
@@ -54,7 +55,7 @@ class MessageReceiver {
             System.out.println("Received " + acknowledgement);
             acknowledgementMap.put(acknowledgement.getMessageId(), acknowledgement);
         } else {
-            System.out.println("Received and discarded acknowledgement " + acknowledgement.getMessageId() + " from disconnected client: " + connectionId);
+            System.out.println("Received and discarded acknowledgement " + acknowledgement.getMessageId() + " from disconnected connection: " + connectionId);
         }
     }
 
@@ -86,9 +87,9 @@ class MessageReceiver {
 
     private void updateTimeoutForConnection(int connectionId, int returnTripTime) {
         if (returnTripTime == 0) {
-            resendTimeoutMap.put(connectionId, 30);
+            resendTimeoutMap.put(connectionId, 30L * MS_TO_NS);
         } else {
-            resendTimeoutMap.put(connectionId, (int) (returnTripTime * 1.5));
+            resendTimeoutMap.put(connectionId, ((long) ((returnTripTime * MS_TO_NS) * 1.5f)));
         }
     }
 
@@ -100,7 +101,7 @@ class MessageReceiver {
         }
     }
 
-    public int getResendTimeout(Integer connectionId) {
+    public long getResendTimeout(Integer connectionId) {
         return resendTimeoutMap.get(connectionId);
     }
 

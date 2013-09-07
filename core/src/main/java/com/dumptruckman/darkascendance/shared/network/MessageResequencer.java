@@ -8,27 +8,29 @@ import java.util.concurrent.ConcurrentHashMap;
 
 class MessageResequencer {
 
-    private Map<Integer, Map<Short, Message>> messages = new ConcurrentHashMap<Integer, Map<Short, Message>>();
-    ConcurrentHashMap<Integer, Short> lastOrderlyMessage = new ConcurrentHashMap<Integer, Short>();
-    private Map<Integer, Message> connections = new ConcurrentHashMap<Integer, Message>();
-    private Map<Integer, Message> disconnections = new ConcurrentHashMap<Integer, Message>();
+    private final Map<Integer, Map<Short, Message>> messages = new ConcurrentHashMap<Integer, Map<Short, Message>>();
+    final ConcurrentHashMap<Integer, Short> lastOrderlyMessage = new ConcurrentHashMap<Integer, Short>();
+    private final Map<Integer, Message> connections = new ConcurrentHashMap<Integer, Message>();
+    private final Map<Integer, Message> disconnections = new ConcurrentHashMap<Integer, Message>();
 
     void addConnection(Integer connectionId) {
-        messages.put(connectionId, new ConcurrentHashMap<Short, Message>());
-        lastOrderlyMessage.put(connectionId, (short) -1);
+        synchronized (lastOrderlyMessage) {
+            messages.put(connectionId, new ConcurrentHashMap<Short, Message>());
+            lastOrderlyMessage.put(connectionId, (short) -1);
+        }
     }
 
     void removeConnection(Integer connectionId) {
-        messages.remove(connectionId);
-        lastOrderlyMessage.remove(connectionId);
+        synchronized (lastOrderlyMessage) {
+            messages.remove(connectionId);
+            lastOrderlyMessage.remove(connectionId);
+        }
     }
 
     public void ensureMessageOrder(Integer connectionId, Message message) {
         if (message.getMessageType() == MessageType.PLAYER_CONNECTED) {
-            System.out.println("Resquencer put player connect");
             connections.put(connectionId, message);
         } else if (message.getMessageType() == MessageType.PLAYER_DISCONNECTED) {
-            System.out.println("Resquencer put player disconnect");
             disconnections.put(connectionId, message);
         } else {
             short messageId = message.getMessageId();
@@ -46,7 +48,6 @@ class MessageResequencer {
                 || disconnections.containsKey(connectionId);
         if (!hasOrderlyMessage && !this.messages.get(connectionId).isEmpty()) {
             System.out.println("Messages out of order for connection " + connectionId);
-            System.out.println(this.messages.get(connectionId).keySet());
         }
         return hasOrderlyMessage;
     }
@@ -72,18 +73,22 @@ class MessageResequencer {
     }
 
     short getNextOrderlyMessageId(Integer connectionId) {
-        short nextOrderlyMessage = (short) (this.lastOrderlyMessage.get(connectionId) + 1);
-        if (nextOrderlyMessage == MessageGuarantor.HALF_SHORT_MAX_VALUE) {
-            nextOrderlyMessage = 0;
+        synchronized (lastOrderlyMessage) {
+            short nextOrderlyMessage = (short) (this.lastOrderlyMessage.get(connectionId) + 1);
+            if (nextOrderlyMessage == MessageGuarantor.HALF_SHORT_MAX_VALUE) {
+                nextOrderlyMessage = 0;
+            }
+            return nextOrderlyMessage;
         }
-        return nextOrderlyMessage;
     }
 
     private void incrementLastOrderlyMessageId(Integer connectionId) {
-        short nextOrderlyMessage = (short) (this.lastOrderlyMessage.get(connectionId) + 1);
-        if (nextOrderlyMessage == MessageGuarantor.HALF_SHORT_MAX_VALUE) {
-            nextOrderlyMessage = -1;
+        synchronized (lastOrderlyMessage) {
+            short nextOrderlyMessage = (short) (this.lastOrderlyMessage.get(connectionId) + 1);
+            if (nextOrderlyMessage == MessageGuarantor.HALF_SHORT_MAX_VALUE) {
+                nextOrderlyMessage = -1;
+            }
+            this.lastOrderlyMessage.put(connectionId, nextOrderlyMessage);
         }
-        this.lastOrderlyMessage.put(connectionId, nextOrderlyMessage);
     }
 }
