@@ -30,6 +30,8 @@ public class SnapshotProcessingSystem extends IntervalEntitySystem {
                 processSnapshot(snapshot);
                 serverTime = snapshot.getTime();
                 break;
+            } else {
+                System.out.println("Discarded old snapshot: " + snapshot);
             }
         }
     }
