@@ -78,21 +78,36 @@ public abstract class KryoNetwork extends Listener implements Observer {
             Message message = (Message) arg;
             message.time(getCurrentTime());
             if (message.isImportant()) {
-                Iterator<Integer> connectionsIterator = connections.iterator();
-                Integer connectionId = null;
-                while (connectionsIterator.hasNext()) {
-                    Message messageCopy;
-                    if (connectionId == null) {
-                        messageCopy = message;
-                    } else {
-                        messageCopy = message.clone();
+                if (!message.isForAllConnections() && !message.isForAllButOneConnections()) {
+                    messageGuarantor.guaranteeMessage(message.getConnectionId(), message);
+                    sendMessage(message.getConnectionId(), message);
+                } else {
+                    Message messageCopy = null;
+                    for (int connectionId : connections) {
+                        if (message.isForAllButOneConnections() && connectionId == message.getConnectionId()) {
+                            continue;
+                        }
+                        if (messageCopy == null) {
+                            messageCopy = message;
+                        } else {
+                            messageCopy = message.clone();
+                        }
+                        messageGuarantor.guaranteeMessage(connectionId, messageCopy);
+                        sendMessage(connectionId, messageCopy);
                     }
-                    connectionId = connectionsIterator.next();
-                    messageGuarantor.guaranteeMessage(connectionId, messageCopy);
-                    sendMessage(connectionId, messageCopy);
                 }
             } else {
-                sendMessageToAll(message);
+                if (message.isForAllConnections()) {
+                    sendMessageToAll(message);
+                } else if (message.isForAllButOneConnections()) {
+                    for (int connectionId : connections) {
+                        if (message.getConnectionId() != connectionId) {
+                            sendMessage(connectionId, message);
+                        }
+                    }
+                } else {
+                    sendMessage(message.getConnectionId(), message);
+                }
             }
         }
     }

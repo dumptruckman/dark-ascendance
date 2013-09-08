@@ -72,12 +72,6 @@ public class GameClient extends KryoNetwork implements Observer {
 
     @Override
     public void handleMessage(Message message) {
-        if (message.isForAllButOneConnections() && message.getConnectionId() == client.getID()) {
-            return;
-        }
-        if (!message.isForAllConnections() && message.getConnectionId() != client.getID()) {
-            return;
-        }
         EntityMessage entityMessage;
         switch (message.getMessageType()) {
             case CREATE_PLAYER_SHIP:
