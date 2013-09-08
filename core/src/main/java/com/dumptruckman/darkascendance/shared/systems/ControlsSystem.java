@@ -1,5 +1,6 @@
-package com.dumptruckman.darkascendance.server.systems;
+package com.dumptruckman.darkascendance.shared.systems;
 
+import com.dumptruckman.darkascendance.server.systems.SnapshotCreationSystem;
 import com.dumptruckman.darkascendance.shared.components.Controls;
 import com.dumptruckman.darkascendance.shared.components.Position;
 import com.dumptruckman.darkascendance.shared.components.Thrusters;
@@ -17,9 +18,11 @@ public class ControlsSystem extends IntervalEntitySystem {
     ComponentMapper<Thrusters> thrustersMap;
 
     private float timeToFire;
+    private boolean createSnapshots;
 
-    public ControlsSystem(float interval) {
+    public ControlsSystem(float interval, boolean createSnapshots) {
         super(interval, Controls.class, Position.class, Velocity.class);
+        this.createSnapshots = createSnapshots;
     }
 
     @Override
@@ -33,12 +36,16 @@ public class ControlsSystem extends IntervalEntitySystem {
             if(controls.up()) {
                 if (thrusters.getThrustLevel() != 1F) {
                     thrusters.setThrustLevel(1F);
-                    SnapshotCreationSystem.addChangedComponentToSnapshot(thrusters);
+                    if (createSnapshots) {
+                        SnapshotCreationSystem.addChangedComponentToSnapshot(thrusters);
+                    }
                 }
             } else {
                 if (thrusters.getThrustLevel() != 0F) {
                     thrusters.setThrustLevel(0F);
-                    SnapshotCreationSystem.addChangedComponentToSnapshot(thrusters);
+                    if (createSnapshots) {
+                        SnapshotCreationSystem.addChangedComponentToSnapshot(thrusters);
+                    }
                 }
             }
 
@@ -54,7 +61,9 @@ public class ControlsSystem extends IntervalEntitySystem {
         }
 
         if (controls.down() || controls.right() || controls.left()) {
-            SnapshotCreationSystem.addChangedComponentToSnapshot(position);
+            if (createSnapshots) {
+                SnapshotCreationSystem.addChangedComponentToSnapshot(position);
+            }
         }
 
         /*

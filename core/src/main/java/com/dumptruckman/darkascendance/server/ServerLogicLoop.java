@@ -23,7 +23,7 @@ public class ServerLogicLoop extends GameLogic implements Runnable {
     private long lastTime = 0L;
 
     ServerLogicLoop(NetworkSystemInjector networkSystemInjector) {
-        super(new EntityWorld());
+        super(new EntityWorld(), true);
         networkSystemInjector.addHighPrioritySystemsToWorld(getWorld());
         addLogicSystems();
         getWorld().addSystem(new SnapshotCreationSystem(this, GameServer.SNAPSHOT_RATE));

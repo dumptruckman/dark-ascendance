@@ -1,6 +1,7 @@
-package com.dumptruckman.darkascendance.server.systems;
+package com.dumptruckman.darkascendance.shared.systems;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.dumptruckman.darkascendance.server.systems.SnapshotCreationSystem;
 import com.dumptruckman.darkascendance.shared.components.Position;
 import com.dumptruckman.darkascendance.shared.components.Thrusters;
 import com.dumptruckman.darkascendance.shared.components.Velocity;
@@ -12,9 +13,11 @@ public class AccelerationSystem extends IntervalEntitySystem {
     ComponentMapper<Velocity> velocityMap;
     ComponentMapper<Position> positionMap;
     ComponentMapper<Thrusters> thrustersMap;
+    private boolean createSnapshots;
 
-    public AccelerationSystem(float interval) {
+    public AccelerationSystem(float interval, boolean createSnapshots) {
         super(interval, Velocity.class, Position.class);
+        this.createSnapshots = createSnapshots;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class AccelerationSystem extends IntervalEntitySystem {
         addForwardAccelerationToVelocity(totalForwardAcceleration, velocity, facingAngleRadians);
     }
 
-    static float getThrustersAcceleration(Thrusters thrusters) {
+    float getThrustersAcceleration(Thrusters thrusters) {
         float acceleration = 0F;
         if (thrusters != null) {
             acceleration += thrusters.getAccelerationAddedByThrust();
@@ -40,17 +43,19 @@ public class AccelerationSystem extends IntervalEntitySystem {
         return acceleration;
     }
 
-    static float modifyAccelerationByDelta(float acceleration, float delta) {
+    float modifyAccelerationByDelta(float acceleration, float delta) {
         return acceleration * delta;
     }
 
-    static void addForwardAccelerationToVelocity(float acceleration, Velocity velocity, float facingAngleRadians) {
+    void addForwardAccelerationToVelocity(float acceleration, Velocity velocity, float facingAngleRadians) {
         if (acceleration == 0F) {
             return;
         }
 
         velocity.addToX(acceleration * -(float) MathUtils.sin(facingAngleRadians));
         velocity.addToY(acceleration * (float) MathUtils.cos(facingAngleRadians));
-        SnapshotCreationSystem.addChangedComponentToSnapshot(velocity);
+        if (createSnapshots) {
+            SnapshotCreationSystem.addChangedComponentToSnapshot(velocity);
+        }
     }
 }

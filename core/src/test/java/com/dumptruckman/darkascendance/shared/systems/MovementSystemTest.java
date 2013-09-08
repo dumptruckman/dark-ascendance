@@ -1,4 +1,4 @@
-package com.dumptruckman.darkascendance.server.systems;
+package com.dumptruckman.darkascendance.shared.systems;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.dumptruckman.darkascendance.client.components.Player;
@@ -14,6 +14,7 @@ public class MovementSystemTest {
     Position position;
     Velocity velocity;
     Player player;
+    MovementSystem movementSystem;
 
     @Before
     public void setUp() throws Exception {
@@ -22,23 +23,24 @@ public class MovementSystemTest {
         player = new Player(new OrthographicCamera());
         player.getCamera().position.x = 0;
         player.getCamera().position.y = 0;
+        movementSystem = new MovementSystem(0F, false);
     }
 
     @Test
     public void testBasicMovement() {
         velocity.setX(50F).setY(50F);
-        MovementSystem.processMovement(position, velocity, 1F);
+        movementSystem.processMovement(position, velocity, 1F);
         assertEquals(50F, position.getX(), 0.0001F);
         assertEquals(50F, position.getY(), 0.0001F);
         assertEquals(0F, position.getRotation(), 0.0001F);
 
         velocity.setX(-50F).setY(-50F);
-        MovementSystem.processMovement(position, velocity, 1F);
+        movementSystem.processMovement(position, velocity, 1F);
         assertEquals(0F, position.getX(), 0.0001F);
         assertEquals(0F, position.getY(), 0.0001F);
         assertEquals(0F, position.getRotation(), 0.0001F);
 
-        MovementSystem.processMovement(position, velocity, 1F);
+        movementSystem.processMovement(position, velocity, 1F);
         assertEquals(-50F, position.getX(), 0.0001F);
         assertEquals(-50F, position.getY(), 0.0001F);
         assertEquals(0F, position.getRotation(), 0.0001F);
@@ -47,18 +49,18 @@ public class MovementSystemTest {
     @Test
     public void testBasicMovementHalfDelta() {
         velocity.setX(50F).setY(50F);
-        MovementSystem.processMovement(position, velocity, .5F);
+        movementSystem.processMovement(position, velocity, .5F);
         assertEquals(25F, position.getX(), 0.0001F);
         assertEquals(25F, position.getY(), 0.0001F);
         assertEquals(0F, position.getRotation(), 0.0001F);
 
         velocity.setX(-50F).setY(-50F);
-        MovementSystem.processMovement(position, velocity, .5F);
+        movementSystem.processMovement(position, velocity, .5F);
         assertEquals(0F, position.getX(), 0.0001F);
         assertEquals(0F, position.getY(), 0.0001F);
         assertEquals(0F, position.getRotation(), 0.0001F);
 
-        MovementSystem.processMovement(position, velocity, .5F);
+        movementSystem.processMovement(position, velocity, .5F);
         assertEquals(-25F, position.getX(), 0.0001F);
         assertEquals(-25F, position.getY(), 0.0001F);
         assertEquals(0F, position.getRotation(), 0.0001F);

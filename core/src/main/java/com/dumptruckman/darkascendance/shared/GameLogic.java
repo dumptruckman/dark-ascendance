@@ -1,8 +1,8 @@
 package com.dumptruckman.darkascendance.shared;
 
-import com.dumptruckman.darkascendance.server.systems.AccelerationSystem;
-import com.dumptruckman.darkascendance.server.systems.ControlsSystem;
-import com.dumptruckman.darkascendance.server.systems.MovementSystem;
+import com.dumptruckman.darkascendance.shared.systems.AccelerationSystem;
+import com.dumptruckman.darkascendance.shared.systems.ControlsSystem;
+import com.dumptruckman.darkascendance.shared.systems.MovementSystem;
 import recs.EntityWorld;
 
 import java.util.Observable;
@@ -18,15 +18,15 @@ public class GameLogic extends Observable {
     private AccelerationSystem accelerationSystem;
     private MovementSystem movementSystem;
 
-    public GameLogic(EntityWorld world) {
+    public GameLogic(EntityWorld world, boolean createSnapshots) {
         this.world = world;
 
         this.entityFactory = new EntityFactory(world);
 
         // initialize systems
-        this.controlsSystem = new ControlsSystem(TICK_LENGTH_SECONDS);
-        this.accelerationSystem = new AccelerationSystem(TICK_LENGTH_SECONDS);
-        this.movementSystem = new MovementSystem(TICK_LENGTH_SECONDS);
+        this.controlsSystem = new ControlsSystem(TICK_LENGTH_SECONDS, createSnapshots);
+        this.accelerationSystem = new AccelerationSystem(TICK_LENGTH_SECONDS, createSnapshots);
+        this.movementSystem = new MovementSystem(TICK_LENGTH_SECONDS, createSnapshots);
     }
 
     protected EntityWorld getWorld() {

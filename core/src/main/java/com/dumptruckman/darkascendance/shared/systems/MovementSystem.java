@@ -1,5 +1,6 @@
-package com.dumptruckman.darkascendance.server.systems;
+package com.dumptruckman.darkascendance.shared.systems;
 
+import com.dumptruckman.darkascendance.server.systems.SnapshotCreationSystem;
 import com.dumptruckman.darkascendance.shared.components.Position;
 import com.dumptruckman.darkascendance.shared.components.Velocity;
 import recs.ComponentMapper;
@@ -9,10 +10,11 @@ public class MovementSystem extends IntervalEntitySystem {
 
     ComponentMapper<Position> positionMap;
     ComponentMapper<Velocity> velocityMap;
+    private boolean createSnapshots;
 
-
-    public MovementSystem(float interval) {
+    public MovementSystem(float interval, boolean createSnapshots) {
         super(interval, Position.class, Velocity.class);
+        this.createSnapshots = createSnapshots;
     }
 
     @Override
@@ -23,13 +25,13 @@ public class MovementSystem extends IntervalEntitySystem {
         processMovement(position, velocity, deltaInSec);
     }
 
-    static void processMovement(Position position, Velocity velocity, float delta) {
+    void processMovement(Position position, Velocity velocity, float delta) {
         float xDelta = velocity.getX() * delta;
         position.setX(position.getX() + xDelta);
         float yDelta = velocity.getY() * delta;
         position.setY(position.getY() + yDelta);
 
-        if (xDelta != 0F || yDelta != 0F) {
+        if (createSnapshots && (xDelta != 0F || yDelta != 0F)) {
             SnapshotCreationSystem.addChangedComponentToSnapshot(position);
         }
     }
