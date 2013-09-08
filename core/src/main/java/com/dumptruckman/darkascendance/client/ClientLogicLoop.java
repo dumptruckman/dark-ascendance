@@ -46,7 +46,7 @@ public class ClientLogicLoop extends GameLogic implements Screen {
         getWorld().addSystem(new SnapshotInterpolationSystem());
         getWorld().addSystem(new PlayerInputSystem(TICK_LENGTH_SECONDS));
         getWorld().addSystem(new PlayerCameraSystem());
-        //addLogicSystems();
+        addLogicSystems();
         textureRenderingSystem = new TextureRenderingSystem(camera);
         getWorld().addSystem(textureRenderingSystem);
         getWorld().addSystem(new CommandSendSystem(this, COMMAND_RATE));
