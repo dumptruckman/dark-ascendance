@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class SnapshotProcessingSystem extends IntervalEntitySystem {
 
     private static Queue<SnapshotMessage> snapshotQueue = new ConcurrentLinkedQueue<SnapshotMessage>();
+    private static long serverTime;
 
     public SnapshotProcessingSystem(final float intervalInSec) {
         super(intervalInSec);
@@ -43,5 +44,7 @@ public class SnapshotProcessingSystem extends IntervalEntitySystem {
         snapshotQueue.add(snapshot);
     }
 
-
+    public static void setServerTime(long time) {
+        serverTime = time;
+    }
 }

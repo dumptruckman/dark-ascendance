@@ -58,7 +58,7 @@ public class Message extends MessageBase implements Cloneable {
         return forAllButOneConnections;
     }
 
-    public float getTime() {
+    public long getTime() {
         return messageTime;
     }
 

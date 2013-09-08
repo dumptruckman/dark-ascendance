@@ -23,6 +23,7 @@ public class GameClient extends KryoNetwork implements Observer {
     private int udpPort;
     private Client client;
     private ClientLogicLoop clientLogicLoop;
+    private long initialServerTime = 0L;
 
     public GameClient(GameSettings gameSettings, String host, int tcpPort, int udpPort) {
         this.host = host;
@@ -75,6 +76,7 @@ public class GameClient extends KryoNetwork implements Observer {
         EntityMessage entityMessage;
         switch (message.getMessageType()) {
             case CREATE_PLAYER_SHIP:
+                SnapshotProcessingSystem.setServerTime(message.getTime());
                 System.out.println("Creating ship");
                 entityMessage = (EntityMessage) message;
                 if (entityMessage.getConnectionId() == client.getID()) {
