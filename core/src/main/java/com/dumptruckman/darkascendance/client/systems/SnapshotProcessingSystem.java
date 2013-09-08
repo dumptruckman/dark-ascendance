@@ -12,7 +12,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class SnapshotProcessingSystem extends IntervalEntitySystem {
 
     private static Queue<SnapshotMessage> snapshotQueue = new ConcurrentLinkedQueue<SnapshotMessage>();
-    private static long serverTime;
+    private static long serverTime = -1L;
+    private static long clientTime = 0L;
 
     public SnapshotProcessingSystem(final float intervalInSec) {
         super(intervalInSec);
@@ -20,9 +21,16 @@ public class SnapshotProcessingSystem extends IntervalEntitySystem {
 
     @Override
     protected void processSystem(final float deltaInSec) {
-        SnapshotMessage snapshot = pollNextSnapshot();
-        if (snapshot != null) {
-            processSnapshot(snapshot);
+        if (serverTime == -1L) {
+            return;
+        }
+        SnapshotMessage snapshot;
+        while ((snapshot = pollNextSnapshot()) != null) {
+            if (snapshot.getTime() > serverTime) {
+                processSnapshot(snapshot);
+                serverTime = snapshot.getTime();
+                break;
+            }
         }
     }
 
