@@ -57,4 +57,8 @@ public class SnapshotProcessingSystem extends IntervalEntitySystem {
     public static void setServerTime(long time) {
         serverTime = time;
     }
+
+    public static void incrementClientTime(float deltaInSec) {
+        clientTime += deltaInSec * 1000000000L;
+    }
 }
