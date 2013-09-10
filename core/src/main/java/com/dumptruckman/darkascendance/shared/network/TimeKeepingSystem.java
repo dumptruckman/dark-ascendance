@@ -1,10 +1,14 @@
 package com.dumptruckman.darkascendance.shared.network;
 
+import com.badlogic.gdx.utils.TimeUtils;
 import recs.EntitySystem;
 
 class TimeKeepingSystem extends EntitySystem {
 
     private KryoNetwork kryoNetwork;
+
+    private long lastTime = 0L;
+    private long currentTimeAccumulated = 0L;
 
     public TimeKeepingSystem(KryoNetwork kryoNetwork) {
         this.kryoNetwork = kryoNetwork;
@@ -12,8 +16,13 @@ class TimeKeepingSystem extends EntitySystem {
 
     @Override
     protected void processSystem(final float deltaInSec) {
-        long currentTime = kryoNetwork.getCurrentTime();
-        currentTime += deltaInSec * 1000000000L;
-        kryoNetwork.setCurrentTime(currentTime);
+        if (lastTime == 0L) {
+            lastTime = TimeUtils.nanoTime();
+            return;
+        }
+        long currentTime = TimeUtils.nanoTime();
+        currentTimeAccumulated += currentTime - lastTime;
+        lastTime = currentTime;
+        kryoNetwork.setCurrentTime(currentTimeAccumulated);
     }
 }
