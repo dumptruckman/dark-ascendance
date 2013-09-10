@@ -33,7 +33,8 @@ public class GameServer extends KryoNetwork {
         }
     }
 
-    public static final float SNAPSHOT_RATE = .05F;
+    public static final float SNAPSHOTS_PER_SECOND = 20F;
+    public static final float SNAPSHOT_RATE = 1F / SNAPSHOTS_PER_SECOND;
 
     private int tcpPort;
     private int udpPort;

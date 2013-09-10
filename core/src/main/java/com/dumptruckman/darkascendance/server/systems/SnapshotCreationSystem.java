@@ -11,13 +11,14 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class SnapshotCreationSystem extends IntervalEntitySystem {
 
-    private static Snapshot currentSnapshot = new Snapshot();
+    private static long tick = 0L;
+    private static Snapshot currentSnapshot = new Snapshot(tick);
     private static ReentrantLock lock = new ReentrantLock();
 
     private ServerLogicLoop server;
 
-    public SnapshotCreationSystem(ServerLogicLoop server, float intervalInSec) {
-        super(intervalInSec);
+    public SnapshotCreationSystem(ServerLogicLoop server) {
+        super(GameServer.SNAPSHOT_RATE);
         this.server = server;
     }
 
@@ -36,7 +37,8 @@ public class SnapshotCreationSystem extends IntervalEntitySystem {
     }
 
     private void resetCurrentSnapshot() {
-        currentSnapshot = new Snapshot();
+        tick++;
+        currentSnapshot = new Snapshot(tick);
     }
 
     public static void addChangedComponentToSnapshot(Component component) {

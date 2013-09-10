@@ -6,6 +6,7 @@ import com.dumptruckman.darkascendance.shared.snapshot.Snapshot;
 
 public class SnapshotMessage extends Message {
 
+    private long tick;
     private ObjectSet<Component> components;
 
     public SnapshotMessage copySnapshot(Snapshot snapshot) {
@@ -15,10 +16,15 @@ public class SnapshotMessage extends Message {
             Component cloned = component.clone();
             this.components.add(cloned);
         }
+        this.tick = snapshot.getTick();
         return this;
     }
 
     public ObjectSet<Component> getComponents() {
         return components;
+    }
+
+    public long getTick() {
+        return tick;
     }
 }

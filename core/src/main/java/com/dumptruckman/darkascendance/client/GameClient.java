@@ -18,6 +18,8 @@ import java.util.Observer;
 
 public class GameClient extends KryoNetwork implements Observer {
 
+    public static final float INTERPOLATION_LENGTH = .1F;
+
     private String host;
     private int tcpPort;
     private int udpPort;

@@ -7,15 +7,23 @@ import com.dumptruckman.darkascendance.shared.components.Component;
 
 public class Snapshot {
 
-
-
     private ObjectSet<Component> components = new ObjectSet<Component>();
+    private long tick;
 
-    public void addComponent(Component component) {
+    public Snapshot(long tick) {
+        this.tick = tick;
+    }
+
+    public Snapshot addComponent(Component component) {
         components.add(component);
+        return this;
     }
 
     public ObjectSet<Component> getComponents() {
         return components;
+    }
+
+    public long getTick() {
+        return tick;
     }
 }
