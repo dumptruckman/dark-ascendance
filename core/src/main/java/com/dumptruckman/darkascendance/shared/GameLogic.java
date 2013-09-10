@@ -24,9 +24,9 @@ public class GameLogic extends Observable {
         this.entityFactory = new EntityFactory(world);
 
         // initialize systems
-        this.controlsSystem = new ControlsSystem(TICK_LENGTH_SECONDS, createSnapshots);
-        this.accelerationSystem = new AccelerationSystem(TICK_LENGTH_SECONDS, createSnapshots);
-        this.movementSystem = new MovementSystem(TICK_LENGTH_SECONDS, createSnapshots);
+        this.controlsSystem = new ControlsSystem(createSnapshots ? TICK_LENGTH_SECONDS : 0, createSnapshots);
+        this.accelerationSystem = new AccelerationSystem(createSnapshots ? TICK_LENGTH_SECONDS : 0, createSnapshots);
+        this.movementSystem = new MovementSystem(createSnapshots ? TICK_LENGTH_SECONDS : 0, createSnapshots);
     }
 
     protected EntityWorld getWorld() {
