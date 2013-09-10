@@ -59,8 +59,6 @@ public class ClientLogicLoop extends GameLogic implements Screen {
 
         camera.update();
 
-        SnapshotProcessingSystem.incrementClientTime(delta);
-
         processGameLogic(delta);
         //fpsLogger.log();
     }

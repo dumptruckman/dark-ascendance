@@ -1,19 +1,24 @@
 package com.dumptruckman.darkascendance.client.systems;
 
+import com.badlogic.gdx.utils.TimeUtils;
 import com.dumptruckman.darkascendance.shared.Entity;
 import com.dumptruckman.darkascendance.shared.components.Component;
 import com.dumptruckman.darkascendance.client.ClientLogicLoop;
 import com.dumptruckman.darkascendance.shared.messages.SnapshotMessage;
 import recs.IntervalEntitySystem;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SnapshotProcessingSystem extends IntervalEntitySystem {
 
     private static Queue<SnapshotMessage> snapshotQueue = new ConcurrentLinkedQueue<SnapshotMessage>();
-    private static long serverTime = -1L;
+    private static long serverTime = 0L;
+    private static long lastClientTime = 0L;
     private static long clientTime = 0L;
+    private static long clientTimeDiff = 0L;
 
     public SnapshotProcessingSystem(final float intervalInSec) {
         super(intervalInSec);
@@ -21,17 +26,19 @@ public class SnapshotProcessingSystem extends IntervalEntitySystem {
 
     @Override
     protected void processSystem(final float deltaInSec) {
-        if (serverTime == -1L) {
+        updateTime();
+        if (serverTime == 0L || clientTimeDiff == 0L) {
             return;
         }
+        long clientPlusServerTime = clientTimeDiff + clientTime;
         SnapshotMessage snapshot;
         while ((snapshot = pollNextSnapshot()) != null) {
-            if (snapshot.getTime() > serverTime) {
+            long snapshotTime = snapshot.getTime();
+            if (snapshotTime >= clientPlusServerTime && snapshotTime >= serverTime) {
                 processSnapshot(snapshot);
                 serverTime = snapshot.getTime();
-                break;
             } else {
-                System.out.println("Discarded old snapshot: " + snapshot);
+                System.out.println("Discarded snapshot that was behind by " + ((snapshotTime - clientPlusServerTime) / 1000000L) + "ms");
             }
         }
     }
@@ -55,10 +62,19 @@ public class SnapshotProcessingSystem extends IntervalEntitySystem {
     }
 
     public static void setServerTime(long time) {
+        if (serverTime == 0L) {
+            clientTimeDiff = time - clientTime;
+        }
         serverTime = time;
     }
 
-    public static void incrementClientTime(float deltaInSec) {
-        clientTime += deltaInSec * 1000000000L;
+    public static void updateTime() {
+        if (lastClientTime == 0L) {
+            lastClientTime = TimeUtils.nanoTime();
+            return;
+        }
+        long currentTime = TimeUtils.nanoTime();
+        clientTime += currentTime - lastClientTime;
+        lastClientTime = currentTime;
     }
 }
