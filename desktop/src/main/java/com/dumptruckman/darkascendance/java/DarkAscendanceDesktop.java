@@ -9,7 +9,6 @@ import com.dumptruckman.darkascendance.client.GameSettings;
 public class DarkAscendanceDesktop {
     public static void main (String[] args) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.useGL20 = true;
         config.vSyncEnabled = false;
         config.foregroundFPS = 3000;
         config.backgroundFPS = 3000;

@@ -3,7 +3,7 @@ package com.dumptruckman.darkascendance.client;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.dumptruckman.darkascendance.client.systems.CommandSendSystem;
 import com.dumptruckman.darkascendance.client.systems.SnapshotInterpolationSystem;
@@ -42,7 +42,7 @@ public class ClientLogicLoop extends GameLogic implements Screen {
         this.entityConfigurator = new ClientEntityConfigurator(getWorld(), new TextureFactory());
 
         networkSystemInjector.addHighPrioritySystemsToWorld(getWorld());
-        getWorld().addSystem(new SnapshotProcessingSystem(GameServer.SNAPSHOT_RATE));
+        getWorld().addSystem(new SnapshotProcessingSystem());
         getWorld().addSystem(new SnapshotInterpolationSystem());
         getWorld().addSystem(new PlayerInputSystem(TICK_LENGTH_SECONDS));
         getWorld().addSystem(new PlayerCameraSystem());
@@ -55,7 +55,7 @@ public class ClientLogicLoop extends GameLogic implements Screen {
 
     @Override
     public void render(final float delta) {
-        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
 
