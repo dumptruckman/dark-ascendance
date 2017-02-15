@@ -12,7 +12,7 @@ public class DarkAscendanceDesktop {
         config.vSyncEnabled = false;
         config.foregroundFPS = 3000;
         config.backgroundFPS = 3000;
-        String host = "127.0.0.1";
+        String host = args[0];
         int tcpPort = 25565;
         int udpPort = 25566;
 
