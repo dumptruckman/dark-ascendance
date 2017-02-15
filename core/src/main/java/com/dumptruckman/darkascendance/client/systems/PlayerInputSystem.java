@@ -74,6 +74,7 @@ public class PlayerInputSystem extends IntervalEntitySystem implements InputProc
 
     @Override
     public boolean keyDown(int keycode) {
+        System.out.println(keycode);
         if(keycode == Input.Keys.A) {
             left = true;
         } else if(keycode == Input.Keys.D) {
@@ -89,13 +90,13 @@ public class PlayerInputSystem extends IntervalEntitySystem implements InputProc
 
     @Override
     public boolean keyUp(int keycode) {
-        if(keycode == Input.Keys.A) {
+        if(keycode == Input.Keys.LEFT) {
             left = false;
-        } else if(keycode == Input.Keys.D) {
+        } else if(keycode == Input.Keys.RIGHT) {
             right = false;
-        } else if(keycode == Input.Keys.W) {
+        } else if(keycode == Input.Keys.UP) {
             up = false;
-        } else if(keycode == Input.Keys.S) {
+        } else if(keycode == Input.Keys.DOWN) {
             down = false;
         }
 
