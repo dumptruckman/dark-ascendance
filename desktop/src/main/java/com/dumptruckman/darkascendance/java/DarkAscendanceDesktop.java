@@ -27,4 +27,4 @@ public class DarkAscendanceDesktop {
         GameSettings gameSettings = new GameSettings(config.width, config.height);
         new LwjglApplication(new DarkAscendance(gameSettings, host, tcpPort, udpPort), config);
     }
-}
+} 
