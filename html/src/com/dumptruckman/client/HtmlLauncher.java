@@ -3,7 +3,7 @@ package com.dumptruckman.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.dumptruckman.DarkAscendanceGame;
+import com.dumptruckman.TempName;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -14,6 +14,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                return new DarkAscendanceGame();
+                return new TempName();
         }
 }
