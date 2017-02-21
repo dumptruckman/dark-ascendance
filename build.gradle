@@ -32,6 +32,7 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "http://clojars.org/repo/" }
+        maven { url "http://repo.onarandombox.com/content/repositories/thirdparty-dev/" }
     }
 }
 
@@ -40,6 +41,7 @@ project(":desktop") {
 
 
     dependencies {
+        compile project(":core")
         compile project(":client")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
@@ -72,6 +74,7 @@ project(":android") {
 
     dependencies {
         compile project(":core")
+        compile project(":client")
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
@@ -94,6 +97,7 @@ project(":html") {
 
     dependencies {
         compile project(":core")
+        compile project(":client")
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
@@ -110,6 +114,9 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "kryonet:kryonet:2.21"
+        compile ("com.github.ocirne23:recs:1.0-SNAPSHOT") {
+            exclude group: 'com.badlogicgames.gdx'
+        }
     }
 }
 
@@ -120,6 +127,7 @@ project(":ios") {
 
     dependencies {
         compile project(":core")
+        compile project(":client")
         compile "com.mobidevelop.robovm:robovm-rt:$roboVMVersion"
         compile "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion"
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
