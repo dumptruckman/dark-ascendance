@@ -1,5 +1,6 @@
 package com.dumptruckman;
 
+import com.badlogic.gdx.Gdx;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.UIApplication;
 
@@ -10,7 +11,7 @@ public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        return new IOSApplication(new TempName(), config);
+        return new IOSApplication(new DarkAscendanceGame(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), config);
     }
 
     public static void main(String[] argv) {

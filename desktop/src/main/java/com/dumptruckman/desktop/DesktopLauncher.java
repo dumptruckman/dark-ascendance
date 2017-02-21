@@ -7,6 +7,9 @@ import com.dumptruckman.DarkAscendanceGame;
 public class DesktopLauncher {
     public static void main (String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        new LwjglApplication(new DarkAscendanceGame(), config);
+        config.vSyncEnabled = false;
+        config.foregroundFPS = 3000;
+        config.backgroundFPS = 3000;
+        new LwjglApplication(new DarkAscendanceGame(config.width, config.height), config);
     }
 }

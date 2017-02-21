@@ -18,4 +18,12 @@ public class TextureComponent extends Component {
         this.region = region;
         this.layer = layer;
     }
+
+    public TextureRegion getRegion() {
+        return region;
+    }
+
+    public RenderLayer getLayer() {
+        return layer;
+    }
 }
