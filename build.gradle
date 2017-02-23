@@ -54,6 +54,7 @@ project(":client") {
 
     dependencies {
         compile project(":core")
+        testCompile "junit:junit:4.12"
     }
 }
 

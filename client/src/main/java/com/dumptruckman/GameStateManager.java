@@ -49,4 +49,8 @@ class GameStateManager {
             }
         }
     }
+
+    GameState getCurrentState() {
+        return currentState;
+    }
 }
