@@ -38,6 +38,12 @@ class GameStateManager {
         }
     }
 
+    void addSystemsToAllStates(EntitySystem... systems) {
+        for (GameState state : GameState.values()) {
+            addSystemsToGameState(state, systems);
+        }
+    }
+
     void setGameState(GameState gameState) {
         if (currentState != gameState) {
             for (EntitySystem s : gameStateSystems.get(currentState)) {

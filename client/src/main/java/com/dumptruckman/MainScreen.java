@@ -2,7 +2,15 @@ package com.dumptruckman;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.dumptruckman.components.BackgroundComponent;
+import com.dumptruckman.components.TextureComponent;
+import com.dumptruckman.components.TextureComponent.RenderLayer;
+import com.dumptruckman.graphics.TextureFactory;
+import com.dumptruckman.graphics.TexturePack;
+import com.dumptruckman.graphics.Textures;
+import com.dumptruckman.systems.BackgroundRenderingSystem;
 import com.dumptruckman.systems.TextureRenderingSystem;
+import recs.Entity;
 import recs.EntityWorld;
 
 public class MainScreen implements Screen {
@@ -23,8 +31,16 @@ public class MainScreen implements Screen {
     public void show() {
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
         TextureRenderingSystem textureRenderingSystem = new TextureRenderingSystem(camera);
+        BackgroundRenderingSystem backgroundRenderingSystem = new BackgroundRenderingSystem(camera);
 
-        gameStateManager.addSystemsToGameState(GameState.MAIN_MENU, textureRenderingSystem);
+        gameStateManager.addSystemsToAllStates(textureRenderingSystem);
+        gameStateManager.addSystemsToAllStates(backgroundRenderingSystem);
+
+        Entity background = new Entity();
+        background.addComponent(new TextureComponent(TextureFactory.getBackground().getTexture(Textures.STAR_FIELD), RenderLayer.GAME_BACKGROUND),
+                new BackgroundComponent());
+        world.addEntity(background);
+
         gameStateManager.setGameState(GameState.MAIN_MENU);
     }
 

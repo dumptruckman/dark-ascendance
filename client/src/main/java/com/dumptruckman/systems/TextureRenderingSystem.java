@@ -92,31 +92,12 @@ public class TextureRenderingSystem extends EntitySystem {
         batch.setProjectionMatrix(camera.combined);
         //program.setUniformMatrix("u_projTrans", batch.getTransformMatrix());
         batch.begin();
-        drawBackground();
 
         for (Integer entityId : sortedEntities) {
             processEntity(entityId, deltaInSec);
         }
 
         batch.end();
-    }
-
-    private void drawBackground() {
-        float bgWidth = backgroundTexture.getRegionWidth();
-        float bgHeight = backgroundTexture.getRegionHeight();
-        float camWidth = (int) camera.viewportWidth;
-        float camHeight = (int) camera.viewportHeight;
-        float camX = (int) camera.position.x - (camWidth / 2);
-        float camY = (int) camera.position.y - (camHeight / 2);
-
-        float drawX = MathUtils.floor(camX / bgWidth) * bgWidth;
-        float drawY = MathUtils.floor(camY / bgHeight) * bgHeight;
-        for (float x = drawX; x <= camX + camWidth; x += bgWidth) {
-            for (float y = drawY; y <= camY + camHeight; y += bgHeight) {
-
-                batch.draw(backgroundTexture, x, y);
-            }
-        }
     }
 
     protected void processEntity(int entityId, float deltaInSec) {
