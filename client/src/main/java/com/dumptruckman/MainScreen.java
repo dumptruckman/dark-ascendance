@@ -3,8 +3,11 @@ package com.dumptruckman;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.dumptruckman.components.BackgroundComponent;
+import com.dumptruckman.components.PositionComponent;
 import com.dumptruckman.components.TextureComponent;
 import com.dumptruckman.components.TextureComponent.RenderLayer;
+import com.dumptruckman.entities.Background;
+import com.dumptruckman.entities.UIButton;
 import com.dumptruckman.graphics.TextureFactory;
 import com.dumptruckman.graphics.TexturePack;
 import com.dumptruckman.graphics.Textures;
@@ -30,16 +33,17 @@ public class MainScreen implements Screen {
     @Override
     public void show() {
         this.camera = new OrthographicCamera(screenWidth, screenHeight);
-        TextureRenderingSystem textureRenderingSystem = new TextureRenderingSystem(camera);
         BackgroundRenderingSystem backgroundRenderingSystem = new BackgroundRenderingSystem(camera);
+        TextureRenderingSystem textureRenderingSystem = new TextureRenderingSystem(camera);
 
-        gameStateManager.addSystemsToAllStates(textureRenderingSystem);
         gameStateManager.addSystemsToAllStates(backgroundRenderingSystem);
+        gameStateManager.addSystemsToAllStates(textureRenderingSystem);
 
-        Entity background = new Entity();
-        background.addComponent(new TextureComponent(TextureFactory.getBackground().getTexture(Textures.STAR_FIELD), RenderLayer.GAME_BACKGROUND),
-                new BackgroundComponent());
-        world.addEntity(background);
+        world.addEntity(new Background(Textures.STAR_FIELD, RenderLayer.GAME_BACKGROUND));
+
+        UIButton playButton = new UIButton("Play", RenderLayer.UI_FOREGROUND_1, 0, 0).scaleFont(2);
+
+        world.addEntity(playButton);
 
         gameStateManager.setGameState(GameState.MAIN_MENU);
     }

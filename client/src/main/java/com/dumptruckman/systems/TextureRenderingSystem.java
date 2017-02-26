@@ -1,6 +1,8 @@
 package com.dumptruckman.systems;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -61,8 +63,6 @@ public class TextureRenderingSystem extends EntitySystem {
     ShaderProgram program;
     private OrthographicCamera camera;
 
-    private TextureRegion backgroundTexture = TextureFactory.getBackground().getTexture(Textures.STAR_FIELD);
-
     public TextureRenderingSystem(OrthographicCamera camera) {
         super(PositionComponent.class, TextureComponent.class);
         this.camera = camera;
@@ -102,11 +102,20 @@ public class TextureRenderingSystem extends EntitySystem {
 
     protected void processEntity(int entityId, float deltaInSec) {
         PositionComponent position = positionMap.get(entityId);
-        TextureRegion region = textureMap.get(entityId).getRegion();
+        TextureComponent textureComponent = textureMap.get(entityId);
+        TextureRegion region = textureComponent.getRegion();
+        BitmapFont font = textureComponent.getFont();
+        String text = textureComponent.getText();
+        GlyphLayout glyphLayout = textureComponent.getGlyphLayout();
 
-        int halfWidth = region.getRegionWidth() / 2;
-        int halfHeight = region.getRegionHeight() / 2;
-        batch.draw(region, position.getX() - halfWidth, position.getY() - halfHeight, halfWidth, halfHeight, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, position.getRotation());
+        if (region != null) {
+            int halfWidth = region.getRegionWidth() / 2;
+            int halfHeight = region.getRegionHeight() / 2;
+            batch.draw(region, position.getX() - halfWidth, position.getY() - halfHeight, halfWidth, halfHeight, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, position.getRotation());
+        }
+        if (font != null && !text.isEmpty()) {
+            font.draw(batch, glyphLayout, position.getX(), position.getY());
+        }
     }
 
     @Override

@@ -17,7 +17,6 @@ import java.util.List;
 public class BackgroundRenderingSystem extends EntitySystem {
 
     ComponentMapper<TextureComponent> textureMap;
-    ComponentMapper<BackgroundComponent> backgroundMap;
 
     private SpriteBatch batch;
     private List<Integer> sortedEntities;
@@ -44,7 +43,9 @@ public class BackgroundRenderingSystem extends EntitySystem {
 
     protected void processEntity(int entityId, float deltaInSec) {
         TextureRegion region = textureMap.get(entityId).getRegion();
-        drawBackground(region);
+        if (region != null) { // should never be the case for backgrounds
+            drawBackground(region);
+        }
     }
 
     private void drawBackground(TextureRegion backgroundTexture) {

@@ -1,8 +1,8 @@
 package com.dumptruckman.components;
 
-import com.dumptruckman.Component;
+import recs.Component;
 
-public class PositionComponent extends Component implements Cloneable {
+public class PositionComponent extends Component {
 
     private float x = 0F;
     private float y = 0F;
@@ -100,10 +100,5 @@ public class PositionComponent extends Component implements Cloneable {
         setRotation(newRotation);
 
         return this;
-    }
-
-    @Override
-    public PositionComponent clone() {
-        return (PositionComponent) super.clone();
     }
 }
